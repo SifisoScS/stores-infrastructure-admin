@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Sharing - Sifiso Methodology Stewardship Principles</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --derivco-blue: #003366;
+            --derivco-teal: #008080;
+            --knowledge-blue: #3b82f6;
+            --knowledge-indigo: #4f46e5;
+            --text-gray: #4a5568;
+            --primary-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #3b82f6;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--primary-bg);
+            min-height: 100vh;
+            color: #1a202c;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--knowledge-indigo) 0%, var(--knowledge-blue) 100%);
+            color: #1a202c;
+            position: relative;
+            overflow: hidden;
+            padding: 2rem 0;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.3;
+        }
+
+        .methodology-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .methodology-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.2);
+        }
+
+        .principle-card {
+            border-left: 4px solid var(--knowledge-indigo);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .principle-card:hover {
+            border-left: 4px solid var(--knowledge-blue);
+            transform: translateX(5px) scale(1.02);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 2rem;
+            border-left: 2px solid var(--knowledge-blue);
+            margin-left: 1rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -0.5rem;
+            top: 0;
+            width: 1rem;
+            height: 1rem;
+            border-radius: 50%;
+            background: var(--knowledge-blue);
+        }
+
+        .stat-badge {
+            background: linear-gradient(135deg, var(--knowledge-indigo) 0%, var(--knowledge-blue) 100%);
+            color: #1a202c;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .impact-metric {
+            background: var(--card-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .impact-metric:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.2);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-500 { animation-delay: 0.5s; }
+
+
+        .knowledge-framework {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .framework-item {
+            background: var(--card-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .framework-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.2);
+        }
+
+        .knowledge-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--knowledge-indigo) 0%, var(--knowledge-blue) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+        }
+
+        .knowledge-flow {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: 2rem 0;
+            position: relative;
+        }
+
+        .flow-step {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .flow-step:not(:last-child)::after {
+            content: '→';
+            position: absolute;
+            right: -30px;
+            top: 30px;
+            color: var(--knowledge-blue);
+            font-size: 2rem;
+            z-index: 1;
+        }
+
+        .flow-circle {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--knowledge-indigo) 0%, var(--knowledge-blue) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+            color: #1a202c;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b border-blue-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="text-xl font-semibold text-blue-400">Derivco Facilities</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/methodology" class="text-blue-600 hover:text-blue-800 px-3 py-2 rounded-md font-medium flex items-center gap-2">
+                        <i class="fas fa-arrow-left"></i> Back to Methodology
+                    </a>
+                    <a href="/" class="text-blue-300 hover:text-blue-100 px-3 py-2 rounded-md">Home</a>
+                    <a href="/inventory" class="text-blue-300 hover:text-blue-100 px-3 py-2 rounded-md">Inventory</a>
+                    <a href="/methodology" class="bg-blue-600 text-gray-900 px-3 py-2 rounded-md font-medium">Methodology</a>
+                    <a href="/signout/register" class="text-blue-300 hover:text-blue-100 px-3 py-2 rounded-md">Sign-Out</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero-section py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            <div class="mb-6 animate-fade-in-up">
+                <div class="w-24 h-24 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-book text-4xl text-blue-200"></i>
+                </div>
+                <h1 class="text-3xl md:text-4xl font-bold mb-4">Knowledge Sharing</h1>
+                <p class="text-lg md:text-xl opacity-90 mb-6 text-blue-200">Stewardship Principle 5 of The Sifiso Methodology</p>
+                <p class="text-xl max-w-3xl mx-auto text-blue-100">
+                    Collaborative learning and knowledge transfer that builds organizational intelligence and collective expertise
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <!-- Introduction -->
+        <div class="methodology-card p-8 mb-12 animate-fade-in-up">
+            <h2 class="text-3xl font-bold text-gray-900 mb-6 flex items-center">
+                <i class="fas fa-share-alt text-blue-400 mr-3"></i>
+                The Foundation of Learning Organizations
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <p class="text-lg text-gray-300 mb-6">
+                        Knowledge Sharing is the principle that transforms individual expertise into organizational intelligence.
+                        It ensures that valuable insights, experiences, and solutions are captured, shared, and leveraged
+                        across the entire facilities management ecosystem.
+                    </p>
+
+                    <div class="bg-blue-900 bg-opacity-30 border-l-4 border-blue-500 p-4 rounded-r-lg mb-6">
+                        <h4 class="font-semibold text-blue-300 mb-2">Collective Intelligence</h4>
+                        <p class="text-blue-200">
+                            "Knowledge shared is knowledge multiplied. When we create systems that capture and distribute
+                            our collective wisdom, we build capabilities that extend far beyond individual expertise."
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg border border-blue-500 border-opacity-30">
+                    <h4 class="font-semibold text-gray-900 mb-4">Knowledge Dimensions</h4>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="bg-blue-900 bg-opacity-50 p-2 rounded-lg mr-4">
+                                <i class="fas fa-database text-blue-400"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-900">Knowledge Management</h5>
+                                <p class="text-sm text-gray-400">Systematic capture and organization of expertise</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <div class="bg-blue-900 bg-opacity-50 p-2 rounded-lg mr-4">
+                                <i class="fas fa-graduation-cap text-blue-400"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-900">Training Programs</h5>
+                                <p class="text-sm text-gray-400">Structured learning and skill development</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <div class="bg-blue-900 bg-opacity-50 p-2 rounded-lg mr-4">
+                                <i class="fas fa-file-alt text-blue-400"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-900">Documentation Systems</h5>
+                                <p class="text-sm text-gray-400">Comprehensive recording and sharing of processes</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Knowledge Flow -->
+        <div class="methodology-card p-8 mb-12 animate-fade-in-up delay-100">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">
+                <i class="fas fa-stream text-blue-400 mr-3"></i>
+                Knowledge Sharing Flow
+            </h2>
+
+            <div class="knowledge-flow">
+                <div class="flow-step">
+                    <div class="flow-circle">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900">Create</h4>
+                    <p class="text-sm text-gray-400">Generate new insights</p>
+                </div>
+
+                <div class="flow-step">
+                    <div class="flow-circle">
+                        <i class="fas fa-save"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900">Capture</h4>
+                    <p class="text-sm text-gray-400">Document knowledge</p>
+                </div>
+
+                <div class="flow-step">
+                    <div class="flow-circle">
+                        <i class="fas fa-share"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900">Share</h4>
+                    <p class="text-sm text-gray-400">Distribute information</p>
+                </div>
+
+                <div class="flow-step">
+                    <div class="flow-circle">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900">Apply</h4>
+                    <p class="text-sm text-gray-400">Implement solutions</p>
+                </div>
+
+                <div class="flow-step">
+                    <div class="flow-circle">
+                        <i class="fas fa-arrow-up"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900">Improve</h4>
+                    <p class="text-sm text-gray-400">Enhance knowledge</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Knowledge Framework -->
+        <div class="methodology-card p-8 mb-12 animate-fade-in-up delay-200">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">
+                <i class="fas fa-network-wired text-blue-400 mr-3"></i>
+                Knowledge Management Framework
+            </h2>
+
+            <div class="knowledge-framework">
+                <div class="framework-item">
+                    <div class="knowledge-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 mb-2">Tacit Knowledge</h4>
+                    <p class="text-sm text-gray-400">Experience-based insights and intuitive understanding</p>
+                </div>
+
+                <div class="framework-item">
+                    <div class="knowledge-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 mb-2">Explicit Knowledge</h4>
+                    <p class="text-sm text-gray-400">Documented processes, procedures, and best practices</p>
+                </div>
+
+                <div class="framework-item">
+                    <div class="knowledge-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 mb-2">Collaborative Learning</h4>
+                    <p class="text-sm text-gray-400">Team-based knowledge creation and sharing</p>
+                </div>
+
+                <div class="framework-item">
+                    <div class="knowledge-icon">
+                        <i class="fas fa-cloud"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 mb-2">Knowledge Platforms</h4>
+                    <p class="text-sm text-gray-400">Digital systems for storing and accessing information</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Core Concepts -->
+        <div class="mb-12 animate-fade-in-up delay-200">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">
+                <i class="fas fa-lightbulb text-blue-400 mr-3"></i>
+                Core Knowledge Sharing Concepts
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="principle-card methodology-card p-6">
+                    <div class="w-14 h-14 bg-blue-900 bg-opacity-50 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-database text-2xl text-blue-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Knowledge Management</h3>
+                    <p class="text-gray-400 mb-4">
+                        Systematic approaches to capturing, organizing, and maintaining organizational knowledge assets.
+                    </p>
+                    <ul class="text-sm text-gray-400 space-y-2">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-blue-400 mr-2 mt-1"></i>
+                            Knowledge repositories
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-blue-400 mr-2 mt-1"></i>
+                            Documentation standards
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-blue-400 mr-2 mt-1"></i>
+                            Content management systems
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="principle-card methodology-card p-6">
+                    <div class="w-14 h-14 bg-blue-900 bg-opacity-50 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-chalkboard-teacher text-2xl text-blue-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Training Programs</h3>
+                    <p class="text-gray-400 mb-4">
+                        Comprehensive learning initiatives that develop capabilities and transfer expertise across teams.
+                    </p>
+                    <ul class="text-sm text-gray-400 space-y-2">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-blue-400 mr-2 mt-1"></i>
+                            Skills development curricula
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-blue-400 mr-2 mt-1"></i>
+                            Mentorship programs
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-blue-400 mr-2 mt-1"></i>
+                            Cross-functional training
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="principle-card methodology-card p-6">
+                    <div class="w-14 h-14 bg-blue-900 bg-opacity-50 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-clipboard-list text-2xl text-blue-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Documentation Systems</h3>
+                    <p class="text-gray-400 mb-4">
+                        Structured approaches to recording, organizing, and sharing operational knowledge and procedures.
+                    </p>
+                    <ul class="text-sm text-gray-400 space-y-2">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-blue-400 mr-2 mt-1"></i>
+                            Standard operating procedures
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-blue-400 mr-2 mt-1"></i>
+                            Lessons learned databases
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-blue-400 mr-2 mt-1"></i>
+                            Best practice libraries
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Implementation Guidelines -->
+        <div class="methodology-card p-8 mb-12 animate-fade-in-up delay-300">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8">
+                <i class="fas fa-map-marked-alt text-blue-400 mr-3"></i>
+                Knowledge Sharing Implementation
+            </h2>
+
+            <div class="space-y-8">
+                <div class="timeline-item">
+                    <div class="flex justify-between items-start mb-2">
+                        <h4 class="font-semibold text-lg">Phase 1: Knowledge Audit & Assessment</h4>
+                        <span class="stat-badge text-xs">Assessment</span>
+                    </div>
+                    <p class="text-gray-400 mb-3">
+                        Conduct comprehensive assessment of existing knowledge assets, identify gaps, and map
+                        knowledge flows across the organization. Establish baseline for knowledge management.
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="bg-blue-900 bg-opacity-50 text-blue-400 text-xs px-2 py-1 rounded">Knowledge Mapping</span>
+                        <span class="bg-blue-900 bg-opacity-50 text-blue-400 text-xs px-2 py-1 rounded">Gap Analysis</span>
+                        <span class="bg-blue-900 bg-opacity-50 text-blue-400 text-xs px-2 py-1 rounded">Asset Inventory</span>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="flex justify-between items-start mb-2">
+                        <h4 class="font-semibold text-lg">Phase 2: Platform & System Development</h4>
+                        <span class="stat-badge text-xs">Infrastructure</span>
+                    </div>
+                    <p class="text-gray-400 mb-3">
+                        Design and implement knowledge management platforms, establish documentation standards,
+                        and create systems that facilitate easy knowledge capture and sharing.
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="bg-blue-900 bg-opacity-50 text-blue-400 text-xs px-2 py-1 rounded">Platform Design</span>
+                        <span class="bg-blue-900 bg-opacity-50 text-blue-400 text-xs px-2 py-1 rounded">Documentation Standards</span>
+                        <span class="bg-blue-900 bg-opacity-50 text-blue-400 text-xs px-2 py-1 rounded">Search Capabilities</span>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="flex justify-between items-start mb-2">
+                        <h4 class="font-semibold text-lg">Phase 3: Training & Culture Development</h4>
+                        <span class="stat-badge text-xs">Culture</span>
+                    </div>
+                    <p class="text-gray-400 mb-3">
+                        Develop comprehensive training programs, establish knowledge sharing practices,
+                        and build a culture that values and rewards collaborative learning.
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="bg-blue-900 bg-opacity-50 text-blue-400 text-xs px-2 py-1 rounded">Training Programs</span>
+                        <span class="bg-blue-900 bg-opacity-50 text-blue-400 text-xs px-2 py-1 rounded">Mentorship Systems</span>
+                        <span class="bg-blue-900 bg-opacity-50 text-blue-400 text-xs px-2 py-1 rounded">Recognition Programs</span>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="flex justify-between items-start mb-2">
+                        <h4 class="font-semibold text-lg">Phase 4: Continuous Learning Ecosystem</h4>
+                        <span class="stat-badge text-xs">Evolution</span>
+                    </div>
+                    <p class="text-gray-400 mb-3">
+                        Establish continuous learning practices, create innovation forums, and build
+                        advanced knowledge networks that drive organizational intelligence and capability growth.
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="bg-blue-900 bg-opacity-50 text-blue-400 text-xs px-2 py-1 rounded">Learning Communities</span>
+                        <span class="bg-blue-900 bg-opacity-50 text-blue-400 text-xs px-2 py-1 rounded">Innovation Forums</span>
+                        <span class="bg-blue-900 bg-opacity-50 text-blue-400 text-xs px-2 py-1 rounded">Knowledge Networks</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Practical Examples -->
+        <div class="methodology-card p-8 mb-12 animate-fade-in-up delay-400">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8">
+                <i class="fas fa-tools text-blue-400 mr-3"></i>
+                Practical Knowledge Sharing Examples
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h4 class="font-semibold text-gray-900 mb-4 flex items-center">
+                        <i class="fas fa-share text-blue-400 mr-2"></i>
+                        Knowledge Capture
+                    </h4>
+                    <ul class="space-y-3 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-arrow-right text-blue-400 mr-2 mt-1"></i>
+                            After-action reviews documenting lessons learned from major facility projects
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-arrow-right text-blue-400 mr-2 mt-1"></i>
+                            Video tutorials created by expert technicians showing complex procedures
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-arrow-right text-blue-400 mr-2 mt-1"></i>
+                            Digital playbooks documenting troubleshooting steps for common issues
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-arrow-right text-blue-400 mr-2 mt-1"></i>
+                            Knowledge cafes where staff share insights and experiences informally
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-gray-900 mb-4 flex items-center">
+                        <i class="fas fa-graduation-cap text-blue-400 mr-2"></i>
+                        Learning Programs
+                    </h4>
+                    <ul class="space-y-3 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-arrow-right text-blue-400 mr-2 mt-1"></i>
+                            Cross-training programs enabling team members to learn multiple specializations
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-arrow-right text-blue-400 mr-2 mt-1"></i>
+                            Mentorship pairings connecting experienced staff with new team members
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-arrow-right text-blue-400 mr-2 mt-1"></i>
+                            Lunch-and-learn sessions featuring internal experts and external speakers
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-arrow-right text-blue-400 mr-2 mt-1"></i>
+                            Certification tracking systems supporting professional development goals
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success Metrics -->
+        <div class="mb-12 animate-fade-in-up delay-400">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">
+                <i class="fas fa-chart-pie text-blue-400 mr-3"></i>
+                Knowledge Sharing Success Metrics
+            </h2>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="impact-metric">
+                    <div class="text-3xl font-bold text-blue-400 mb-2">156</div>
+                    <div class="text-sm font-semibold text-gray-900">Knowledge Articles</div>
+                    <div class="text-xs text-gray-400">Created and maintained</div>
+                </div>
+
+                <div class="impact-metric">
+                    <div class="text-3xl font-bold text-blue-400 mb-2">87%</div>
+                    <div class="text-sm font-semibold text-gray-900">Training Completion</div>
+                    <div class="text-xs text-gray-400">Rate across all programs</div>
+                </div>
+
+                <div class="impact-metric">
+                    <div class="text-3xl font-bold text-blue-400 mb-2">43%</div>
+                    <div class="text-sm font-semibold text-gray-900">Problem Resolution</div>
+                    <div class="text-xs text-gray-400">Speed improvement</div>
+                </div>
+
+                <div class="impact-metric">
+                    <div class="text-3xl font-bold text-blue-400 mb-2">2.8x</div>
+                    <div class="text-sm font-semibold text-gray-900">Knowledge Reuse</div>
+                    <div class="text-xs text-gray-400">Average application rate</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Steps -->
+        <div class="methodology-card p-8 mb-12 animate-fade-in-up delay-500">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8">
+                <i class="fas fa-rocket text-blue-400 mr-3"></i>
+                Action Steps for Knowledge Sharing
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h4 class="font-semibold text-gray-900 mb-4">Knowledge Systems</h4>
+                    <div class="space-y-3">
+                        <div class="flex items-start bg-white p-3 rounded-lg">
+                            <div class="bg-blue-900 bg-opacity-50 p-1 rounded mr-3">
+                                <i class="fas fa-database text-blue-400 text-sm"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-900 text-sm">Knowledge Repository</h5>
+                                <p class="text-xs text-gray-400">Create centralized system for storing and organizing knowledge</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start bg-white p-3 rounded-lg">
+                            <div class="bg-blue-900 bg-opacity-50 p-1 rounded mr-3">
+                                <i class="fas fa-search text-blue-400 text-sm"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-900 text-sm">Search Capabilities</h5>
+                                <p class="text-xs text-gray-400">Implement powerful search and discovery features</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start bg-white p-3 rounded-lg">
+                            <div class="bg-blue-900 bg-opacity-50 p-1 rounded mr-3">
+                                <i class="fas fa-mobile-alt text-blue-400 text-sm"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-900 text-sm">Mobile Access</h5>
+                                <p class="text-xs text-gray-400">Ensure knowledge is accessible anytime, anywhere</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-gray-900 mb-4">Learning Culture</h4>
+                    <div class="space-y-3">
+                        <div class="flex items-start bg-white p-3 rounded-lg">
+                            <div class="bg-blue-900 bg-opacity-50 p-1 rounded mr-3">
+                                <i class="fas fa-users text-blue-400 text-sm"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-900 text-sm">Learning Communities</h5>
+                                <p class="text-xs text-gray-400">Foster collaborative learning groups and communities of practice</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start bg-white p-3 rounded-lg">
+                            <div class="bg-blue-900 bg-opacity-50 p-1 rounded mr-3">
+                                <i class="fas fa-award text-blue-400 text-sm"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-900 text-sm">Knowledge Champions</h5>
+                                <p class="text-xs text-gray-400">Recognize and reward knowledge sharing behaviors</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start bg-white p-3 rounded-lg">
+                            <div class="bg-blue-900 bg-opacity-50 p-1 rounded mr-3">
+                                <i class="fas fa-clock text-blue-400 text-sm"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-900 text-sm">Learning Time</h5>
+                                <p class="text-xs text-gray-400">Dedicate protected time for learning and knowledge sharing</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Next Steps -->
+        <div class="text-center animate-fade-in-up delay-500">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Ready to Amplify Collective Intelligence?</h2>
+            <p class="text-lg text-gray-300 mb-8 max-w-3xl mx-auto">
+                Knowledge Sharing transforms individual expertise into organizational capability, ensuring that
+                valuable insights and experiences are preserved, shared, and leveraged for continuous improvement.
+            </p>
+
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="/methodology/principles/ethical-leadership" class="bg-blue-600 hover:bg-blue-700 text-gray-900 font-semibold py-3 px-8 rounded-lg transition duration-300 transform hover:scale-105">
+                    Next: Ethical Leadership
+                </a>
+                <a href="/methodology" class="border border-blue-500 text-blue-400 hover:bg-blue-900 hover:bg-opacity-30 font-semibold py-3 px-8 rounded-lg transition duration-300 transform hover:scale-105">
+                    Back to Methodology
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-50 border-t border-blue-500 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Knowledge Sharing</h3>
+                    <p class="text-gray-400">
+                        Stewardship Principle 5 of The Sifiso Methodology - Building organizational intelligence through
+                        collaborative learning and systematic knowledge transfer across all teams and functions.
+                    </p>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Other Principles</h3>
+                    <ul class="space-y-2">
+                        <li><a href="/methodology/principles/responsibility-ownership" class="text-gray-400 hover:text-blue-400 transition">Responsibility & Ownership</a></li>
+                        <li><a href="/methodology/principles/sustainability-focus" class="text-gray-400 hover:text-blue-400 transition">Sustainability Focus</a></li>
+                        <li><a href="/methodology/principles/stakeholder-engagement" class="text-gray-400 hover:text-blue-400 transition">Stakeholder Engagement</a></li>
+                        <li><a href="/methodology/principles/innovation-excellence" class="text-gray-400 hover:text-blue-400 transition">Innovation & Excellence</a></li>
+                        <li><a href="/methodology/principles/ethical-leadership" class="text-gray-400 hover:text-blue-400 transition">Ethical Leadership</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Navigation</h3>
+                    <ul class="space-y-2">
+                        <li><a href="/methodology" class="text-gray-400 hover:text-blue-400 transition">Methodology Overview</a></li>
+                        <li><a href="/methodology/pillars/systematic-processes" class="text-gray-400 hover:text-blue-400 transition">Systematic Processes</a></li>
+                        <li><a href="/methodology/pillars/stakeholder-integration" class="text-gray-400 hover:text-blue-400 transition">Stakeholder Integration</a></li>
+                        <li><a href="/methodology/pillars/data-intelligence" class="text-gray-400 hover:text-blue-400 transition">Data Intelligence</a></li>
+                        <li><a href="/methodology/pillars/continuous-innovation" class="text-gray-400 hover:text-blue-400 transition">Continuous Innovation</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-500 text-sm">
+                <p>&copy; 2025 Derivco Facilities Management. All rights reserved. | The Sifiso Methodology - Knowledge Sharing</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate elements on scroll
+            const animatedElements = document.querySelectorAll('.animate-fade-in-up');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = 1;
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            animatedElements.forEach(el => {
+                el.style.opacity = 0;
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(el);
+            });
+        });
+    </script>
+</body>
+</html>

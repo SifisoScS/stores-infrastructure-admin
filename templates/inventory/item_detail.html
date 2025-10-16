@@ -1,0 +1,466 @@
+{% extends "base.html" %}
+
+{% block title %}{{ item_info.basic_info.get('Description', 'Item') }} - {{ category }} - Derivco Stores{% endblock %}
+
+{% block content %}
+<div class="item-detail-page">
+    <div class="page-header">
+        <div class="breadcrumb">
+            <a href="/">Dashboard</a>
+            <span class="separator">/</span>
+            <a href="/category/{{ category }}">{{ category }}</a>
+            <span class="separator">/</span>
+            <span class="current">{{ item_code }}</span>
+        </div>
+        <div class="item-title">
+            <h2><i class="fas fa-{{ category|get_category_icon }}"></i> {{ item_info.basic_info.get('Description', 'Item Details') }}</h2>
+            <div class="item-status">
+                {% if item_info.basic_info.get('Quantity on Hand') and item_info.basic_info.get('Min. Stock Level') and item_info.basic_info.get('Quantity on Hand')|float <= item_info.basic_info.get('Min. Stock Level')|float %}
+                    <span class="status-badge critical">Low Stock</span>
+                {% else %}
+                    <span class="status-badge normal">In Stock</span>
+                {% endif %}
+                
+                {% if item_info.current_checkout %}
+                    <span class="status-badge warning">Checked Out</span>
+                {% endif %}
+            </div>
+        </div>
+        <p class="subtitle">Item Code: {{ item_code }}</p>
+    </div>
+
+    <div class="item-detail-grid">
+        <!-- Basic Information -->
+        <div class="detail-card">
+            <div class="card-header">
+                <h3><i class="fas fa-info-circle"></i> Basic Information</h3>
+            </div>
+            <div class="card-content">
+                <div class="detail-row">
+                    <span class="label">Item Code:</span>
+                    <span class="value">{{ item_info.basic_info.get('Item Code', 'N/A') }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Description:</span>
+                    <span class="value">{{ item_info.basic_info.get('Description', 'N/A') }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Category:</span>
+                    <span class="value">{{ category }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Location:</span>
+                    <span class="value">{{ item_info.basic_info.get('Location', 'N/A') }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Unit of Measure:</span>
+                    <span class="value">{{ item_info.basic_info.get('Unit of Measure', 'N/A') }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Supplier:</span>
+                    <span class="value">{{ item_info.basic_info.get('Supplier', 'N/A') }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stock Information -->
+        <div class="detail-card">
+            <div class="card-header">
+                <h3><i class="fas fa-warehouse"></i> Stock Information</h3>
+            </div>
+            <div class="card-content">
+                <div class="detail-row">
+                    <span class="label">Current Stock:</span>
+                    <span class="value stock-level {% if item_info.basic_info.get('Quantity on Hand') and item_info.basic_info.get('Min. Stock Level') and item_info.basic_info.get('Quantity on Hand')|float <= item_info.basic_info.get('Min. Stock Level')|float %}low-stock{% endif %}">
+                        {{ item_info.basic_info.get('Quantity on Hand', 'N/A') }} {{ item_info.basic_info.get('Unit of Measure', '') }}
+                    </span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Minimum Level:</span>
+                    <span class="value">{{ item_info.basic_info.get('Min. Stock Level', 'N/A') }} {{ item_info.basic_info.get('Unit of Measure', '') }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Maximum Level:</span>
+                    <span class="value">{{ item_info.basic_info.get('Max. Stock Level', 'N/A') }} {{ item_info.basic_info.get('Unit of Measure', '') }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Unit Cost:</span>
+                    <span class="value">
+                        {% if item_info.basic_info.get('Cost/Unit') %}
+                            R{{ "%.2f"|format(item_info.basic_info.get('Cost/Unit', 0)) }}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Total Value:</span>
+                    <span class="value">
+                        {% if item_info.basic_info.get('Total Value (auto-calc)') %}
+                            R{{ "%.2f"|format(item_info.basic_info.get('Total Value (auto-calc)', 0)) }}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- QR Code -->
+        <div class="detail-card qr-card">
+            <div class="card-header">
+                <h3><i class="fas fa-qrcode"></i> QR Code</h3>
+            </div>
+            <div class="card-content qr-content">
+                <div id="qr-code-container">
+                    <div class="loading">Generating QR Code...</div>
+                </div>
+                <div class="qr-actions">
+                    <button onclick="downloadQR()" class="btn btn-primary btn-sm">
+                        <i class="fas fa-download"></i> Download
+                    </button>
+                    <button onclick="printQR()" class="btn btn-secondary btn-sm">
+                        <i class="fas fa-print"></i> Print
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Check-in/Check-out Status -->
+        {% if item_info.current_checkout %}
+        <div class="detail-card checkout-card">
+            <div class="card-header">
+                <h3><i class="fas fa-sign-out-alt"></i> Currently Checked Out</h3>
+            </div>
+            <div class="card-content">
+                <div class="detail-row">
+                    <span class="label">Checked out by:</span>
+                    <span class="value">{{ item_info.current_checkout.checked_out_by }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Quantity:</span>
+                    <span class="value">{{ item_info.current_checkout.quantity }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Check-out time:</span>
+                    <span class="value">{{ item_info.current_checkout.checkout_time[:19]|replace('T', ' ') }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Notes:</span>
+                    <span class="value">{{ item_info.current_checkout.notes or 'N/A' }}</span>
+                </div>
+                <div class="checkout-actions">
+                    <button onclick="checkinItem('{{ item_info.current_checkout.id }}')" class="btn btn-success">
+                        <i class="fas fa-sign-in-alt"></i> Check In
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Quick Actions -->
+        <div class="detail-card actions-card">
+            <div class="card-header">
+                <h3><i class="fas fa-tools"></i> Quick Actions</h3>
+            </div>
+            <div class="card-content">
+                <div class="action-grid">
+                    <button onclick="checkoutItem()" class="btn btn-primary">
+                        <i class="fas fa-sign-out-alt"></i> Check Out
+                    </button>
+                    <button onclick="editItem()" class="btn btn-info">
+                        <i class="fas fa-edit"></i> Edit Item
+                    </button>
+                    <button onclick="reorderItem()" class="btn btn-warning">
+                        <i class="fas fa-shopping-cart"></i> Reorder
+                    </button>
+                    <button onclick="viewMaintenanceLog()" class="btn btn-secondary">
+                        <i class="fas fa-wrench"></i> Maintenance
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Item History -->
+        <div class="detail-card history-card full-width">
+            <div class="card-header">
+                <h3><i class="fas fa-history"></i> Item History</h3>
+                <span class="history-count">{{ item_info.history|length }} entries</span>
+            </div>
+            <div class="card-content">
+                {% if item_info.history %}
+                <div class="history-timeline">
+                    {% for entry in item_info.history[:10] %}
+                    <div class="history-entry">
+                        <div class="entry-icon">
+                            <i class="fas fa-{{ 'sign-out-alt' if entry.action == 'checkout' else 'sign-in-alt' if entry.action == 'checkin' else 'edit' }}"></i>
+                        </div>
+                        <div class="entry-content">
+                            <div class="entry-header">
+                                <span class="action-type">{{ entry.action|title }}</span>
+                                <span class="entry-time">{{ entry.timestamp[:19]|replace('T', ' ') }}</span>
+                            </div>
+                            <div class="entry-details">{{ entry.details }}</div>
+                            <div class="entry-user">by {{ entry.user }}</div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% if item_info.history|length > 10 %}
+                <div class="history-footer">
+                    <button onclick="loadMoreHistory()" class="btn btn-link">
+                        <i class="fas fa-ellipsis-h"></i> Load More History
+                    </button>
+                </div>
+                {% endif %}
+                {% else %}
+                <div class="no-history">
+                    <i class="fas fa-inbox"></i>
+                    <p>No history recorded for this item</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Back to Category -->
+    <div class="back-actions">
+        <a href="/category/{{ category }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to {{ category }}
+        </a>
+        <a href="/" class="btn btn-primary">
+            <i class="fas fa-home"></i> Dashboard
+        </a>
+    </div>
+</div>
+
+<!-- Checkout Modal -->
+<div id="checkoutModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fas fa-sign-out-alt"></i> Check Out Item</h3>
+            <span class="close" onclick="closeModal('checkoutModal')">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="checkoutQuantity">Quantity:</label>
+                <input type="number" id="checkoutQuantity" min="1" value="1">
+            </div>
+            <div class="form-group">
+                <label for="userName">Your Name:</label>
+                <input type="text" id="userName" required>
+            </div>
+            <div class="form-group">
+                <label for="checkoutNotes">Notes (optional):</label>
+                <textarea id="checkoutNotes" rows="3"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button onclick="confirmCheckout()" class="btn btn-primary">Confirm Check Out</button>
+                <button onclick="closeModal('checkoutModal')" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Check-in Modal -->
+<div id="checkinModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fas fa-sign-in-alt"></i> Check In Item</h3>
+            <span class="close" onclick="closeModal('checkinModal')">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="checkinQuantity">Returned Quantity:</label>
+                <input type="number" id="checkinQuantity" min="1">
+            </div>
+            <div class="form-group">
+                <label for="checkinNotes">Return Notes (optional):</label>
+                <textarea id="checkinNotes" rows="3"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button onclick="confirmCheckin()" class="btn btn-success">Confirm Check In</button>
+                <button onclick="closeModal('checkinModal')" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let currentCheckoutId = null;
+let qrCodeData = null;
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadQRCode();
+});
+
+// Load QR Code
+async function loadQRCode() {
+    try {
+        const response = await fetch(`/api/item/{{ category }}/{{ item_code }}/qr`);
+        const data = await response.json();
+        
+        if (data.qr_code) {
+            qrCodeData = data;
+            document.getElementById('qr-code-container').innerHTML = 
+                `<img src="${data.qr_code}" alt="QR Code" class="qr-code-img">`;
+        }
+    } catch (error) {
+        document.getElementById('qr-code-container').innerHTML = 
+            '<div class="error">Failed to load QR code</div>';
+    }
+}
+
+// Checkout item
+function checkoutItem() {
+    document.getElementById('checkoutModal').style.display = 'block';
+}
+
+// Check in item
+function checkinItem(checkoutId) {
+    currentCheckoutId = checkoutId;
+    document.getElementById('checkinModal').style.display = 'block';
+    
+    // Pre-fill quantity if available
+    const currentCheckout = {{ item_info.current_checkout|tojson if item_info.current_checkout else 'null' }};
+    if (currentCheckout) {
+        document.getElementById('checkinQuantity').value = currentCheckout.quantity;
+    }
+}
+
+// Confirm checkout
+async function confirmCheckout() {
+    const quantity = document.getElementById('checkoutQuantity').value;
+    const userName = document.getElementById('userName').value;
+    const notes = document.getElementById('checkoutNotes').value;
+    
+    if (!quantity || !userName) {
+        alert('Please fill in all required fields');
+        return;
+    }
+    
+    try {
+        const response = await fetch('/api/checkout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                item_code: '{{ item_code }}',
+                category: '{{ category }}',
+                quantity: parseInt(quantity),
+                user_name: userName,
+                notes: notes
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            alert('Item checked out successfully!');
+            window.location.reload();
+        } else {
+            alert('Error: ' + result.message);
+        }
+    } catch (error) {
+        alert('Error checking out item: ' + error.message);
+    }
+}
+
+// Confirm check-in
+async function confirmCheckin() {
+    const quantity = document.getElementById('checkinQuantity').value;
+    const notes = document.getElementById('checkinNotes').value;
+    
+    if (!quantity) {
+        alert('Please enter the returned quantity');
+        return;
+    }
+    
+    try {
+        const response = await fetch('/api/checkin', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                checkout_id: currentCheckoutId,
+                returned_quantity: parseInt(quantity),
+                notes: notes
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            alert('Item checked in successfully!');
+            window.location.reload();
+        } else {
+            alert('Error: ' + result.message);
+        }
+    } catch (error) {
+        alert('Error checking in item: ' + error.message);
+    }
+}
+
+// Download QR code
+function downloadQR() {
+    if (qrCodeData) {
+        const link = document.createElement('a');
+        link.download = `{{ item_code }}_qr.png`;
+        link.href = qrCodeData.qr_code;
+        link.click();
+    }
+}
+
+// Print QR code
+function printQR() {
+    if (qrCodeData) {
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(`
+            <html>
+                <head><title>QR Code - {{ item_code }}</title></head>
+                <body style="text-align: center; padding: 20px;">
+                    <h2>{{ item_info.basic_info.get('Description', 'Item') }}</h2>
+                    <p>Item Code: {{ item_code }}</p>
+                    <img src="${qrCodeData.qr_code}" style="max-width: 300px;">
+                    <p>Category: {{ category }}</p>
+                </body>
+            </html>
+        `);
+        printWindow.document.close();
+        printWindow.print();
+    }
+}
+
+// Placeholder functions for additional features
+function editItem() {
+    alert('Edit functionality will be implemented in the next update');
+}
+
+function reorderItem() {
+    alert('Reorder functionality will be implemented in the next update');
+}
+
+function viewMaintenanceLog() {
+    window.location.href = '/maintenance';
+}
+
+function loadMoreHistory() {
+    alert('Load more history functionality will be implemented in the next update');
+}
+
+// Close modal
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = 'none';
+}
+
+// Close modals when clicking outside
+window.onclick = function(event) {
+    const modals = document.querySelectorAll('.modal');
+    modals.forEach(modal => {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+}
+</script>
+{% endblock %}

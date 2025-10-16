@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Procurement Intelligence - Strategic Facilities Intelligence</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-blue: #003366;
+            --secondary-teal: #008080;
+            --procurement-orange: #f97316;
+            --procurement-red: #ef4444;
+            --text-gray: #4a5568;
+            --bg-primary: #f8fafc;
+            --bg-card: #ffffff;
+            --border-color: #334155;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: #1a202c;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--procurement-orange) 0%, var(--primary-blue) 100%);
+            padding: 2rem 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="money" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="3" fill="%23ffffff" opacity="0.1"/><text x="10" y="14" font-size="6" text-anchor="middle" fill="%23ffffff" opacity="0.05">$</text></pattern></defs><rect width="100" height="100" fill="url(%23money)"/></svg>');
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .nav-back {
+            margin-bottom: 1rem;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            color: #1a202c;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .back-button i {
+            margin-right: 0.5rem;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .header-icon {
+            font-size: 3rem;
+            margin-right: 1rem;
+        }
+
+        .header-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+
+        .header-description {
+            font-size: 1rem;
+            opacity: 0.8;
+            max-width: 800px;
+        }
+
+        /* Content Sections */
+        .content-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--procurement-orange);
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title i {
+            margin-right: 0.75rem;
+            font-size: 1.3rem;
+        }
+
+        /* Savings Dashboard - Reduced Size and Horizontal Layout */
+        .savings-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.2rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .savings-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.2rem;
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--procurement-orange);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .savings-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(249, 115, 22, 0.2);
+        }
+
+        .savings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.8rem;
+        }
+
+        .savings-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--procurement-orange) 0%, var(--procurement-red) 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1a202c;
+            font-size: 1.2rem;
+        }
+
+        .savings-value {
+            text-align: right;
+        }
+
+        .savings-amount {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--procurement-orange);
+        }
+
+        .savings-label {
+            font-size: 0.75rem;
+            color: var(--text-gray);
+        }
+
+        .savings-trend {
+            display: flex;
+            align-items: center;
+            margin-top: 0.3rem;
+            font-size: 0.7rem;
+        }
+
+        .savings-trend.positive {
+            color: #10b981;
+        }
+
+        .savings-trend i {
+            margin-right: 0.2rem;
+        }
+
+        .savings-description {
+            color: var(--text-gray);
+            margin-top: 0.8rem;
+            font-size: 0.8rem;
+            flex-grow: 1;
+        }
+
+        /* Supplier Performance */
+        .suppliers-section {
+            background: var(--bg-card);
+            padding: 2rem 1rem;
+            margin-bottom: 1rem; /* Added margin to prevent overlap */
+        }
+
+        .suppliers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .supplier-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.5rem;
+        }
+
+        .supplier-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .supplier-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1a202c;
+        }
+
+        .supplier-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.9rem;
+        }
+
+        .star {
+            color: #fbbf24;
+            font-size: 0.8rem;
+        }
+
+        .supplier-metrics {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.8rem;
+            margin: 0.8rem 0;
+        }
+
+        .metric-item {
+            text-align: center;
+            padding: 0.8rem;
+            background: var(--bg-card);
+            border-radius: 6px;
+        }
+
+        .metric-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--procurement-orange);
+            margin-bottom: 0.2rem;
+        }
+
+        .metric-label {
+            font-size: 0.7rem;
+            color: var(--text-gray);
+        }
+
+        /* Charts Section - Fixed Spacing */
+        .charts-section {
+            padding: 2rem 1rem;
+            margin-bottom: 1.5rem; /* Increased margin to prevent overlap */
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .chart-container {
+            background: var(--bg-card);
+            padding: 1.2rem;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            height: 320px; /* Increased height to accommodate chart elements */
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .chart-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--procurement-orange);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .chart-wrapper {
+            flex-grow: 1;
+            position: relative;
+            height: calc(100% - 2rem); /* Ensure chart fits properly */
+        }
+
+        /* Optimization Recommendations */
+        .optimization-section {
+            background: var(--bg-card);
+            padding: 2rem 1rem;
+            margin-top: 1rem; /* Added margin to prevent overlap */
+        }
+
+        .recommendations-list {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            gap: 1.2rem;
+        }
+
+        .recommendation-item {
+            background: var(--bg-primary);
+            padding: 1.2rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--procurement-orange);
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .recommendation-icon {
+            width: 35px;
+            height: 35px;
+            background: var(--procurement-orange);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1a202c;
+            margin-right: 0.8rem;
+            flex-shrink: 0;
+            font-size: 0.9rem;
+        }
+
+        .recommendation-content h4 {
+            color: var(--procurement-orange);
+            margin-bottom: 0.4rem;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .recommendation-content p {
+            color: var(--text-gray);
+            margin-bottom: 0.4rem;
+            font-size: 0.85rem;
+        }
+
+        .potential-savings {
+            background: rgba(249, 115, 22, 0.1);
+            color: var(--procurement-orange);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        /* Action Section */
+        .action-section {
+            padding: 2.5rem 1rem;
+            text-align: center;
+            margin-top: 1rem; /* Added margin to prevent overlap */
+        }
+
+        .action-button {
+            display: inline-flex;
+            align-items: center;
+            background: linear-gradient(135deg, var(--procurement-orange) 0%, var(--procurement-red) 100%);
+            color: #1a202c;
+            padding: 0.8rem 1.5rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            margin: 0 0.5rem;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(249, 115, 22, 0.3);
+        }
+
+        .action-button i {
+            margin-right: 0.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .savings-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-title {
+                font-size: 2rem;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .header-icon {
+                margin-bottom: 0.5rem;
+            }
+
+            .savings-grid,
+            .suppliers-grid,
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-button {
+                margin: 0.5rem;
+                width: calc(100% - 1rem);
+            }
+            
+            .chart-container {
+                height: 300px; /* Adjusted for mobile */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .content-section {
+                padding: 1.5rem 0.8rem;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            .savings-card, .supplier-card, .recommendation-item {
+                padding: 1rem;
+            }
+            
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .chart-container {
+                height: 280px; /* Adjusted for very small screens */
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="nav-back">
+                <a href="/" class="back-button">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Home
+                </a>
+            </div>
+
+            <h1 class="header-title">
+                <span class="header-icon">💰</span>
+                Procurement Intelligence
+            </h1>
+
+            <p class="header-subtitle">Track Savings & Optimize Purchasing</p>
+            <p class="header-description">
+                Advanced procurement analytics and optimization system that tracks cost savings, analyzes supplier performance,
+                and provides intelligent recommendations to optimize purchasing decisions and reduce operational costs.
+            </p>
+        </div>
+    </header>
+
+    <!-- Savings Dashboard -->
+    <section class="content-section">
+        <h2 class="section-title">
+            <i class="fas fa-piggy-bank"></i>
+            Cost Savings Dashboard
+        </h2>
+
+        <div class="savings-grid">
+            <div class="savings-card">
+                <div class="savings-header">
+                    <div class="savings-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="savings-value">
+                        <div class="savings-amount">R 1.2M</div>
+                        <div class="savings-label">YTD Savings</div>
+                        <div class="savings-trend positive">
+                            <i class="fas fa-arrow-up"></i>
+                            +18% vs last year
+                        </div>
+                    </div>
+                </div>
+                <div class="savings-description">
+                    Total cost savings achieved through strategic procurement initiatives and supplier negotiations.
+                </div>
+            </div>
+
+            <div class="savings-card">
+                <div class="savings-header">
+                    <div class="savings-icon">
+                        <i class="fas fa-percentage"></i>
+                    </div>
+                    <div class="savings-value">
+                        <div class="savings-amount">15.3%</div>
+                        <div class="savings-label">Cost Reduction</div>
+                        <div class="savings-trend positive">
+                            <i class="fas fa-arrow-up"></i>
+                            +3.2% improvement
+                        </div>
+                    </div>
+                </div>
+                <div class="savings-description">
+                    Average cost reduction percentage achieved across all procurement categories.
+                </div>
+            </div>
+
+            <div class="savings-card">
+                <div class="savings-header">
+                    <div class="savings-icon">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <div class="savings-value">
+                        <div class="savings-amount">47</div>
+                        <div class="savings-label">Active Contracts</div>
+                        <div class="savings-trend positive">
+                            <i class="fas fa-arrow-up"></i>
+                            12 renewed
+                        </div>
+                    </div>
+                </div>
+                <div class="savings-description">
+                    Number of active supplier contracts under management with performance tracking.
+                </div>
+            </div>
+
+            <div class="savings-card">
+                <div class="savings-header">
+                    <div class="savings-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="savings-value">
+                        <div class="savings-amount">5.2</div>
+                        <div class="savings-label">Days Average</div>
+                        <div class="savings-trend positive">
+                            <i class="fas fa-arrow-down"></i>
+                            -2.1 days faster
+                        </div>
+                    </div>
+                </div>
+                <div class="savings-description">
+                    Average procurement cycle time from request to delivery completion.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Supplier Performance -->
+    <section class="suppliers-section">
+        <div class="content-section">
+            <h2 class="section-title">
+                <i class="fas fa-users"></i>
+                Supplier Performance Analytics
+            </h2>
+        </div>
+
+        <div class="suppliers-grid">
+            <div class="supplier-card">
+                <div class="supplier-header">
+                    <h3 class="supplier-name">TechSupply Solutions</h3>
+                    <div class="supplier-rating">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span>4.8</span>
+                    </div>
+                </div>
+                <div class="supplier-metrics">
+                    <div class="metric-item">
+                        <div class="metric-value">98%</div>
+                        <div class="metric-label">On-time Delivery</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value">R 456K</div>
+                        <div class="metric-label">Contract Value</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value">12%</div>
+                        <div class="metric-label">Cost Savings</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value">94%</div>
+                        <div class="metric-label">Quality Score</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="supplier-card">
+                <div class="supplier-header">
+                    <h3 class="supplier-name">MaintainPro Services</h3>
+                    <div class="supplier-rating">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">☆</span>
+                        <span>4.2</span>
+                    </div>
+                </div>
+                <div class="supplier-metrics">
+                    <div class="metric-item">
+                        <div class="metric-value">92%</div>
+                        <div class="metric-label">On-time Delivery</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value">R 287K</div>
+                        <div class="metric-label">Contract Value</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value">8%</div>
+                        <div class="metric-label">Cost Savings</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value">89%</div>
+                        <div class="metric-label">Quality Score</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Analytics Charts -->
+    <section class="charts-section">
+        <div class="content-section">
+            <h2 class="section-title">
+                <i class="fas fa-chart-bar"></i>
+                Procurement Analytics
+            </h2>
+        </div>
+
+        <div class="charts-grid">
+            <div class="chart-container">
+                <h3 class="chart-title">Monthly Savings Trend</h3>
+                <div class="chart-wrapper">
+                    <canvas id="savingsChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <h3 class="chart-title">Spending by Category</h3>
+                <div class="chart-wrapper">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Optimization Recommendations -->
+    <section class="optimization-section">
+        <div class="content-section">
+            <h2 class="section-title">
+                <i class="fas fa-lightbulb"></i>
+                Optimization Recommendations
+            </h2>
+        </div>
+
+        <div class="recommendations-list">
+            <div class="recommendation-item">
+                <div class="recommendation-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="recommendation-content">
+                    <h4>Consolidate Office Supply Vendors</h4>
+                    <p>Reduce the number of office supply vendors from 5 to 2 to achieve bulk purchasing discounts.</p>
+                    <span class="potential-savings">Potential Savings: R 45,000/year</span>
+                </div>
+            </div>
+
+            <div class="recommendation-item">
+                <div class="recommendation-icon">
+                    <i class="fas fa-calendar"></i>
+                </div>
+                <div class="recommendation-content">
+                    <h4>Negotiate Long-term Contracts</h4>
+                    <p>Convert short-term maintenance contracts to 3-year agreements for better pricing stability.</p>
+                    <span class="potential-savings">Potential Savings: R 78,000/year</span>
+                </div>
+            </div>
+
+            <div class="recommendation-item">
+                <div class="recommendation-icon">
+                    <i class="fas fa-shipping-fast"></i>
+                </div>
+                <div class="recommendation-content">
+                    <h4>Optimize Delivery Schedules</h4>
+                    <p>Coordinate delivery schedules to reduce freight costs and minimize receiving overhead.</p>
+                    <span class="potential-savings">Potential Savings: R 23,000/year</span>
+                </div>
+            </div>
+
+            <div class="recommendation-item">
+                <div class="recommendation-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <div class="recommendation-content">
+                    <h4>Implement Competitive Bidding</h4>
+                    <p>Introduce competitive bidding process for contracts over R 50,000 to ensure best pricing.</p>
+                    <span class="potential-savings">Potential Savings: R 156,000/year</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Action Section -->
+    <section class="action-section">
+        <h2 class="section-title">
+            <i class="fas fa-rocket"></i>
+            Optimize Your Procurement
+        </h2>
+        <p style="margin-bottom: 2rem; color: var(--text-gray); max-width: 600px; margin-left: auto; margin-right: auto;">
+            Access detailed procurement analytics and implement cost-saving strategies with our intelligent system.
+        </p>
+
+        <div>
+            <a href="#" class="action-button">
+                <i class="fas fa-tachometer-alt"></i>
+                Launch Dashboard
+            </a>
+
+            <a href="#" class="action-button" style="background: var(--bg-primary); border: 2px solid var(--procurement-orange); color: var(--procurement-orange);">
+                <i class="fas fa-download"></i>
+                Savings Report
+            </a>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Savings Trend Chart
+            const savingsCtx = document.getElementById('savingsChart').getContext('2d');
+            new Chart(savingsCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Monthly Savings (R)',
+                        data: [89000, 142000, 167000, 198000, 223000, 245000],
+                        borderColor: '#f97316',
+                        backgroundColor: 'rgba(249, 115, 22, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    layout: {
+                        padding: {
+                            top: 10,
+                            bottom: 15,
+                            left: 10,
+                            right: 10
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: { 
+                                color: '#CCCCCC',
+                                font: { size: 11 }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#CCCCCC',
+                                font: { size: 10 },
+                                callback: function(value) {
+                                    return 'R ' + value.toLocaleString();
+                                }
+                            },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        },
+                        x: {
+                            ticks: { 
+                                color: '#CCCCCC',
+                                font: { size: 10 }
+                            },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        }
+                    }
+                }
+            });
+
+            // Category Spending Chart - Fixed to prevent text overflow
+            const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+            new Chart(categoryCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Office Supplies', 'Maintenance', 'Technology', 'Utilities', 'Services'],
+                    datasets: [{
+                        data: [25, 35, 20, 15, 5],
+                        backgroundColor: [
+                            '#f97316',
+                            '#ef4444',
+                            '#f59e0b',
+                            '#eab308',
+                            '#fb923c'
+                        ],
+                        borderColor: '#1a365d',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    layout: {
+                        padding: {
+                            top: 10,
+                            bottom: 25, // Increased bottom padding for legend
+                            left: 10,
+                            right: 10
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#CCCCCC',
+                                padding: 15, // Increased padding
+                                font: { size: 11 },
+                                boxWidth: 12 // Smaller legend boxes
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

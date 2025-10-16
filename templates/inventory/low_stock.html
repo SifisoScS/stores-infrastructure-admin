@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+
+{% block title %}Low Stock Items - Derivco Stores Administration{% endblock %}
+
+{% block content %}
+<div class="low-stock-page">
+    <!-- Enhanced Hero Header -->
+    <section class="hero-section critical-hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <div class="breadcrumb">
+                    <a href="/">Dashboard</a>
+                    <span class="separator">/</span>
+                    <span class="current">Low Stock Items</span>
+                </div>
+                <h1 class="hero-title">
+                    <span class="gradient-text"><i class="fas fa-exclamation-triangle"></i> Critical</span>
+                    <span class="hero-subtitle">Stock Alerts</span>
+                </h1>
+                <p class="hero-description">
+                    Items requiring immediate attention and restocking to maintain operational continuity.
+                </p>
+            </div>
+            <div class="hero-visual">
+                <div class="floating-card critical">
+                    <i class="fas fa-bolt"></i>
+                    <span>Urgent Action Required</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {% if low_stock_items %}
+    <div class="stats-summary">
+        <div class="stat-card warning">
+            <div class="stat-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="stat-content">
+                <h3>{{ low_stock_items|length }}</h3>
+                <p>Items Below Minimum Stock</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="actions-bar">
+        <button onclick="window.print()" class="btn btn-secondary">
+            <i class="fas fa-print"></i> Print Report
+        </button>
+        <button onclick="exportToCSV()" class="btn btn-info">
+            <i class="fas fa-download"></i> Export CSV
+        </button>
+        <a href="/" class="btn btn-primary">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+
+    <div class="low-stock-grid">
+        {% for item in low_stock_items %}
+        <div class="low-stock-card">
+            <div class="item-header">
+                <h4><i class="fas fa-{{ item.category|get_category_icon }}"></i> {{ item.get('Description', 'Unknown Item') }}</h4>
+                <span class="urgency-badge critical">Critical</span>
+            </div>
+            
+            <div class="item-details">
+                <div class="detail-row">
+                    <span class="label">Category:</span>
+                    <span class="value">{{ item.category }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Item Code:</span>
+                    <span class="value">{{ item.get('Item Code', 'N/A') }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Current Stock:</span>
+                    <span class="value critical">{{ item.get('Quantity on Hand', 'N/A') }} {{ item.get('Unit of Measure', '') }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Minimum Level:</span>
+                    <span class="value">{{ item.get('Min. Stock Level', 'N/A') }} {{ item.get('Unit of Measure', '') }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Location:</span>
+                    <span class="value">{{ item.get('Location', 'N/A') }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Supplier:</span>
+                    <span class="value">{{ item.get('Supplier', 'N/A') }}</span>
+                </div>
+                {% if item.get('Cost/Unit') %}
+                <div class="detail-row">
+                    <span class="label">Unit Cost:</span>
+                    <span class="value">R{{ "%.2f"|format(item.get('Cost/Unit', 0)) }}</span>
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="item-actions">
+                <a href="/category/{{ item.category }}" class="btn btn-primary btn-sm">
+                    <i class="fas fa-eye"></i> View Category
+                </a>
+                <button onclick="markForReorder('{{ item.get('Item Code', '') }}')" class="btn btn-warning btn-sm">
+                    <i class="fas fa-shopping-cart"></i> Mark for Reorder
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% else %}
+    <div class="no-data">
+        <div class="no-data-content">
+            <i class="fas fa-check-circle"></i>
+            <h3>All Stock Levels Are Good!</h3>
+            <p>No items are currently below their minimum stock levels.</p>
+            <a href="/" class="btn btn-primary">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Reorder Modal -->
+<div id="reorderModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fas fa-shopping-cart"></i> Mark for Reorder</h3>
+            <span class="close" onclick="closeModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p>This item has been marked for reorder. In a full system, this would:</p>
+            <ul>
+                <li>Generate a purchase order</li>
+                <li>Notify the procurement team</li>
+                <li>Track the order status</li>
+            </ul>
+            <div class="modal-actions">
+                <button onclick="closeModal()" class="btn btn-primary">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Mark item for reorder
+function markForReorder(itemCode) {
+    const modal = document.getElementById('reorderModal');
+    modal.style.display = 'block';
+    
+    // In a real system, this would make an API call to mark the item for reorder
+    console.log('Marking item for reorder:', itemCode);
+}
+
+// Close modal
+function closeModal() {
+    const modal = document.getElementById('reorderModal');
+    modal.style.display = 'none';
+}
+
+// Export to CSV
+function exportToCSV() {
+    // Create CSV content
+    const items = document.querySelectorAll('.low-stock-card');
+    let csvContent = 'Category,Item Code,Description,Current Stock,Min Level,Unit,Location,Supplier\n';
+    
+    items.forEach(item => {
+        const category = item.querySelector('.item-details .detail-row:nth-child(1) .value').textContent;
+        const itemCode = item.querySelector('.item-details .detail-row:nth-child(2) .value').textContent;
+        const description = item.querySelector('.item-header h4').textContent.replace(/^[^\s]+\s/, ''); // Remove icon
+        const currentStock = item.querySelector('.item-details .detail-row:nth-child(3) .value').textContent;
+        const minLevel = item.querySelector('.item-details .detail-row:nth-child(4) .value').textContent;
+        const location = item.querySelector('.item-details .detail-row:nth-child(5) .value').textContent;
+        const supplier = item.querySelector('.item-details .detail-row:nth-child(6) .value').textContent;
+        
+        csvContent += `"${category}","${itemCode}","${description}","${currentStock}","${minLevel}","","${location}","${supplier}"\n`;
+    });
+    
+    // Create download link
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'low_stock_items.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('reorderModal');
+    if (event.target == modal) {
+        modal.style.display = 'none';
+    }
+}
+</script>
+{% endblock %}

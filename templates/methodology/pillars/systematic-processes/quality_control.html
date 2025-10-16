@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quality Control - The Sifiso Methodology</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --derivco-blue: #003366;
+            --derivco-teal: #008080;
+            --derivco-blue-light: rgba(0, 51, 102, 0.1);
+            --derivco-teal-light: rgba(0, 128, 128, 0.1);
+            --stat-green: #00FF99;
+            --text-gray: #4a5568;
+            --primary-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--primary-bg);
+            min-height: 100vh;
+            color: #1a202c;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--derivco-blue) 0%, var(--derivco-teal) 100%);
+            color: #1a202c;
+            position: relative;
+            overflow: hidden;
+            padding: 2rem 0;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.3;
+        }
+
+        .methodology-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .methodology-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 128, 128, 0.2);
+        }
+
+        .quality-standard {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quality-standard::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(135deg, var(--derivco-blue) 0%, var(--derivco-teal) 100%);
+        }
+
+        .inspection-checklist {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(0, 128, 128, 0.2);
+        }
+
+        .checklist-item:last-child {
+            border-bottom: none;
+        }
+
+        .checklist-item input[type="checkbox"] {
+            margin-right: 1rem;
+            transform: scale(1.2);
+            accent-color: var(--derivco-teal);
+        }
+
+        .quality-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 2rem;
+            background: linear-gradient(135deg, var(--derivco-blue) 0%, var(--derivco-teal) 100%);
+            position: relative;
+        }
+
+        .quality-circle::after {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--stat-green) 0%, var(--derivco-teal) 100%);
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .quality-circle:hover::after {
+            opacity: 1;
+        }
+
+        .audit-system {
+            border-left: 4px solid var(--derivco-teal);
+            background: var(--card-bg);
+            border-radius: 0 8px 8px 0;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .audit-system:hover {
+            border-left: 4px solid var(--stat-green);
+            transform: translateX(5px);
+        }
+
+        .stat-badge {
+            background: linear-gradient(135deg, var(--derivco-blue) 0%, var(--derivco-teal) 100%);
+            color: #1a202c;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+
+        .breadcrumb {
+            background: rgba(0, 128, 128, 0.1);
+            border: 1px solid var(--derivco-teal);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .breadcrumb a {
+            color: var(--derivco-teal);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--stat-green);
+        }
+
+        .performance-metric {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .performance-metric:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px -5px rgba(0, 128, 128, 0.2);
+        }
+
+        .quality-level {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        .quality-excellent {
+            background: rgba(0, 255, 153, 0.2);
+            color: var(--stat-green);
+            border: 1px solid var(--stat-green);
+        }
+
+        .quality-good {
+            background: rgba(0, 128, 128, 0.2);
+            color: var(--derivco-teal);
+            border: 1px solid var(--derivco-teal);
+        }
+
+        .quality-needs-improvement {
+            background: rgba(255, 165, 0, 0.2);
+            color: #FFA500;
+            border: 1px solid #FFA500;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-500 { animation-delay: 0.5s; }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b border-teal-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="text-xl font-semibold text-teal-400">Derivco Facilities</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/methodology/pillars/systematic-processes" class="text-blue-600 hover:text-blue-800 px-3 py-2 rounded-md font-medium flex items-center gap-2">
+                        <i class="fas fa-arrow-left"></i> Back to Systematic Processes
+                    </a>
+                    <a href="/" class="text-teal-300 hover:text-teal-100 px-3 py-2 rounded-md">Home</a>
+                    <a href="/inventory" class="text-teal-300 hover:text-teal-100 px-3 py-2 rounded-md">Inventory</a>
+                    <a href="/methodology" class="bg-teal-600 text-gray-900 px-3 py-2 rounded-md font-medium">Methodology</a>
+                    <a href="/signout/register" class="text-teal-300 hover:text-teal-100 px-3 py-2 rounded-md">Sign-Out</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero-section py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="mb-6 animate-fade-in-up">
+                <div class="w-24 h-24 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-medal text-4xl text-teal-400"></i>
+                </div>
+                <h1 class="text-3xl md:text-4xl font-bold mb-4 text-center">Quality Control Systems</h1>
+                <p class="text-lg md:text-xl opacity-90 mb-6 text-teal-200 text-center">Systematic Processes Component</p>
+                <p class="text-xl max-w-4xl mx-auto text-teal-100 text-center">
+                    Ensuring consistent quality standards through comprehensive monitoring, evaluation, and continuous improvement frameworks
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <!-- Breadcrumb Navigation -->
+        <div class="breadcrumb animate-fade-in-up">
+            <nav class="flex items-center space-x-2 text-sm">
+                <a href="/methodology" class="hover:underline">Methodology</a>
+                <i class="fas fa-chevron-right text-teal-400"></i>
+                <a href="/methodology/pillars/systematic-processes" class="hover:underline">Systematic Processes</a>
+                <i class="fas fa-chevron-right text-teal-400"></i>
+                <span class="text-gray-900 font-medium">Quality Control Systems</span>
+            </nav>
+        </div>
+
+        <!-- Overview -->
+        <div class="methodology-card p-8 mb-12 animate-fade-in-up">
+            <h2 class="text-3xl font-bold text-gray-900 mb-6 flex items-center">
+                <i class="fas fa-clipboard-check text-teal-400 mr-3"></i>
+                Quality Control Framework
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <p class="text-lg text-gray-300 mb-6">
+                        Quality Control Systems establish the monitoring and evaluation mechanisms necessary to maintain
+                        consistently high standards across all facility management operations. These systems provide
+                        real-time insights, proactive issue identification, and continuous improvement opportunities.
+                    </p>
+
+                    <div class="bg-teal-900 bg-opacity-30 border-l-4 border-teal-500 p-4 rounded-r-lg mb-6">
+                        <h4 class="font-semibold text-teal-300 mb-2">Quality Philosophy</h4>
+                        <p class="text-teal-200">
+                            "Quality is not a destination but a journey of continuous improvement. Every measurement,
+                            every evaluation, every correction brings us closer to operational excellence."
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg border border-teal-500 border-opacity-30">
+                    <h4 class="font-semibold text-gray-900 mb-4">QC System Benefits</h4>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="bg-teal-900 bg-opacity-50 p-2 rounded-lg mr-4">
+                                <i class="fas fa-eye text-teal-400"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-900">Proactive Monitoring</h5>
+                                <p class="text-sm text-gray-400">Identify issues before they impact operations</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <div class="bg-teal-900 bg-opacity-50 p-2 rounded-lg mr-4">
+                                <i class="fas fa-chart-line text-teal-400"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-900">Performance Tracking</h5>
+                                <p class="text-sm text-gray-400">Continuous measurement and improvement</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <div class="bg-teal-900 bg-opacity-50 p-2 rounded-lg mr-4">
+                                <i class="fas fa-certificate text-teal-400"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-900">Compliance Assurance</h5>
+                                <p class="text-sm text-gray-400">Meet all regulatory and internal standards</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quality Standards -->
+        <div class="methodology-card p-8 mb-12 animate-fade-in-up delay-100">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8">
+                <i class="fas fa-star text-teal-400 mr-3"></i>
+                Quality Standards Framework
+            </h2>
+
+            <div class="space-y-6">
+                <div class="quality-standard">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-bold text-gray-900 flex items-center">
+                            <i class="fas fa-tools text-teal-400 mr-3"></i>
+                            Maintenance Quality Standards
+                        </h3>
+                        <span class="quality-level quality-excellent">Excellent</span>
+                    </div>
+                    <p class="text-gray-300 mb-4">
+                        Comprehensive standards ensuring all maintenance activities meet the highest quality benchmarks
+                        for safety, efficiency, and longevity.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <h4 class="font-semibold text-teal-300 mb-3">Performance Criteria</h4>
+                            <ul class="text-gray-400 space-y-2">
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-green-400 mr-2 mt-1 text-xs"></i>
+                                    99% completion rate within SLA
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-green-400 mr-2 mt-1 text-xs"></i>
+                                    Zero safety incidents
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-green-400 mr-2 mt-1 text-xs"></i>
+                                    95% customer satisfaction
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-green-400 mr-2 mt-1 text-xs"></i>
+                                    Complete documentation compliance
+                                </li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-teal-300 mb-3">Quality Metrics</h4>
+                            <ul class="text-gray-400 space-y-2">
+                                <li>• First-time fix rate: 92%</li>
+                                <li>• Average resolution time: 4.2 hours</li>
+                                <li>• Equipment availability: 98.7%</li>
+                                <li>• Preventive maintenance compliance: 96%</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-teal-300 mb-3">Monitoring Methods</h4>
+                            <ul class="text-gray-400 space-y-2">
+                                <li>• Real-time performance dashboards</li>
+                                <li>• Weekly quality assessments</li>
+                                <li>• Monthly compliance audits</li>
+                                <li>• Quarterly stakeholder reviews</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quality-standard">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-bold text-gray-900 flex items-center">
+                            <i class="fas fa-broom text-teal-400 mr-3"></i>
+                            Cleaning Service Standards
+                        </h3>
+                        <span class="quality-level quality-good">Good</span>
+                    </div>
+                    <p class="text-gray-300 mb-4">
+                        Rigorous cleaning and hygiene standards that ensure healthy, productive work environments
+                        across all facility areas.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <h4 class="font-semibold text-teal-300 mb-3">Performance Criteria</h4>
+                            <ul class="text-gray-400 space-y-2">
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-green-400 mr-2 mt-1 text-xs"></i>
+                                    Daily cleaning completion: 100%
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-green-400 mr-2 mt-1 text-xs"></i>
+                                    Hygiene compliance: 98%
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-exclamation-triangle text-orange-400 mr-2 mt-1 text-xs"></i>
+                                    Staff satisfaction: 87%
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-green-400 mr-2 mt-1 text-xs"></i>
+                                    Supply inventory accuracy: 94%
+                                </li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-teal-300 mb-3">Quality Metrics</h4>
+                            <ul class="text-gray-400 space-y-2">
+                                <li>• Surface cleanliness score: 4.6/5</li>
+                                <li>• Restroom hygiene rating: 4.8/5</li>
+                                <li>• Common area maintenance: 4.4/5</li>
+                                <li>• Supply availability: 91%</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-teal-300 mb-3">Monitoring Methods</h4>
+                            <ul class="text-gray-400 space-y-2">
+                                <li>• Daily inspection checklists</li>
+                                <li>• Weekly deep-clean audits</li>
+                                <li>• Monthly hygiene assessments</li>
+                                <li>• Quarterly satisfaction surveys</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quality-standard">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-bold text-gray-900 flex items-center">
+                            <i class="fas fa-shield-alt text-teal-400 mr-3"></i>
+                            Security & Safety Standards
+                        </h3>
+                        <span class="quality-level quality-excellent">Excellent</span>
+                    </div>
+                    <p class="text-gray-300 mb-4">
+                        Comprehensive security and safety protocols ensuring the protection of personnel, assets,
+                        and information across all facility operations.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <h4 class="font-semibold text-teal-300 mb-3">Performance Criteria</h4>
+                            <ul class="text-gray-400 space-y-2">
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-green-400 mr-2 mt-1 text-xs"></i>
+                                    Access control compliance: 100%
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-green-400 mr-2 mt-1 text-xs"></i>
+                                    Emergency response readiness: 98%
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-green-400 mr-2 mt-1 text-xs"></i>
+                                    Safety incident rate: 0.02%
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-green-400 mr-2 mt-1 text-xs"></i>
+                                    Security audit compliance: 97%
+                                </li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-teal-300 mb-3">Quality Metrics</h4>
+                            <ul class="text-gray-400 space-y-2">
+                                <li>• Security coverage: 99.8%</li>
+                                <li>• Response time: 2.3 minutes</li>
+                                <li>• Training compliance: 100%</li>
+                                <li>• Equipment uptime: 99.2%</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-teal-300 mb-3">Monitoring Methods</h4>
+                            <ul class="text-gray-400 space-y-2">
+                                <li>• 24/7 monitoring systems</li>
+                                <li>• Daily security patrols</li>
+                                <li>• Weekly safety inspections</li>
+                                <li>• Monthly emergency drills</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Inspection Processes -->
+        <div class="methodology-card p-8 mb-12 animate-fade-in-up delay-200">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8">
+                <i class="fas fa-search text-teal-400 mr-3"></i>
+                Quality Inspection Processes
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-6">Daily Inspection Checklist</h3>
+                    <div class="inspection-checklist">
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check1" checked>
+                            <label for="check1" class="text-gray-300">HVAC systems operational status</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check2" checked>
+                            <label for="check2" class="text-gray-300">Lighting system functionality</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check3" checked>
+                            <label for="check3" class="text-gray-300">Security system integrity</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check4" checked>
+                            <label for="check4" class="text-gray-300">Cleaning standards compliance</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check5" checked>
+                            <label for="check5" class="text-gray-300">Safety equipment readiness</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check6">
+                            <label for="check6" class="text-gray-300">Emergency exit accessibility</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check7" checked>
+                            <label for="check7" class="text-gray-300">Waste management compliance</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check8" checked>
+                            <label for="check8" class="text-gray-300">Inventory level verification</label>
+                        </div>
+                    </div>
+                    <div class="text-center mt-4">
+                        <span class="text-lg font-semibold text-teal-400">Completion Rate: 87.5%</span>
+                        <span class="quality-level quality-good">Good</span>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-6">Quality Inspection Workflow</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center">
+                            <div class="quality-circle">
+                                <i class="fas fa-clipboard-list"></i>
+                            </div>
+                            <div class="ml-6">
+                                <h4 class="font-semibold text-gray-900">Pre-Inspection Planning</h4>
+                                <p class="text-sm text-gray-400">Schedule, prepare checklists, allocate resources</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center">
+                            <div class="quality-circle">
+                                <i class="fas fa-magnifying-glass"></i>
+                            </div>
+                            <div class="ml-6">
+                                <h4 class="font-semibold text-gray-900">Systematic Inspection</h4>
+                                <p class="text-sm text-gray-400">Execute comprehensive quality assessments</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center">
+                            <div class="quality-circle">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <div class="ml-6">
+                                <h4 class="font-semibold text-gray-900">Data Collection & Analysis</h4>
+                                <p class="text-sm text-gray-400">Record findings and analyze performance trends</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center">
+                            <div class="quality-circle">
+                                <i class="fas fa-wrench"></i>
+                            </div>
+                            <div class="ml-6">
+                                <h4 class="font-semibold text-gray-900">Corrective Actions</h4>
+                                <p class="text-sm text-gray-400">Implement improvements and preventive measures</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center">
+                            <div class="quality-circle">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <div class="ml-6">
+                                <h4 class="font-semibold text-gray-900">Report & Follow-up</h4>
+                                <p class="text-sm text-gray-400">Document results and schedule follow-up inspections</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Continuous Improvement -->
+        <div class="methodology-card p-8 mb-12 animate-fade-in-up delay-300">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8">
+                <i class="fas fa-sync-alt text-teal-400 mr-3"></i>
+                Continuous Improvement Framework
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-6">Improvement Methodology</h3>
+                    <div class="space-y-4">
+                        <div class="border-l-4 border-teal-500 bg-white bg-opacity-50 p-4 rounded-r-lg">
+                            <h4 class="font-medium text-teal-300 mb-2">Plan-Do-Check-Act (PDCA) Cycle</h4>
+                            <p class="text-sm text-gray-400 mb-3">
+                                Systematic approach to continuous improvement through iterative cycles of planning,
+                                implementation, evaluation, and refinement.
+                            </p>
+                            <div class="grid grid-cols-4 gap-2 text-center">
+                                <div class="bg-teal-900 bg-opacity-50 p-2 rounded">
+                                    <div class="text-xs font-semibold text-teal-300">PLAN</div>
+                                    <div class="text-xs text-gray-400">Identify & Design</div>
+                                </div>
+                                <div class="bg-teal-900 bg-opacity-50 p-2 rounded">
+                                    <div class="text-xs font-semibold text-teal-300">DO</div>
+                                    <div class="text-xs text-gray-400">Implement</div>
+                                </div>
+                                <div class="bg-teal-900 bg-opacity-50 p-2 rounded">
+                                    <div class="text-xs font-semibold text-teal-300">CHECK</div>
+                                    <div class="text-xs text-gray-400">Evaluate</div>
+                                </div>
+                                <div class="bg-teal-900 bg-opacity-50 p-2 rounded">
+                                    <div class="text-xs font-semibold text-teal-300">ACT</div>
+                                    <div class="text-xs text-gray-400">Standardize</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border-l-4 border-teal-500 bg-white bg-opacity-50 p-4 rounded-r-lg">
+                            <h4 class="font-medium text-teal-300 mb-2">Root Cause Analysis</h4>
+                            <p class="text-sm text-gray-400 mb-3">
+                                Systematic investigation of quality issues to identify underlying causes and
+                                implement targeted solutions.
+                            </p>
+                            <ul class="text-xs text-gray-400 space-y-1">
+                                <li>• 5 Why Analysis for problem investigation</li>
+                                <li>• Fishbone diagrams for cause mapping</li>
+                                <li>• Pareto analysis for prioritization</li>
+                                <li>• Statistical analysis for trend identification</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-6">Improvement Initiatives</h3>
+                    <div class="space-y-4">
+                        <div class="bg-white p-4 rounded-lg">
+                            <h4 class="font-semibold text-gray-900 mb-2 flex items-center">
+                                <i class="fas fa-lightbulb text-teal-400 mr-2"></i>
+                                Innovation Program
+                            </h4>
+                            <p class="text-sm text-gray-400 mb-3">
+                                Staff-driven innovation initiatives to identify and implement quality improvements.
+                            </p>
+                            <div class="flex justify-between text-xs">
+                                <span class="text-teal-400">Active Ideas: 23</span>
+                                <span class="text-green-400">Implemented: 15</span>
+                                <span class="text-orange-400">In Review: 8</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-4 rounded-lg">
+                            <h4 class="font-semibold text-gray-900 mb-2 flex items-center">
+                                <i class="fas fa-award text-teal-400 mr-2"></i>
+                                Recognition System
+                            </h4>
+                            <p class="text-sm text-gray-400 mb-3">
+                                Quality excellence recognition program to motivate continuous improvement efforts.
+                            </p>
+                            <div class="flex justify-between text-xs">
+                                <span class="text-teal-400">Quality Stars: 47</span>
+                                <span class="text-green-400">Excellence Awards: 12</span>
+                                <span class="text-orange-400">Improvement Suggestions: 31</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-4 rounded-lg">
+                            <h4 class="font-semibold text-gray-900 mb-2 flex items-center">
+                                <i class="fas fa-chart-line text-teal-400 mr-2"></i>
+                                Performance Benchmarking
+                            </h4>
+                            <p class="text-sm text-gray-400 mb-3">
+                                Regular comparison with industry standards and best practices for continuous elevation.
+                            </p>
+                            <div class="flex justify-between text-xs">
+                                <span class="text-teal-400">Benchmarks: 18</span>
+                                <span class="text-green-400">Above Average: 14</span>
+                                <span class="text-orange-400">Improvement Areas: 4</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Audit Systems -->
+        <div class="methodology-card p-8 mb-12 animate-fade-in-up delay-400">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8">
+                <i class="fas fa-clipboard-check text-teal-400 mr-3"></i>
+                Quality Audit Systems
+            </h2>
+
+            <div class="space-y-6">
+                <div class="audit-system">
+                    <h4 class="font-semibold text-gray-900 mb-3 flex items-center">
+                        <i class="fas fa-calendar-check text-teal-400 mr-3"></i>
+                        Internal Audit Program
+                    </h4>
+                    <p class="text-gray-300 mb-4">
+                        Systematic internal assessments to ensure compliance with quality standards and identify
+                        improvement opportunities across all facility operations.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <h5 class="font-medium text-teal-300 mb-2">Audit Schedule</h5>
+                            <ul class="text-sm text-gray-400 space-y-1">
+                                <li>• Daily: Operational compliance checks</li>
+                                <li>• Weekly: Process quality assessments</li>
+                                <li>• Monthly: Comprehensive system audits</li>
+                                <li>• Quarterly: Strategic quality reviews</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h5 class="font-medium text-teal-300 mb-2">Audit Areas</h5>
+                            <ul class="text-sm text-gray-400 space-y-1">
+                                <li>• Maintenance operations</li>
+                                <li>• Cleaning and hygiene</li>
+                                <li>• Security and safety</li>
+                                <li>• Inventory management</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h5 class="font-medium text-teal-300 mb-2">Current Performance</h5>
+                            <ul class="text-sm text-gray-400 space-y-1">
+                                <li>• Overall compliance: 94.3%</li>
+                                <li>• Audits completed: 156/160</li>
+                                <li>• Critical findings: 3</li>
+                                <li>• Corrective actions: 98% closed</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="audit-system">
+                    <h4 class="font-semibold text-gray-900 mb-3 flex items-center">
+                        <i class="fas fa-certificate text-teal-400 mr-3"></i>
+                        External Certification Audits
+                    </h4>
+                    <p class="text-gray-300 mb-4">
+                        Third-party certification and compliance audits ensuring adherence to industry standards
+                        and regulatory requirements.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <h5 class="font-medium text-teal-300 mb-2">Certifications Held</h5>
+                            <ul class="text-sm text-gray-400 space-y-1">
+                                <li>• ISO 9001:2015 Quality Management</li>
+                                <li>• ISO 14001:2015 Environmental</li>
+                                <li>• ISO 45001:2018 Health & Safety</li>
+                                <li>• Local regulatory compliance</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h5 class="font-medium text-teal-300 mb-2">Audit Results</h5>
+                            <ul class="text-sm text-gray-400 space-y-1">
+                                <li>• ISO 9001: Maintained certification</li>
+                                <li>• ISO 14001: 2 minor observations</li>
+                                <li>• ISO 45001: Full compliance</li>
+                                <li>• Regulatory: No non-conformances</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h5 class="font-medium text-teal-300 mb-2">Next Review Dates</h5>
+                            <ul class="text-sm text-gray-400 space-y-1">
+                                <li>• ISO 9001: March 2025</li>
+                                <li>• ISO 14001: June 2025</li>
+                                <li>• ISO 45001: September 2025</li>
+                                <li>• Local inspection: Monthly</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Metrics -->
+        <div class="mb-12 animate-fade-in-up delay-500">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">
+                <i class="fas fa-chart-bar text-teal-400 mr-3"></i>
+                Quality Control Performance Metrics
+            </h2>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="performance-metric">
+                    <div class="text-3xl font-bold text-teal-400 mb-2">94.3%</div>
+                    <div class="text-sm font-semibold text-gray-900">Quality Compliance</div>
+                    <div class="text-xs text-gray-400">Overall standards adherence</div>
+                </div>
+
+                <div class="performance-metric">
+                    <div class="text-3xl font-bold text-teal-400 mb-2">2.4</div>
+                    <div class="text-sm font-semibold text-gray-900">Avg Response Time</div>
+                    <div class="text-xs text-gray-400">Hours to address quality issues</div>
+                </div>
+
+                <div class="performance-metric">
+                    <div class="text-3xl font-bold text-teal-400 mb-2">87%</div>
+                    <div class="text-sm font-semibold text-gray-900">First-Time Fix</div>
+                    <div class="text-xs text-gray-400">Issues resolved immediately</div>
+                </div>
+
+                <div class="performance-metric">
+                    <div class="text-3xl font-bold text-teal-400 mb-2">4.7/5</div>
+                    <div class="text-sm font-semibold text-gray-900">Satisfaction Score</div>
+                    <div class="text-xs text-gray-400">Stakeholder quality rating</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Next Steps -->
+        <div class="text-center animate-fade-in-up delay-500">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Ready to Implement Quality Control?</h2>
+            <p class="text-lg text-gray-300 mb-8 max-w-3xl mx-auto">
+                Quality Control Systems provide the framework for maintaining excellence in all facility operations.
+                Start with establishing clear quality standards and systematic monitoring processes.
+            </p>
+
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="/methodology/pillars/stakeholder-integration" class="bg-teal-600 hover:bg-teal-700 text-gray-900 font-semibold py-3 px-8 rounded-lg transition duration-300 transform hover:scale-105">
+                    Next Pillar: Stakeholder Integration
+                </a>
+                <a href="/methodology/pillars/systematic-processes" class="border border-teal-500 text-teal-400 hover:bg-teal-900 hover:bg-opacity-30 font-semibold py-3 px-8 rounded-lg transition duration-300 transform hover:scale-105">
+                    Back to Systematic Processes
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-50 border-t border-teal-500 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Quality Control Systems</h3>
+                    <p class="text-gray-400">
+                        Core component of Systematic Processes - Ensuring consistent quality standards through
+                        comprehensive monitoring, evaluation, and continuous improvement frameworks.
+                    </p>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Related Components</h3>
+                    <ul class="space-y-2">
+                        <li><a href="/methodology/pillars/systematic-processes/sop" class="text-gray-400 hover:text-teal-400 transition">Standard Operating Procedures</a></li>
+                        <li><a href="/methodology/pillars/systematic-processes/workflow" class="text-gray-400 hover:text-teal-400 transition">Workflow Management</a></li>
+                        <li><a href="/methodology/pillars/systematic-processes" class="text-gray-400 hover:text-teal-400 transition">Systematic Processes Overview</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Quality Tools</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-teal-400 transition">Quality Standards Framework</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-teal-400 transition">Inspection Checklists</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-teal-400 transition">Audit Systems</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-teal-400 transition">Improvement Tools</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-500 text-sm">
+                <p>&copy; 2025 Derivco Facilities Management. All rights reserved. | The Sifiso Methodology - Quality Control Systems</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate elements on scroll
+            const animatedElements = document.querySelectorAll('.animate-fade-in-up');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = 1;
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            animatedElements.forEach(el => {
+                el.style.opacity = 0;
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(el);
+            });
+
+            // Interactive checklist functionality
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const totalCheckboxes = checkboxes.length;
+                    const checkedBoxes = document.querySelectorAll('input[type="checkbox"]:checked').length;
+                    const completionRate = ((checkedBoxes / totalCheckboxes) * 100).toFixed(1);
+
+                    const completionElement = document.querySelector('.text-lg.font-semibold.text-teal-400');
+                    if (completionElement) {
+                        completionElement.textContent = `Completion Rate: ${completionRate}%`;
+                    }
+
+                    // Update quality level badge
+                    const qualityBadge = document.querySelector('.quality-level.quality-good');
+                    if (qualityBadge) {
+                        if (completionRate >= 95) {
+                            qualityBadge.className = 'quality-level quality-excellent';
+                            qualityBadge.textContent = 'Excellent';
+                        } else if (completionRate >= 80) {
+                            qualityBadge.className = 'quality-level quality-good';
+                            qualityBadge.textContent = 'Good';
+                        } else {
+                            qualityBadge.className = 'quality-level quality-needs-improvement';
+                            qualityBadge.textContent = 'Needs Improvement';
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

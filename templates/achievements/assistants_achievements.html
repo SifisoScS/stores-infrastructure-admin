@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facilities Assistants Achievements - Derivco Facilities</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --secondary: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #06b6d4;
+            --light: #f8fafc;
+            --dark: #f8fafc;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+        }
+        
+        .dashboard-card {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .dashboard-card:hover {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .page-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: #1a202c;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transform: translateY(-1px);
+        }
+        
+        .gradient-1 { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .gradient-2 { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .gradient-3 { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .gradient-4 { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        
+        .leader-card { background: linear-gradient(135deg, var(--secondary) 0%, #059669 100%); color: #1a202c; }
+        .good-card { background: linear-gradient(135deg, var(--primary) 0%, #3730a3 100%); color: #1a202c; }
+        .developing-card { background: linear-gradient(135deg, var(--warning) 0%, #ea580c 100%); color: #1a202c; }
+        
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .employee-card {
+            transition: all 0.3s ease;
+        }
+        
+        .employee-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        
+        .supervisor-badge {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: #1a202c;
+        }
+        
+        .level-1 { border-left: 4px solid var(--primary); }
+        .level-2 { border-left: 4px solid var(--secondary); }
+        .driver { border-left: 4px solid var(--warning); }
+        
+        .performance-bar {
+            height: 8px;
+            border-radius: 4px;
+            background: #e5e7eb;
+            overflow: hidden;
+        }
+        
+        .performance-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 1s ease-in-out;
+        }
+        
+        .performance-excellent { background: var(--secondary); }
+        .performance-good { background: var(--primary); }
+        .performance-average { background: var(--warning); }
+        
+        .tab-button {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .tab-button.active {
+            background: var(--primary);
+            color: #1a202c;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="text-xl font-semibold text-gray-900">Derivco Facilities</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md">Home</a>
+                    <a href="/inventory" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md">Inventory</a>
+                    <a href="/achievements" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md bg-blue-50 text-blue-700">Achievements</a>
+                    <a href="/signout/register" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md">Sign-Out</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="mb-8">
+                <i class="fas fa-trophy text-6xl mb-4 opacity-90"></i>
+                <h1 class="text-4xl font-bold mb-4">Facilities Team Achievements</h1>
+                <p class="text-xl opacity-90">Recognizing excellence across our facilities team</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 pb-16">
+        <!-- Tabs Navigation -->
+        <div class="flex space-x-2 mb-8 bg-white p-2 rounded-lg shadow-sm">
+            <div class="tab-button active" data-tab="overview">
+                <i class="fas fa-chart-pie mr-2"></i>Overview
+            </div>
+            <div class="tab-button" data-tab="assistants">
+                <i class="fas fa-tools mr-2"></i>Facilities Assistants
+            </div>
+            <div class="tab-button" data-tab="drivers">
+                <i class="fas fa-bus mr-2"></i>Shuttle Drivers
+            </div>
+            <div class="tab-button" data-tab="supervisors">
+                <i class="fas fa-user-tie mr-2"></i>Supervisors
+            </div>
+        </div>
+
+        <!-- Overview Tab -->
+        <div class="tab-content active" id="overview">
+            <!-- Team Overview -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="stat-card">
+                    <div class="flex items-center">
+                        <div class="stat-icon gradient-1 text-white rounded-xl w-12 h-12 flex items-center justify-center mr-4">
+                            <i class="fas fa-users text-lg"></i>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-gray-900">10</div>
+                            <div class="text-sm text-gray-600">Team Members</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="flex items-center">
+                        <div class="stat-icon gradient-2 text-white rounded-xl w-12 h-12 flex items-center justify-center mr-4">
+                            <i class="fas fa-star text-lg"></i>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-green-600">4.8</div>
+                            <div class="text-sm text-gray-600">Average Rating</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="flex items-center">
+                        <div class="stat-icon gradient-3 text-white rounded-xl w-12 h-12 flex items-center justify-center mr-4">
+                            <i class="fas fa-ticket-alt text-lg"></i>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-gray-900">347</div>
+                            <div class="text-sm text-gray-600">Tickets This Month</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="flex items-center">
+                        <div class="stat-icon gradient-4 text-white rounded-xl w-12 h-12 flex items-center justify-center mr-4 pulse-animation">
+                            <i class="fas fa-clock text-lg"></i>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-blue-600">2.1h</div>
+                            <div class="text-sm text-gray-600">Avg Response Time</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Performers -->
+            <div class="dashboard-card p-8 mb-8">
+                <h3 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                    <i class="fas fa-crown text-yellow-500 mr-3"></i>
+                    Top Performers - September 2025
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="employee-card leader-card rounded-xl overflow-hidden p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-16 h-16 rounded-full bg-white bg-opacity-20 flex items-center justify-center mr-4">
+                                <i class="fas fa-user text-2xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold">Sifiso Shezi</h4>
+                                <p class="text-white text-opacity-80">Facilities Assistant Level 1</p>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-white text-opacity-90">Performance</span>
+                                <span class="font-bold">98%</span>
+                            </div>
+                            <div class="performance-bar">
+                                <div class="performance-fill performance-excellent" style="width: 98%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-2">
+                            <div class="flex justify-between">
+                                <span>Tickets Resolved:</span>
+                                <strong>89</strong>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Customer Rating:</span>
+                                <strong>4.9/5</strong>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="employee-card good-card rounded-xl overflow-hidden p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-16 h-16 rounded-full bg-white bg-opacity-20 flex items-center justify-center mr-4">
+                                <i class="fas fa-user text-2xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold">Xolani Ngcobo</h4>
+                                <p class="text-white text-opacity-80">Facilities Assistant Level 2</p>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-white text-opacity-90">Performance</span>
+                                <span class="font-bold">92%</span>
+                            </div>
+                            <div class="performance-bar">
+                                <div class="performance-fill performance-good" style="width: 92%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-2">
+                            <div class="flex justify-between">
+                                <span>Tickets Resolved:</span>
+                                <strong>76</strong>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Customer Rating:</span>
+                                <strong>4.7/5</strong>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="employee-card good-card rounded-xl overflow-hidden p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-16 h-16 rounded-full bg-white bg-opacity-20 flex items-center justify-center mr-4">
+                                <i class="fas fa-user text-2xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold">Nduduzo Gasa</h4>
+                                <p class="text-white text-opacity-80">Shuttle Driver</p>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-white text-opacity-90">Performance</span>
+                                <span class="font-bold">90%</span>
+                            </div>
+                            <div class="performance-bar">
+                                <div class="performance-fill performance-good" style="width: 90%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-2">
+                            <div class="flex justify-between">
+                                <span>Trips Completed:</span>
+                                <strong>124</strong>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Passenger Rating:</span>
+                                <strong>4.8/5</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recognition Board -->
+            <div class="dashboard-card p-8">
+                <h3 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                    <i class="fas fa-award text-yellow-500 mr-3"></i>
+                    Team Recognition Board
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white rounded-xl p-6 shadow-lg border border-gray-100 text-center">
+                        <i class="fas fa-crown text-5xl text-yellow-500 mb-4"></i>
+                        <h4 class="text-xl font-bold text-gray-900 mb-2">Employee of the Month</h4>
+                        <p class="text-gray-700 font-semibold mb-1">Sifiso Shezi</p>
+                        <small class="text-gray-500">Exceptional performance in facilities management</small>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl p-6 shadow-lg border border-gray-100 text-center">
+                        <i class="fas fa-thumbs-up text-5xl text-blue-500 mb-4"></i>
+                        <h4 class="text-xl font-bold text-gray-900 mb-2">Customer Favorite</h4>
+                        <p class="text-gray-700 font-semibold mb-1">Xolani Ngcobo</p>
+                        <small class="text-gray-500">Highest customer satisfaction rating</small>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl p-6 shadow-lg border border-gray-100 text-center">
+                        <i class="fas fa-shield-alt text-5xl text-green-500 mb-4"></i>
+                        <h4 class="text-xl font-bold text-gray-900 mb-2">Safety Excellence</h4>
+                        <p class="text-gray-700 font-semibold mb-1">Nduduzo Gasa</p>
+                        <small class="text-gray-500">Perfect safety record</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Facilities Assistants Tab -->
+        <div class="tab-content" id="assistants">
+            <div class="dashboard-card p-8 mb-8">
+                <h3 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                    <i class="fas fa-tools text-blue-500 mr-3"></i>
+                    Facilities Assistants Performance
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Level 1 Assistants -->
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-700 mb-4 pl-2 border-l-4 border-blue-500">Level 1 Assistants</h4>
+                        
+                        <div class="space-y-4">
+                            <!-- Sifiso Shezi -->
+                            <div class="employee-card level-1 p-4 bg-white rounded-lg shadow">
+                                <div class="flex items-center mb-3">
+                                    <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+                                        <i class="fas fa-user text-blue-600"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-bold">Sifiso Shezi</h5>
+                                        <p class="text-sm text-gray-500">Facilities Assistant Level 1</p>
+                                    </div>
+                                    <div class="ml-auto bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded">
+                                        Top Performer
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <div class="flex justify-between items-center mb-1 text-sm">
+                                        <span>Performance</span>
+                                        <span class="font-bold">98%</span>
+                                    </div>
+                                    <div class="performance-bar">
+                                        <div class="performance-fill performance-excellent" style="width: 98%"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-2 gap-2 text-sm">
+                                    <div>
+                                        <span class="text-gray-500">Tickets:</span>
+                                        <strong>89</strong>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-500">Rating:</span>
+                                        <strong>4.9/5</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- John Mthembu -->
+                            <div class="employee-card level-1 p-4 bg-white rounded-lg shadow">
+                                <div class="flex items-center mb-3">
+                                    <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+                                        <i class="fas fa-user text-blue-600"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-bold">John Mthembu</h5>
+                                        <p class="text-sm text-gray-500">Facilities Assistant Level 1</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <div class="flex justify-between items-center mb-1 text-sm">
+                                        <span>Performance</span>
+                                        <span class="font-bold">87%</span>
+                                    </div>
+                                    <div class="performance-bar">
+                                        <div class="performance-fill performance-good" style="width: 87%"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-2 gap-2 text-sm">
+                                    <div>
+                                        <span class="text-gray-500">Tickets:</span>
+                                        <strong>72</strong>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-500">Rating:</span>
+                                        <strong>4.6/5</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Siyabonga Dlamini -->
+                            <div class="employee-card level-1 p-4 bg-white rounded-lg shadow">
+                                <div class="flex items-center mb-3">
+                                    <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+                                        <i class="fas fa-user text-blue-600"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-bold">Siyabonga Dlamini</h5>
+                                        <p class="text-sm text-gray-500">Facilities Assistant Level 1</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <div class="flex justify-between items-center mb-1 text-sm">
+                                        <span>Performance</span>
+                                        <span class="font-bold">84%</span>
+                                    </div>
+                                    <div class="performance-bar">
+                                        <div class="performance-fill performance-good" style="width: 84%"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-2 gap-2 text-sm">
+                                    <div>
+                                        <span class="text-gray-500">Tickets:</span>
+                                        <strong>68</strong>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-500">Rating:</span>
+                                        <strong>4.5/5</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Level 2 Assistants -->
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-700 mb-4 pl-2 border-l-4 border-green-500">Level 2 Assistants</h4>
+                        
+                        <div class="space-y-4">
+                            <!-- Xolani Ngcobo -->
+                            <div class="employee-card level-2 p-4 bg-white rounded-lg shadow">
+                                <div class="flex items-center mb-3">
+                                    <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mr-3">
+                                        <i class="fas fa-user text-green-600"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-bold">Xolani Ngcobo</h5>
+                                        <p class="text-sm text-gray-500">Facilities Assistant Level 2</p>
+                                    </div>
+                                    <div class="ml-auto bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">
+                                        High Performer
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <div class="flex justify-between items-center mb-1 text-sm">
+                                        <span>Performance</span>
+                                        <span class="font-bold">92%</span>
+                                    </div>
+                                    <div class="performance-bar">
+                                        <div class="performance-fill performance-excellent" style="width: 92%"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-2 gap-2 text-sm">
+                                    <div>
+                                        <span class="text-gray-500">Tickets:</span>
+                                        <strong>76</strong>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-500">Rating:</span>
+                                        <strong>4.7/5</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Elton Mzila -->
+                            <div class="employee-card level-2 p-4 bg-white rounded-lg shadow">
+                                <div class="flex items-center mb-3">
+                                    <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mr-3">
+                                        <i class="fas fa-user text-green-600"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-bold">Elton Mzila</h5>
+                                        <p class="text-sm text-gray-500">Facilities Assistant Level 2</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <div class="flex justify-between items-center mb-1 text-sm">
+                                        <span>Performance</span>
+                                        <span class="font-bold">88%</span>
+                                    </div>
+                                    <div class="performance-bar">
+                                        <div class="performance-fill performance-good" style="width: 88%"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-2 gap-2 text-sm">
+                                    <div>
+                                        <span class="text-gray-500">Tickets:</span>
+                                        <strong>74</strong>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-500">Rating:</span>
+                                        <strong>4.6/5</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shuttle Drivers Tab -->
+        <div class="tab-content" id="drivers">
+            <div class="dashboard-card p-8">
+                <h3 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                    <i class="fas fa-bus text-yellow-500 mr-3"></i>
+                    Shuttle Drivers Performance
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Nduduzo Gasa -->
+                    <div class="employee-card driver p-6 bg-white rounded-lg shadow">
+                        <div class="flex items-center mb-4">
+                            <div class="w-16 h-16 rounded-full bg-yellow-100 flex items-center justify-center mr-4">
+                                <i class="fas fa-user text-yellow-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">Nduduzo Gasa</h4>
+                                <p class="text-sm text-gray-500">Shuttle Driver</p>
+                            </div>
+                            <div class="ml-auto bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded">
+                                Top Driver
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-sm">Performance</span>
+                                <span class="font-bold text-sm">90%</span>
+                            </div>
+                            <div class="performance-bar">
+                                <div class="performance-fill performance-excellent" style="width: 90%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between">
+                                <span>Trips Completed:</span>
+                                <strong>124</strong>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Passenger Rating:</span>
+                                <strong>4.8/5</strong>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>On-time Performance:</span>
+                                <strong>96%</strong>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Sipho Ngcobo -->
+                    <div class="employee-card driver p-6 bg-white rounded-lg shadow">
+                        <div class="flex items-center mb-4">
+                            <div class="w-16 h-16 rounded-full bg-yellow-100 flex items-center justify-center mr-4">
+                                <i class="fas fa-user text-yellow-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">Sipho Ngcobo</h4>
+                                <p class="text-sm text-gray-500">Shuttle Driver</p>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-sm">Performance</span>
+                                <span class="font-bold text-sm">85%</span>
+                            </div>
+                            <div class="performance-bar">
+                                <div class="performance-fill performance-good" style="width: 85%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between">
+                                <span>Trips Completed:</span>
+                                <strong>112</strong>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Passenger Rating:</span>
+                                <strong>4.6/5</strong>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>On-time Performance:</span>
+                                <strong>91%</strong>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Sipho Mahlaba -->
+                    <div class="employee-card driver p-6 bg-white rounded-lg shadow">
+                        <div class="flex items-center mb-4">
+                            <div class="w-16 h-16 rounded-full bg-yellow-100 flex items-center justify-center mr-4">
+                                <i class="fas fa-user text-yellow-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">Sipho Mahlaba</h4>
+                                <p class="text-sm text-gray-500">Shuttle Driver</p>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-sm">Performance</span>
+                                <span class="font-bold text-sm">82%</span>
+                            </div>
+                            <div class="performance-bar">
+                                <div class="performance-fill performance-good" style="width: 82%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between">
+                                <span>Trips Completed:</span>
+                                <strong>98</strong>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Passenger Rating:</span>
+                                <strong>4.5/5</strong>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>On-time Performance:</span>
+                                <strong>89%</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Supervisors Tab -->
+        <div class="tab-content" id="supervisors">
+            <div class="dashboard-card p-8">
+                <h3 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                    <i class="fas fa-user-tie text-purple-500 mr-3"></i>
+                    Team Supervisors
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Erasmus Ngwane -->
+                    <div class="employee-card p-6 bg-white rounded-lg shadow border-t-4 border-purple-500">
+                        <div class="flex items-center mb-4">
+                            <div class="w-16 h-16 rounded-full bg-purple-100 flex items-center justify-center mr-4">
+                                <i class="fas fa-user-tie text-purple-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">Erasmus Ngwane</h4>
+                                <p class="text-sm text-gray-500">Facilities Supervisor</p>
+                            </div>
+                            <div class="ml-auto supervisor-badge text-xs font-semibold px-2.5 py-0.5 rounded">
+                                Supervisor
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <div class="flex justify-between items-center mb-1 text-sm">
+                                <span>Team Performance</span>
+                                <span class="font-bold">91%</span>
+                            </div>
+                            <div class="performance-bar">
+                                <div class="performance-fill performance-excellent" style="width: 91%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between">
+                                <span>Team Members:</span>
+                                <strong>5</strong>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Team Rating:</span>
+                                <strong>4.7/5</strong>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Tickets Resolved:</span>
+                                <strong>183</strong>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Brindley Harrington -->
+                    <div class="employee-card p-6 bg-white rounded-lg shadow border-t-4 border-purple-500">
+                        <div class="flex items-center mb-4">
+                            <div class="w-16 h-16 rounded-full bg-purple-100 flex items-center justify-center mr-4">
+                                <i class="fas fa-user-tie text-purple-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">Brindley Harrington</h4>
+                                <p class="text-sm text-gray-500">Facilities Supervisor</p>
+                            </div>
+                            <div class="ml-auto supervisor-badge text-xs font-semibold px-2.5 py-0.5 rounded">
+                                Supervisor
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <div class="flex justify-between items-center mb-1 text-sm">
+                                <span>Team Performance</span>
+                                <span class="font-bold">89%</span>
+                            </div>
+                            <div class="performance-bar">
+                                <div class="performance-fill performance-good" style="width: 89%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between">
+                                <span>Team Members:</span>
+                                <strong>5</strong>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Team Rating:</span>
+                                <strong>4.6/5</strong>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Tickets Resolved:</span>
+                                <strong>164</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white text-white py-8 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <div class="mb-4">
+                    <h4 class="text-lg font-semibold mb-2">Designed by Sifiso Cyprian Shezi</h4>
+                    <p class="text-gray-400">Facilities Assistant Level 1 — Derivco Durban | Transforming facility management through innovation</p>
+                </div>
+                <div class="border-t border-gray-700 pt-4">
+                    <p class="text-sm text-gray-500">&copy; 2025 Derivco Facilities Management System. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tab functionality
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tabId = button.getAttribute('data-tab');
+                    
+                    // Remove active class from all buttons and contents
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Add active class to clicked button and corresponding content
+                    button.classList.add('active');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+            
+            // Animate performance bars on page load
+            setTimeout(() => {
+                document.querySelectorAll('.performance-fill').forEach(bar => {
+                    const width = bar.style.width;
+                    bar.style.width = '0';
+                    setTimeout(() => {
+                        bar.style.width = width;
+                    }, 100);
+                });
+            }, 500);
+        });
+    </script>
+</body>
+</html>

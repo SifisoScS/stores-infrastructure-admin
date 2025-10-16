@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LivClean Hygiene Inventory Management - Derivco Facilities</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            /* CPU-Optimized Color Palette - Web Safe & Performance Friendly */
+            --primary-blue: #2563eb;        /* Web-safe blue */
+            --secondary-teal: #0891b2;      /* Web-safe teal */
+            --success-green: #059669;       /* Web-safe green */
+            --warning-amber: #d97706;       /* Web-safe amber */
+            --danger-red: #dc2626;          /* Web-safe red */
+            --neutral-gray: #64748b;        /* Web-safe gray */
+
+            /* Background Colors - Light for CPU efficiency */
+            --bg-primary: #f8fafc;          /* Very light gray */
+            --bg-secondary: #e2e8f0;        /* Light gray */
+            --bg-white: #ffffff;            /* Pure white */
+
+            /* Text Colors - High contrast for readability */
+            --text-primary: #ffffff;        /* Dark slate */
+            --text-secondary: #475569;      /* Medium slate */
+            --text-muted: #94a3b8;          /* Light slate */
+
+            /* Border Colors - Subtle and CPU-friendly */
+            --border-light: #e2e8f0;
+            --border-medium: #cbd5e1;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: var(--bg-white);
+            border-bottom: 2px solid var(--border-light);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .header-title i {
+            color: var(--secondary-teal);
+            margin-right: 0.75rem;
+            font-size: 1.75rem;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            border: 1px solid var(--border-medium);
+            transition: all 0.2s ease;
+        }
+
+        .nav-btn:hover {
+            background: var(--primary-blue);
+            color: var(--bg-white);
+        }
+
+        .nav-btn i {
+            margin-right: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--bg-white);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-size: 1.5rem;
+            color: var(--bg-white);
+        }
+
+        .stat-icon.cleaning { background: var(--secondary-teal); }
+        .stat-icon.sanitizer { background: var(--success-green); }
+        .stat-icon.equipment { background: var(--warning-amber); }
+        .stat-icon.supplies { background: var(--primary-blue); }
+
+        .stat-content h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-content p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Inventory Section */
+        .inventory-section {
+            max-width: 1400px;
+            margin: 0 auto 3rem;
+            padding: 0 1rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-medium);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn.active,
+        .filter-btn:hover {
+            background: var(--primary-blue);
+            color: var(--bg-white);
+            border-color: var(--primary-blue);
+        }
+
+        /* Inventory Grid */
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .inventory-card {
+            background: var(--bg-white);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .inventory-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .card-category {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .stock-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stock-badge.high {
+            background: #dcfce7;
+            color: var(--success-green);
+        }
+
+        .stock-badge.medium {
+            background: #fef3c7;
+            color: var(--warning-amber);
+        }
+
+        .stock-badge.low {
+            background: #fee2e2;
+            color: var(--danger-red);
+        }
+
+        .card-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detail-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .detail-value {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: var(--bg-secondary);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 0.75rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-fill.high { background: var(--success-green); }
+        .progress-fill.medium { background: var(--warning-amber); }
+        .progress-fill.low { background: var(--danger-red); }
+
+        .card-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 0.5rem;
+            border: 1px solid var(--border-medium);
+            background: var(--bg-white);
+            color: var(--text-secondary);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn:hover {
+            background: var(--primary-blue);
+            color: var(--bg-white);
+            border-color: var(--primary-blue);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .filter-buttons {
+                flex-wrap: wrap;
+            }
+
+            .inventory-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-buttons {
+                flex-wrap: wrap;
+            }
+        }
+
+        /* Loading States */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid var(--border-medium);
+            border-top-color: var(--primary-blue);
+            border-radius: 50%;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <h1 class="header-title">
+                <i class="fas fa-spray-can"></i>
+                LivClean Hygiene Inventory
+            </h1>
+            <div class="nav-buttons">
+                <a href="/provider/livclean" class="nav-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to LivClean
+                </a>
+                <a href="/" class="nav-btn">
+                    <i class="fas fa-home"></i>
+                    Home
+                </a>
+                <a href="/inventory" class="nav-btn">
+                    <i class="fas fa-boxes"></i>
+                    Main Inventory
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon cleaning">
+                    <i class="fas fa-spray-can"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>156</h3>
+                    <p>Cleaning Products</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon sanitizer">
+                    <i class="fas fa-hand-sparkles"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>89</h3>
+                    <p>Sanitization Items</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon equipment">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>43</h3>
+                    <p>Cleaning Equipment</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon supplies">
+                    <i class="fas fa-box"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>67</h3>
+                    <p>General Supplies</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Inventory Section -->
+    <section class="inventory-section">
+        <div class="section-header">
+            <h2 class="section-title">Hygiene Products Inventory</h2>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All Items</button>
+                <button class="filter-btn" data-filter="cleaning">Cleaning</button>
+                <button class="filter-btn" data-filter="sanitizer">Sanitizers</button>
+                <button class="filter-btn" data-filter="equipment">Equipment</button>
+                <button class="filter-btn" data-filter="supplies">Supplies</button>
+            </div>
+        </div>
+
+        <div class="inventory-grid" id="inventoryGrid">
+            <!-- Cleaning Products -->
+            <div class="inventory-card" data-category="cleaning">
+                <div class="card-header">
+                    <div>
+                        <h3 class="card-title">Multipurpose Cleaner</h3>
+                        <p class="card-category">Surface Cleaning</p>
+                    </div>
+                    <span class="stock-badge high">In Stock</span>
+                </div>
+                <div class="card-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Current Stock</span>
+                        <span class="detail-value">24 bottles</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Min. Required</span>
+                        <span class="detail-value">10 bottles</span>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill high" style="width: 85%"></div>
+                </div>
+                <div class="card-actions">
+                    <button class="action-btn">
+                        <i class="fas fa-eye"></i> View Details
+                    </button>
+                    <button class="action-btn">
+                        <i class="fas fa-plus"></i> Reorder
+                    </button>
+                </div>
+            </div>
+
+            <!-- Sanitization Items -->
+            <div class="inventory-card" data-category="sanitizer">
+                <div class="card-header">
+                    <div>
+                        <h3 class="card-title">Hand Sanitizer (70% Alcohol)</h3>
+                        <p class="card-category">Personal Hygiene</p>
+                    </div>
+                    <span class="stock-badge medium">Medium</span>
+                </div>
+                <div class="card-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Current Stock</span>
+                        <span class="detail-value">15 bottles</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Min. Required</span>
+                        <span class="detail-value">8 bottles</span>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill medium" style="width: 60%"></div>
+                </div>
+                <div class="card-actions">
+                    <button class="action-btn">
+                        <i class="fas fa-eye"></i> View Details
+                    </button>
+                    <button class="action-btn">
+                        <i class="fas fa-plus"></i> Reorder
+                    </button>
+                </div>
+            </div>
+
+            <!-- Equipment -->
+            <div class="inventory-card" data-category="equipment">
+                <div class="card-header">
+                    <div>
+                        <h3 class="card-title">Microfiber Cleaning Cloths</h3>
+                        <p class="card-category">Cleaning Equipment</p>
+                    </div>
+                    <span class="stock-badge low">Low Stock</span>
+                </div>
+                <div class="card-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Current Stock</span>
+                        <span class="detail-value">12 packs</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Min. Required</span>
+                        <span class="detail-value">20 packs</span>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill low" style="width: 25%"></div>
+                </div>
+                <div class="card-actions">
+                    <button class="action-btn">
+                        <i class="fas fa-eye"></i> View Details
+                    </button>
+                    <button class="action-btn">
+                        <i class="fas fa-exclamation-triangle"></i> Urgent Order
+                    </button>
+                </div>
+            </div>
+
+            <!-- General Supplies -->
+            <div class="inventory-card" data-category="supplies">
+                <div class="card-header">
+                    <div>
+                        <h3 class="card-title">Disposable Gloves (Nitrile)</h3>
+                        <p class="card-category">Personal Protection</p>
+                    </div>
+                    <span class="stock-badge high">In Stock</span>
+                </div>
+                <div class="card-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Current Stock</span>
+                        <span class="detail-value">50 boxes</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Min. Required</span>
+                        <span class="detail-value">20 boxes</span>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill high" style="width: 90%"></div>
+                </div>
+                <div class="card-actions">
+                    <button class="action-btn">
+                        <i class="fas fa-eye"></i> View Details
+                    </button>
+                    <button class="action-btn">
+                        <i class="fas fa-plus"></i> Reorder
+                    </button>
+                </div>
+            </div>
+
+            <!-- More inventory items can be added here -->
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Filter functionality
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const inventoryCards = document.querySelectorAll('.inventory-card');
+
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const filter = this.dataset.filter;
+
+                    // Update active filter button
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+
+                    // Filter inventory cards
+                    inventoryCards.forEach(card => {
+                        if (filter === 'all' || card.dataset.category === filter) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+
+            // Action button functionality
+            document.querySelectorAll('.action-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const action = this.textContent.trim();
+                    const cardTitle = this.closest('.inventory-card').querySelector('.card-title').textContent;
+
+                    // Add loading state
+                    this.classList.add('loading');
+
+                    // Simulate API call
+                    setTimeout(() => {
+                        this.classList.remove('loading');
+                        alert(`${action} action for "${cardTitle}" - Feature coming soon!`);
+                    }, 1000);
+                });
+            });
+
+            // Simulate real-time stock updates
+            setInterval(() => {
+                const progressBars = document.querySelectorAll('.progress-fill');
+                progressBars.forEach(bar => {
+                    const currentWidth = parseInt(bar.style.width);
+                    if (Math.random() > 0.8) {
+                        const newWidth = Math.max(10, Math.min(100, currentWidth + (Math.random() - 0.5) * 5));
+                        bar.style.width = newWidth + '%';
+
+                        // Update stock badge based on new width
+                        const badge = bar.closest('.inventory-card').querySelector('.stock-badge');
+                        if (newWidth >= 70) {
+                            badge.className = 'stock-badge high';
+                            badge.textContent = 'In Stock';
+                            bar.className = 'progress-fill high';
+                        } else if (newWidth >= 40) {
+                            badge.className = 'stock-badge medium';
+                            badge.textContent = 'Medium';
+                            bar.className = 'progress-fill medium';
+                        } else {
+                            badge.className = 'stock-badge low';
+                            badge.textContent = 'Low Stock';
+                            bar.className = 'progress-fill low';
+                        }
+                    }
+                });
+            }, 5000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Services - Derivco Health Center</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0ea5e9;
+            --primary-dark: #0284c7;
+            --secondary: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --light: #f8fafc;
+            --dark: #f8fafc;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9;
+            color: #334155;
+            min-height: 100vh;
+        }
+        
+        .medical-header {
+            background: linear-gradient(120deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: #1a202c;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 20px rgba(14, 165, 233, 0.2);
+        }
+        
+        .medical-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .medical-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stats-card {
+            border-radius: 12px;
+            color: #1a202c;
+            padding: 1.5rem;
+        }
+        
+        .stats-open {
+            background: linear-gradient(120deg, var(--primary) 0%, var(--primary-dark) 100%);
+        }
+        
+        .stats-critical {
+            background: linear-gradient(120deg, var(--danger) 0%, #dc2626 100%);
+        }
+        
+        .stats-warning {
+            background: linear-gradient(120deg, var(--warning) 0%, #d97706 100%);
+        }
+        
+        .stats-info {
+            background: linear-gradient(120deg, var(--secondary) 0%, #059669 100%);
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: #1a202c;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: #f8fafc;
+            transform: translateY(-2px);
+        }
+        
+        .nav-item {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            color: #64748b;
+            font-weight: 500;
+        }
+        
+        .nav-item:hover, .nav-item.active {
+            background: #f1f5f9;
+            color: var(--primary);
+        }
+        
+        .nav-item.active {
+            font-weight: 600;
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .status-critical {
+            background-color: #fef2f2;
+            color: var(--danger);
+        }
+        
+        .status-warning {
+            background-color: #fffbeb;
+            color: var(--warning);
+        }
+        
+        .status-normal {
+            background-color: #f0fdf4;
+            color: var(--secondary);
+        }
+        
+        .status-expired {
+            background-color: #f8fafc;
+            color: #64748b;
+        }
+        
+        .medical-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        
+        .medical-table th {
+            background-color: #f8fafc;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #64748b;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .medical-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .medical-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .medical-table tr:hover {
+            background-color: #f8fafc;
+        }
+        
+        .quick-action {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            border: 1px solid #e2e8f0;
+            text-align: center;
+        }
+        
+        .quick-action:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transform: translateY(-3px);
+        }
+        
+        .emergency-contact {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            border-left: 4px solid var(--danger);
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
+        }
+        
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            color: #1a202c;
+            font-weight: 600;
+            z-index: 1001;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            animation: slideIn 0.3s ease;
+        }
+        
+        .toast-success {
+            background: var(--secondary);
+        }
+        
+        .toast-info {
+            background: var(--primary);
+        }
+        
+        .toast-error {
+            background: var(--danger);
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .medical-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            background: rgba(14, 165, 233, 0.1);
+            color: var(--primary);
+        }
+        
+        @media (max-width: 768px) {
+            .medical-header {
+                border-radius: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Navigation -->
+    <header class="medical-header p-4">
+        <div class="container mx-auto">
+            <!-- Breadcrumb -->
+            <nav class="flex items-center space-x-2 text-blue-100 mb-4">
+                <button onclick="history.back()" class="hover:text-white transition-colors mr-4 flex items-center">
+                    <i class="fas fa-arrow-left mr-2"></i>Back
+                </button>
+                <div class="h-4 border-l border-blue-200 mr-4"></div>
+                <a href="/" class="hover:text-white transition-colors">
+                    <i class="fas fa-home"></i> Home
+                </a>
+                <i class="fas fa-chevron-right text-blue-200"></i>
+                <span class="font-semibold text-white">Medical Services</span>
+            </nav>
+            
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="bg-white p-2 rounded-lg">
+                        <i class="fas fa-hospital text-2xl text-blue-500"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold">Derivco Health Center</h1>
+                        <p class="text-blue-100 text-sm">Medical Services Dashboard</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <button class="bg-white bg-opacity-20 p-2 rounded-lg hover:bg-opacity-30 transition">
+                        <i class="fas fa-bell"></i>
+                    </button>
+                    <button class="bg-white bg-opacity-20 p-2 rounded-lg hover:bg-opacity-30 transition">
+                        <i class="fas fa-user-md"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto p-4 mt-4">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <!-- Sidebar Navigation -->
+            <div class="lg:col-span-1">
+                <div class="medical-card p-4 mb-6">
+                    <h2 class="font-bold text-lg mb-4 text-slate-700">Medical Services</h2>
+                    <nav class="space-y-2">
+                        <a href="javascript:void(0)" onclick="showSection('dashboard')" class="nav-item active block" id="nav-dashboard">
+                            <i class="fas fa-tachometer-alt mr-2"></i> Dashboard
+                        </a>
+                        <a href="javascript:void(0)" onclick="showSection('incident-reports')" class="nav-item block" id="nav-incident-reports">
+                            <i class="fas fa-file-medical mr-2"></i> Incident Reports
+                        </a>
+                        <a href="javascript:void(0)" onclick="showSection('patient-records')" class="nav-item block" id="nav-patient-records">
+                            <i class="fas fa-user-injured mr-2"></i> Patient Records
+                        </a>
+                        <a href="javascript:void(0)" onclick="showSection('first-aid-kits')" class="nav-item block" id="nav-first-aid-kits">
+                            <i class="fas fa-first-aid mr-2"></i> First Aid Kits
+                        </a>
+                        <a href="javascript:void(0)" onclick="showSection('equipment')" class="nav-item block" id="nav-equipment">
+                            <i class="fas fa-stethoscope mr-2"></i> Medical Equipment
+                        </a>
+                        <a href="#" class="nav-item block">
+                            <i class="fas fa-procedures mr-2"></i> Emergency Protocols
+                        </a>
+                        <a href="#" class="nav-item block">
+                            <i class="fas fa-heartbeat mr-2"></i> Vital Signs
+                        </a>
+                    </nav>
+                    
+                    <div class="mt-8">
+                        <h2 class="font-bold text-lg mb-4 text-slate-700">Quick Actions</h2>
+                        <button onclick="openIncidentReport()" class="btn-primary w-full mb-3">
+                            <i class="fas fa-plus-circle mr-2"></i>New Incident
+                        </button>
+                        <button onclick="openEmergencyProtocols()" class="btn-secondary w-full">
+                            <i class="fas fa-ambulance mr-2"></i>Emergency Protocols
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Emergency Contacts -->
+                <div class="medical-card p-4">
+                    <h2 class="font-bold text-lg mb-4 text-slate-700">Emergency Contacts</h2>
+                    <div class="space-y-4">
+                        <div class="emergency-contact">
+                            <i class="fas fa-ambulance text-2xl text-red-500 mb-2"></i>
+                            <h3 class="font-bold">Emergency Services</h3>
+                            <p class="text-slate-600">Call 911</p>
+                            <button onclick="callEmergency('911')" class="mt-2 text-red-500 text-sm font-semibold">
+                                <i class="fas fa-phone-alt mr-1"></i> Call Now
+                            </button>
+                        </div>
+                        
+                        <div class="medical-card p-3">
+                            <div class="flex items-center">
+                                <div class="bg-blue-100 p-2 rounded-lg mr-3">
+                                    <i class="fas fa-hospital text-blue-500"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold">Local Hospital</h3>
+                                    <p class="text-slate-600 text-sm">(031) 123-4567</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="medical-card p-3">
+                            <div class="flex items-center">
+                                <div class="bg-green-100 p-2 rounded-lg mr-3">
+                                    <i class="fas fa-user-md text-green-500"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold">Company Doctor</h3>
+                                    <p class="text-slate-600 text-sm">(031) 987-6543</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main Dashboard -->
+            <div class="lg:col-span-3">
+                <!-- Stats Overview -->
+                <div id="dashboard-section" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    <div class="stats-card stats-open">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="text-sm font-semibold">OPEN INCIDENTS</h3>
+                                <p class="text-2xl font-bold mt-1">{{ stats.open_incidents or 0 }}</p>
+                            </div>
+                            <div class="bg-white bg-opacity-20 p-2 rounded-lg">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                        </div>
+                        <p class="text-xs opacity-90 mt-2">Requiring attention</p>
+                    </div>
+                    
+                    <div class="stats-card stats-critical">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="text-sm font-semibold">CRITICAL CASES</h3>
+                                <p class="text-2xl font-bold mt-1">{{ stats.critical_incidents or 0 }}</p>
+                            </div>
+                            <div class="bg-white bg-opacity-20 p-2 rounded-lg">
+                                <i class="fas fa-heartbeat"></i>
+                            </div>
+                        </div>
+                        <p class="text-xs opacity-90 mt-2">Emergency level</p>
+                    </div>
+                    
+                    <div class="stats-card stats-warning">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="text-sm font-semibold">LOW STOCK</h3>
+                                <p class="text-2xl font-bold mt-1">{{ stats.low_stock_items or 0 }}</p>
+                            </div>
+                            <div class="bg-white bg-opacity-20 p-2 rounded-lg">
+                                <i class="fas fa-pills"></i>
+                            </div>
+                        </div>
+                        <p class="text-xs opacity-90 mt-2">Medical supplies</p>
+                    </div>
+                    
+                    <div class="stats-card stats-info">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="text-sm font-semibold">EXPIRING SOON</h3>
+                                <p class="text-2xl font-bold mt-1">{{ stats.expiring_items or 0 }}</p>
+                            </div>
+                            <div class="bg-white bg-opacity-20 p-2 rounded-lg">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                        </div>
+                        <p class="text-xs opacity-90 mt-2">Next 30 days</p>
+                    </div>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div id="quick-actions-section" class="medical-card p-4 mb-6">
+                    <h2 class="font-bold text-lg mb-4 text-slate-700">Quick Actions</h2>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="quick-action cursor-pointer" onclick="openIncidentReport()">
+                            <div class="medical-icon mx-auto">
+                                <i class="fas fa-file-medical"></i>
+                            </div>
+                            <h3 class="font-semibold">New Incident</h3>
+                            <p class="text-slate-600 text-sm">Report a medical incident</p>
+                        </div>
+                        
+                        <div class="quick-action cursor-pointer" onclick="openVitalSigns()">
+                            <div class="medical-icon mx-auto">
+                                <i class="fas fa-heartbeat"></i>
+                            </div>
+                            <h3 class="font-semibold">Vital Signs</h3>
+                            <p class="text-slate-600 text-sm">Record patient vitals</p>
+                        </div>
+                        
+                        <div class="quick-action cursor-pointer" onclick="openMedicalInventory()">
+                            <div class="medical-icon mx-auto">
+                                <i class="fas fa-pills"></i>
+                            </div>
+                            <h3 class="font-semibold">Inventory</h3>
+                            <p class="text-slate-600 text-sm">Medical supplies</p>
+                        </div>
+                        
+                        <div class="quick-action cursor-pointer" onclick="openEquipmentCheck()">
+                            <div class="medical-icon mx-auto">
+                                <i class="fas fa-stethoscope"></i>
+                            </div>
+                            <h3 class="font-semibold">Equipment</h3>
+                            <p class="text-slate-600 text-sm">Check medical equipment</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Medical Activity -->
+                <div id="incident-reports-section" class="medical-card p-4 mb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="font-bold text-lg text-slate-700">Recent Medical Activity</h2>
+                        <div class="flex space-x-2">
+                            <button onclick="refreshMedicalData()" class="btn-secondary text-sm py-1 px-3">
+                                <i class="fas fa-sync-alt mr-1"></i> Refresh
+                            </button>
+                            <button onclick="exportMedicalReports()" class="btn-secondary text-sm py-1 px-3">
+                                <i class="fas fa-download mr-1"></i> Export
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="medical-table">
+                            <thead>
+                                <tr>
+                                    <th>Incident ID</th>
+                                    <th>Date/Time</th>
+                                    <th>Patient</th>
+                                    <th>Department</th>
+                                    <th>Type</th>
+                                    <th>Severity</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for incident in recent_incidents %}
+                                <tr>
+                                    <td class="font-mono text-sm">{{ incident.get('Incident ID', 'N/A')[:8] }}...</td>
+                                    <td>
+                                        <div class="text-sm font-medium">{{ incident.get('Date', 'N/A') }}</div>
+                                        <div class="text-xs text-slate-500">{{ incident.get('Time', 'N/A') }}</div>
+                                    </td>
+                                    <td>
+                                        <div class="font-medium">{{ incident.get('Patient Name', 'N/A') }}</div>
+                                        <div class="text-xs text-slate-500">{{ incident.get('Employee ID', 'N/A') }}</div>
+                                    </td>
+                                    <td>{{ incident.get('Department', 'N/A') }}</td>
+                                    <td>{{ incident.get('Incident Type', 'N/A') }}</td>
+                                    <td>
+                                        {% set severity = incident.get('Severity Level', 'Unknown') %}
+                                        {% if 'Critical' in severity %}
+                                            <span class="status-badge status-critical">{{ severity }}</span>
+                                        {% elif 'Serious' in severity %}
+                                            <span class="status-badge status-warning">{{ severity }}</span>
+                                        {% elif 'Minor' in severity %}
+                                            <span class="status-badge status-normal">{{ severity }}</span>
+                                        {% else %}
+                                            <span class="status-badge status-expired">{{ severity }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="status-badge status-warning">{{ incident.get('Status', 'Open') }}</span>
+                                    </td>
+                                    <td>
+                                        <div class="flex space-x-2">
+                                            <button onclick="viewIncident('{{ incident.get('Incident ID', '') }}')" class="text-blue-500 hover:text-blue-700" title="View Details">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button onclick="editIncident('{{ incident.get('Incident ID', '') }}')" class="text-green-500 hover:text-green-700" title="Edit Report">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button onclick="printReport('{{ incident.get('Incident ID', '') }}')" class="text-purple-500 hover:text-purple-700" title="Print Report">
+                                                <i class="fas fa-print"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Patient Treatment Records (Paramedic Forms) -->
+                <div id="patient-records-section" class="medical-card p-4 mb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="font-bold text-lg text-slate-700">
+                            <i class="fas fa-user-injured mr-2 text-blue-500"></i>
+                            Patient Treatment Records
+                        </h2>
+                        <div class="flex space-x-2">
+                            <button onclick="openNewPatientRecord()" class="btn-primary text-sm py-2 px-4">
+                                <i class="fas fa-plus mr-1"></i> New Record
+                            </button>
+                            <button onclick="exportPatientRecords()" class="btn-secondary text-sm py-2 px-4">
+                                <i class="fas fa-download mr-1"></i> Export
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Patient Records Summary Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-blue-600 text-sm font-semibold">Total Records</p>
+                                    <p class="text-2xl font-bold text-blue-800">{{ stats.total_patient_records or 0 }}</p>
+                                </div>
+                                <i class="fas fa-clipboard-list text-2xl text-blue-500"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-green-600 text-sm font-semibold">Active Records</p>
+                                    <p class="text-2xl font-bold text-green-800">{{ stats.active_patient_records or 0 }}</p>
+                                </div>
+                                <i class="fas fa-check-circle text-2xl text-green-500"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-orange-50 border-l-4 border-orange-500 p-4 rounded">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-orange-600 text-sm font-semibold">Recent (30 days)</p>
+                                    <p class="text-2xl font-bold text-orange-800">{{ stats.recent_patient_records or 0 }}</p>
+                                </div>
+                                <i class="fas fa-calendar-alt text-2xl text-orange-500"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Patient Records Table -->
+                    <div class="overflow-x-auto">
+                        <table class="medical-table">
+                            <thead>
+                                <tr>
+                                    <th>Record ID</th>
+                                    <th>Date</th>
+                                    <th>Patient Name</th>
+                                    <th>What Happened?</th>
+                                    <th>Treatment Given</th>
+                                    <th>First Aider</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if patient_records %}
+                                    {% for record in patient_records %}
+                                    <tr>
+                                        <td>
+                                            <span class="font-mono text-sm">{{ record['Record ID'] }}</span>
+                                        </td>
+                                        <td>
+                                            <div class="text-sm">
+                                                <div class="font-medium">{{ record.Date or 'N/A' }}</div>
+                                                <div class="text-slate-500">{{ record.Time or '' }}</div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="font-medium">{{ record['Patient Name'] or 'N/A' }}</div>
+                                            <div class="text-sm text-slate-500">{{ record.Department or '' }}</div>
+                                        </td>
+                                        <td>
+                                            <div class="text-sm max-w-xs truncate">
+                                                {{ record['What happened?'] or 'N/A' }}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="text-sm max-w-xs truncate">
+                                                {{ record['Treatment Given'] or 'N/A' }}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="text-sm font-medium">
+                                                {{ record['Name of First Aider'] or 'N/A' }}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="status-badge {% if record.Status == 'Active' %}status-normal{% else %}status-expired{% endif %}">
+                                                {{ record.Status or 'Unknown' }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="flex space-x-2">
+                                                <button onclick="viewPatientRecord('{{ record['Record ID'] }}')" 
+                                                        class="text-blue-500 hover:text-blue-700" 
+                                                        title="View Details">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button onclick="editPatientRecord('{{ record['Record ID'] }}')" 
+                                                        class="text-green-500 hover:text-green-700" 
+                                                        title="Edit Record">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button onclick="printPatientRecord('{{ record['Record ID'] }}')" 
+                                                        class="text-purple-500 hover:text-purple-700" 
+                                                        title="Print Record">
+                                                    <i class="fas fa-print"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="8" class="text-center py-8 text-slate-500">
+                                            <div class="flex flex-col items-center">
+                                                <i class="fas fa-clipboard text-4xl text-slate-300 mb-4"></i>
+                                                <p class="text-lg font-medium">No patient treatment records found</p>
+                                                <p class="text-sm">Click "New Record" to create the first patient treatment record</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Contents of First Aid Box (From Paramedic 2.pdf) -->
+                <div id="first-aid-kits-section" class="medical-card p-4 mb-6" style="display: none;">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="font-bold text-lg text-slate-700">
+                            <i class="fas fa-first-aid mr-2 text-red-500"></i>
+                            Contents of First Aid Box
+                        </h2>
+                        <div class="flex space-x-2">
+                            <button onclick="checkFirstAidBox()" class="btn-primary text-sm py-2 px-4">
+                                <i class="fas fa-check-circle mr-1"></i> Check Box
+                            </button>
+                            <button onclick="restockFirstAidBox()" class="btn-secondary text-sm py-2 px-4">
+                                <i class="fas fa-box mr-1"></i> Restock
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gradient-to-r from-red-50 to-pink-50 border-l-4 border-red-500 p-4 rounded mb-4">
+                        <div class="flex items-center">
+                            <i class="fas fa-shield-alt text-red-500 text-lg mr-2"></i>
+                            <p class="text-red-700 font-medium">Comprehensive First Aid Kit Inventory - Essential Emergency Medical Supplies for Workplace Safety</p>
+                        </div>
+                    </div>
+                    
+                    <!-- First Aid Box Contents Table -->
+                    <div class="overflow-x-auto">
+                        <table class="medical-table">
+                            <thead>
+                                <tr>
+                                    <th>Item No.</th>
+                                    <th>Item Name</th>
+                                    <th>Quantity</th>
+                                    <th>Stock</th>
+                                    <th>Unit</th>
+                                    <th>Status</th>
+                                    <th>Expiry Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if first_aid_inventory %}
+                                    {% for item in first_aid_inventory %}
+                                    <tr class="{% if item.Stock <= item['Min Level'] %}bg-red-50{% endif %}">
+                                        <td>
+                                            <span class="bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-0.5 rounded">{{ item['Item No'] }}</span>
+                                        </td>
+                                        <td>
+                                            <div class="font-medium">{{ item['Item Name'] }}</div>
+                                            <div class="text-sm text-slate-500">{{ item['Item Code'] }}</div>
+                                        </td>
+                                        <td>
+                                            <span class="text-lg font-bold text-blue-600">{{ item.Quantity }}</span>
+                                        </td>
+                                        <td>
+                                            <span class="text-lg font-bold {% if item.Stock <= item['Min Level'] %}text-red-600{% else %}text-green-600{% endif %}">
+                                                {{ item.Stock }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="text-sm text-slate-600">{{ item.Unit }}</span>
+                                        </td>
+                                        <td>
+                                            {% if item.Stock <= item['Min Level'] %}
+                                                <span class="status-badge status-critical">Low Stock</span>
+                                            {% elif item.Status == 'Available' %}
+                                                <span class="status-badge status-normal">{{ item.Status }}</span>
+                                            {% else %}
+                                                <span class="status-badge status-warning">{{ item.Status }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="text-sm">{{ item['Expiry Date'] or 'N/A' }}</div>
+                                        </td>
+                                        <td>
+                                            <div class="flex space-x-2">
+                                                <button onclick="useFirstAidItem('{{ item['Item Code'] }}')" 
+                                                        class="text-blue-500 hover:text-blue-700" 
+                                                        title="Use Item">
+                                                    <i class="fas fa-minus-circle"></i>
+                                                </button>
+                                                <button onclick="restockItem('{{ item['Item Code'] }}')" 
+                                                        class="text-green-500 hover:text-green-700" 
+                                                        title="Restock">
+                                                    <i class="fas fa-plus-circle"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="8" class="text-center py-8 text-slate-500">
+                                            <div class="flex flex-col items-center">
+                                                <i class="fas fa-first-aid text-4xl text-slate-300 mb-4"></i>
+                                                <p class="text-lg font-medium">First Aid Box contents not loaded</p>
+                                                <p class="text-sm">Please check the medical inventory system</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- First Aid Box Summary -->
+                    <div class="mt-4 p-4 bg-slate-50 rounded-lg">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
+                            <div>
+                                <div class="text-2xl font-bold text-blue-600">25</div>
+                                <div class="text-sm text-slate-600">Total Items</div>
+                            </div>
+                            <div>
+                                <div class="text-2xl font-bold text-green-600">
+                                    {{ first_aid_inventory|selectattr('Status', 'equalto', 'Available')|list|length if first_aid_inventory else 0 }}
+                                </div>
+                                <div class="text-sm text-slate-600">Available</div>
+                            </div>
+                            <div>
+                                <div class="text-2xl font-bold text-red-600">
+                                    {{ first_aid_inventory|selectattr('Stock', 'lessthan', 2)|list|length if first_aid_inventory else 0 }}
+                                </div>
+                                <div class="text-sm text-slate-600">Low Stock</div>
+                            </div>
+                            <div>
+                                <div class="text-2xl font-bold text-orange-600">
+                                    {{ expiring_items|length if expiring_items else 0 }}
+                                </div>
+                                <div class="text-sm text-slate-600">Expiring Soon</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Equipment Status & Statistics -->
+                <div id="equipment-section" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Equipment Status -->
+                    <div class="medical-card p-4">
+                        <h2 class="font-bold text-lg mb-4 text-slate-700">Equipment Status</h2>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                                <div class="flex items-center">
+                                    <div class="bg-green-100 p-2 rounded-lg mr-3">
+                                        <i class="fas fa-heartbeat text-green-500"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-medium">AED Devices</h3>
+                                        <p class="text-sm text-slate-500">All units operational</p>
+                                    </div>
+                                </div>
+                                <span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded">OK</span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                                <div class="flex items-center">
+                                    <div class="bg-yellow-100 p-2 rounded-lg mr-3">
+                                        <i class="fas fa-first-aid text-yellow-500"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-medium">First Aid Kits</h3>
+                                        <p class="text-sm text-slate-500">{{ stats.low_stock_items or 0 }} need restocking</p>
+                                    </div>
+                                </div>
+                                <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded">Warning</span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                                <div class="flex items-center">
+                                    <div class="bg-blue-100 p-2 rounded-lg mr-3">
+                                        <i class="fas fa-syringe text-blue-500"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-medium">Medical Supplies</h3>
+                                        <p class="text-sm text-slate-500">{{ stats.expiring_items or 0 }} expiring soon</p>
+                                    </div>
+                                </div>
+                                <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">Check</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Statistics -->
+                    <div class="medical-card p-4">
+                        <h2 class="font-bold text-lg mb-4 text-slate-700">Medical Statistics</h2>
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
+                                <div class="flex items-center">
+                                    <div class="bg-blue-100 p-2 rounded-lg mr-3">
+                                        <i class="fas fa-file-medical text-blue-500"></i>
+                                    </div>
+                                    <span>Total Incidents (Month)</span>
+                                </div>
+                                <span class="font-bold text-blue-500">{{ stats.recent_incidents or 0 }}</span>
+                            </div>
+                            
+                            <div class="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
+                                <div class="flex items-center">
+                                    <div class="bg-green-100 p-2 rounded-lg mr-3">
+                                        <i class="fas fa-pills text-green-500"></i>
+                                    </div>
+                                    <span>Medical Supplies</span>
+                                </div>
+                                <span class="font-bold text-green-500">{{ stats.total_medical_items or 0 }}</span>
+                            </div>
+                            
+                            <div class="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
+                                <div class="flex items-center">
+                                    <div class="bg-purple-100 p-2 rounded-lg mr-3">
+                                        <i class="fas fa-stethoscope text-purple-500"></i>
+                                    </div>
+                                    <span>Equipment Units</span>
+                                </div>
+                                <span class="font-bold text-purple-500">{{ stats.equipment_count or 0 }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Incident Report Modal -->
+    <div id="incidentModal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-slate-800 flex items-center">
+                    <i class="fas fa-file-medical mr-3 text-blue-500"></i>
+                    Medical Incident Report
+                </h2>
+                <button onclick="closeModal('incidentModal')" class="text-slate-500 hover:text-slate-700 text-xl">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="incidentReportForm" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="form-group">
+                        <label class="form-label">Date</label>
+                        <input type="date" id="incidentDate" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Time</label>
+                        <input type="time" id="incidentTime" class="form-input" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Severity Level</label>
+                    <select id="severityLevel" class="form-input" required>
+                        <option value="">Select severity...</option>
+                        <option value="Minor - First Aid Only">Minor - First Aid Only</option>
+                        <option value="Moderate - Medical Attention Recommended">Moderate - Medical Attention</option>
+                        <option value="Serious - Hospital Treatment Required">Serious - Hospital Required</option>
+                        <option value="Critical - Emergency Services Called">Critical - Emergency Services</option>
+                    </select>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="form-group">
+                        <label class="form-label">Patient Name</label>
+                        <input type="text" id="patientName" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Employee ID</label>
+                        <input type="text" id="employeeID" class="form-input" required>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="form-group">
+                        <label class="form-label">Department</label>
+                        <select id="department" class="form-input" required>
+                            <option value="">Select department...</option>
+                            <option value="Facilities">Facilities</option>
+                            <option value="IT">IT</option>
+                            <option value="Operations">Operations</option>
+                            <option value="Security">Security</option>
+                            <option value="Maintenance">Maintenance</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Contact Number</label>
+                        <input type="tel" id="contactNumber" class="form-input" required>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end space-x-4 pt-6">
+                    <button type="button" onclick="closeModal('incidentModal')" class="btn-secondary">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-save mr-2"></i>Save Report
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+    // Initialize medical dashboard
+    document.addEventListener('DOMContentLoaded', function() {
+        loadMedicalData();
+        setCurrentDateTime();
+        setupEventListeners();
+    });
+
+    function loadMedicalData() {
+        fetch('/api/medical/dashboard')
+            .then(response => response.json())
+            .then(data => {
+                updateMedicalStats(data.stats);
+            })
+            .catch(error => console.error('Error loading medical data:', error));
+    }
+
+    function setCurrentDateTime() {
+        const now = new Date();
+        document.getElementById('incidentDate').value = now.toISOString().split('T')[0];
+        document.getElementById('incidentTime').value = now.toTimeString().slice(0, 5);
+    }
+
+    function openIncidentReport() {
+        document.getElementById('incidentModal').classList.remove('hidden');
+        setCurrentDateTime();
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.add('hidden');
+    }
+
+    function setupEventListeners() {
+        document.getElementById('incidentReportForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            submitIncidentReport();
+        });
+    }
+
+    function submitIncidentReport() {
+        // Collect form data and submit
+        showMedicalToast('Incident report saved successfully', 'success');
+        closeModal('incidentModal');
+    }
+
+    function showMedicalToast(message, type) {
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-triangle' : 'info-circle'} mr-2"></i>${message}`;
+        document.body.appendChild(toast);
+
+        setTimeout(() => toast.remove(), 4000);
+    }
+
+    function callEmergency(number) {
+        if (confirm(`Call emergency services (${number})?`)) {
+            showMedicalToast('Emergency services contacted', 'success');
+        }
+    }
+
+    // Additional medical functions
+    function openMedicalInventory() { showMedicalToast('Opening medical inventory...', 'info'); }
+    function openEmergencyProtocols() { showMedicalToast('Loading emergency protocols...', 'info'); }
+    function openFirstAidKits() { showMedicalToast('Accessing first aid kits...', 'info'); }
+    function openMedicalSupplies() { showMedicalToast('Opening medical supplies...', 'info'); }
+    function openEquipmentCheck() { showMedicalToast('Loading equipment check...', 'info'); }
+    function openVitalSigns() { showMedicalToast('Opening vital signs monitor...', 'info'); }
+    function openEmergencyContacts() { showMedicalToast('Loading emergency contacts...', 'info'); }
+    function refreshMedicalData() { showMedicalToast('Medical data refreshed', 'success'); }
+    function exportMedicalReports() { showMedicalToast('Export functionality coming soon', 'info'); }
+    function viewIncident(id) { showMedicalToast('Loading incident details...', 'info'); }
+    function editIncident(id) { showMedicalToast('Opening incident editor...', 'info'); }
+    function printReport(id) { showMedicalToast('Preparing report for printing...', 'info'); }
+    
+    // Patient Treatment Records Functions (Paramedic Forms)
+    function openNewPatientRecord() {
+        showMedicalToast('Opening new patient treatment record form...', 'info');
+        // TODO: Implement modal form based on paramedic PDF structure
+    }
+    
+    function exportPatientRecords() {
+        showMedicalToast('Exporting patient treatment records...', 'info');
+        // TODO: Implement CSV/PDF export functionality
+    }
+    
+    function viewPatientRecord(recordId) {
+        showMedicalToast('Loading patient record details: ' + recordId, 'info');
+        // TODO: Implement detailed view modal
+    }
+    
+    function editPatientRecord(recordId) {
+        showMedicalToast('Opening record editor for: ' + recordId, 'info');
+        // TODO: Implement edit modal with paramedic form fields
+    }
+    
+    function printPatientRecord(recordId) {
+        showMedicalToast('Preparing patient record for printing: ' + recordId, 'info');
+        // TODO: Implement print functionality matching paramedic forms
+    }
+    
+    // First Aid Box Functions (Contents from Paramedic 2.pdf)
+    function checkFirstAidBox() {
+        showMedicalToast('Checking First Aid Box contents...', 'info');
+        // TODO: Implement First Aid Box inspection checklist
+    }
+    
+    function restockFirstAidBox() {
+        showMedicalToast('Opening First Aid Box restock form...', 'info');
+        // TODO: Implement bulk restock functionality
+    }
+    
+    function useFirstAidItem(itemCode) {
+        showMedicalToast('Recording usage of item: ' + itemCode, 'info');
+        // TODO: Implement item usage tracking and stock reduction
+    }
+    
+    function restockItem(itemCode) {
+        showMedicalToast('Restocking item: ' + itemCode, 'info');
+        // TODO: Implement individual item restocking
+    }
+    
+    // Navigation Section Management
+    function showSection(section) {
+        // Hide all sections first
+        const sections = [
+            'dashboard-section', 'quick-actions-section', 'incident-reports-section', 
+            'patient-records-section', 'first-aid-kits-section', 'equipment-section'
+        ];
+        
+        sections.forEach(function(sectionId) {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                element.style.display = 'none';
+            }
+        });
+        
+        // Remove active class from all navigation items
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach(function(item) {
+            item.classList.remove('active');
+        });
+        
+        // Show the selected section(s) and activate nav item
+        if (section === 'dashboard') {
+            document.getElementById('dashboard-section').style.display = 'grid';
+            document.getElementById('quick-actions-section').style.display = 'block';
+            document.getElementById('incident-reports-section').style.display = 'block';
+            document.getElementById('equipment-section').style.display = 'grid';
+            document.getElementById('nav-dashboard').classList.add('active');
+            showMedicalToast('Dashboard view loaded', 'info');
+        } else if (section === 'incident-reports') {
+            document.getElementById('incident-reports-section').style.display = 'block';
+            document.getElementById('nav-incident-reports').classList.add('active');
+            showMedicalToast('Incident Reports section loaded', 'info');
+        } else if (section === 'patient-records') {
+            document.getElementById('patient-records-section').style.display = 'block';
+            document.getElementById('nav-patient-records').classList.add('active');
+            showMedicalToast('Patient Records section loaded', 'info');
+        } else if (section === 'first-aid-kits') {
+            document.getElementById('first-aid-kits-section').style.display = 'block';
+            document.getElementById('nav-first-aid-kits').classList.add('active');
+            showMedicalToast('First Aid Kits inventory loaded', 'success');
+        } else if (section === 'equipment') {
+            document.getElementById('equipment-section').style.display = 'grid';
+            document.getElementById('nav-equipment').classList.add('active');
+            showMedicalToast('Medical Equipment section loaded', 'info');
+        }
+    }
+    </script>
+
+    <!-- Footer -->
+    <footer style="background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%); color: #1a202c; text-align: center; padding: 2rem 1rem; margin-top: 2rem;">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <div style="margin-bottom: 1rem;">
+                <h4 style="margin-bottom: 0.5rem; color: #1a202c; font-size: 1.1rem;">Designed by Sifiso Cyprian Shezi</h4>
+                <p style="color: #bdc3c7; margin: 0;">Facilities Assistant Level 1 — Derivco Durban | Transforming facility management through innovation</p>
+            </div>
+            <div style="border-top: 1px solid #4a5568; padding-top: 1rem;">
+                <p style="color: #9ca3af; font-size: 0.875rem; margin: 0;">&copy; 2025 Derivco Facilities Management System. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

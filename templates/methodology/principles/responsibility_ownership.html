@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsibility & Ownership - Sifiso Methodology Stewardship Principles</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --derivco-blue: #003366;
+            --derivco-teal: #008080;
+            --derivco-blue-light: rgba(0, 51, 102, 0.1);
+            --derivco-teal-light: rgba(0, 128, 128, 0.1);
+            --stat-green: #00FF99;
+            --text-gray: #4a5568;
+            --primary-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--primary-bg);
+            min-height: 100vh;
+            color: #1a202c;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--derivco-blue) 0%, var(--derivco-teal) 100%);
+            color: #1a202c;
+            position: relative;
+            overflow: hidden;
+            padding: 2rem 0;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.3;
+        }
+
+        .methodology-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .methodology-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 128, 128, 0.2);
+        }
+
+        .principle-card {
+            border-left: 4px solid var(--derivco-blue);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .principle-card:hover {
+            border-left: 4px solid var(--derivco-teal);
+            transform: translateX(5px) scale(1.02);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 2rem;
+            border-left: 2px solid var(--derivco-teal);
+            margin-left: 1rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -0.5rem;
+            top: 0;
+            width: 1rem;
+            height: 1rem;
+            border-radius: 50%;
+            background: var(--derivco-teal);
+        }
+
+        .stat-badge {
+            background: linear-gradient(135deg, var(--derivco-blue) 0%, var(--derivco-teal) 100%);
+            color: #1a202c;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .impact-metric {
+            background: var(--card-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .impact-metric:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 128, 128, 0.2);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-500 { animation-delay: 0.5s; }
+
+
+        .accountability-framework {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .framework-item {
+            background: var(--card-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .framework-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 128, 128, 0.2);
+        }
+
+        .ownership-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--derivco-blue) 0%, var(--derivco-teal) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b border-teal-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="text-xl font-semibold text-teal-400">Derivco Facilities</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/methodology" class="text-blue-600 hover:text-blue-800 px-3 py-2 rounded-md font-medium flex items-center gap-2">
+                        <i class="fas fa-arrow-left"></i> Back to Methodology
+                    </a>
+                    <a href="/" class="text-teal-300 hover:text-teal-100 px-3 py-2 rounded-md">Home</a>
+                    <a href="/inventory" class="text-teal-300 hover:text-teal-100 px-3 py-2 rounded-md">Inventory</a>
+                    <a href="/methodology" class="bg-teal-600 text-gray-900 px-3 py-2 rounded-md font-medium">Methodology</a>
+                    <a href="/signout/register" class="text-teal-300 hover:text-teal-100 px-3 py-2 rounded-md">Sign-Out</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero-section py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            <div class="mb-6 animate-fade-in-up">
+                <div class="w-24 h-24 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-shield-alt text-4xl text-teal-400"></i>
+                </div>
+                <h1 class="text-3xl md:text-4xl font-bold mb-4">Responsibility & Ownership</h1>
+                <p class="text-lg md:text-xl opacity-90 mb-6 text-teal-200">Stewardship Principle 1 of The Sifiso Methodology</p>
+                <p class="text-xl max-w-3xl mx-auto text-teal-100">
+                    Personal accountability and ownership of outcomes - the cornerstone of exceptional facilities stewardship
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <!-- Introduction -->
+        <div class="methodology-card p-8 mb-12 animate-fade-in-up">
+            <h2 class="text-3xl font-bold text-gray-900 mb-6 flex items-center">
+                <i class="fas fa-hand-point-up text-teal-400 mr-3"></i>
+                The Foundation of Stewardship
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <p class="text-lg text-gray-300 mb-6">
+                        Responsibility and Ownership represents the fundamental principle that drives excellence in facilities
+                        management. It establishes a culture where every team member takes personal accountability for
+                        outcomes, decisions, and the continuous improvement of operations.
+                    </p>
+
+                    <div class="bg-teal-900 bg-opacity-30 border-l-4 border-teal-500 p-4 rounded-r-lg mb-6">
+                        <h4 class="font-semibold text-teal-300 mb-2">Core Philosophy</h4>
+                        <p class="text-teal-200">
+                            "True stewardship begins when we take ownership not just of our tasks, but of the outcomes,
+                            the process improvements, and the legacy we leave for those who follow."
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg border border-teal-500 border-opacity-30">
+                    <h4 class="font-semibold text-gray-900 mb-4">Ownership Dimensions</h4>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="bg-teal-900 bg-opacity-50 p-2 rounded-lg mr-4">
+                                <i class="fas fa-bullseye text-teal-400"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-900">Outcome Ownership</h5>
+                                <p class="text-sm text-gray-400">Accountable for results, not just activities</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <div class="bg-teal-900 bg-opacity-50 p-2 rounded-lg mr-4">
+                                <i class="fas fa-route text-teal-400"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-900">Process Ownership</h5>
+                                <p class="text-sm text-gray-400">Responsible for improving how work gets done</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <div class="bg-teal-900 bg-opacity-50 p-2 rounded-lg mr-4">
+                                <i class="fas fa-monument text-teal-400"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-900">Legacy Ownership</h5>
+                                <p class="text-sm text-gray-400">Building systems that outlast individual tenure</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Accountability Framework -->
+        <div class="methodology-card p-8 mb-12 animate-fade-in-up delay-100">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">
+                <i class="fas fa-balance-scale text-teal-400 mr-3"></i>
+                Accountability Framework
+            </h2>
+
+            <div class="accountability-framework">
+                <div class="framework-item">
+                    <div class="ownership-icon">
+                        <i class="fas fa-crosshairs"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 mb-2">Clear Expectations</h4>
+                    <p class="text-sm text-gray-400">Defined roles, responsibilities, and success metrics</p>
+                </div>
+
+                <div class="framework-item">
+                    <div class="ownership-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 mb-2">Transparent Tracking</h4>
+                    <p class="text-sm text-gray-400">Visible progress monitoring and performance dashboards</p>
+                </div>
+
+                <div class="framework-item">
+                    <div class="ownership-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 mb-2">Regular Check-ins</h4>
+                    <p class="text-sm text-gray-400">Scheduled accountability conversations and feedback loops</p>
+                </div>
+
+                <div class="framework-item">
+                    <div class="ownership-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 mb-2">Recognition Systems</h4>
+                    <p class="text-sm text-gray-400">Celebrating ownership behaviors and outcomes achieved</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Core Concepts -->
+        <div class="mb-12 animate-fade-in-up delay-200">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">
+                <i class="fas fa-lightbulb text-teal-400 mr-3"></i>
+                Core Concepts of Responsibility & Ownership
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="principle-card methodology-card p-6">
+                    <div class="w-14 h-14 bg-teal-900 bg-opacity-50 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-user-check text-2xl text-teal-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Personal Accountability</h3>
+                    <p class="text-gray-400 mb-4">
+                        Taking full responsibility for individual performance, decisions, and their consequences in facilities operations.
+                    </p>
+                    <ul class="text-sm text-gray-400 space-y-2">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-teal-400 mr-2 mt-1"></i>
+                            Self-assessment and reflection
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-teal-400 mr-2 mt-1"></i>
+                            Proactive problem-solving
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-teal-400 mr-2 mt-1"></i>
+                            Commitment to excellence
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="principle-card methodology-card p-6">
+                    <div class="w-14 h-14 bg-teal-900 bg-opacity-50 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-users text-2xl text-teal-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Team Accountability</h3>
+                    <p class="text-gray-400 mb-4">
+                        Collective responsibility for team outcomes, supporting colleagues, and maintaining shared standards.
+                    </p>
+                    <ul class="text-sm text-gray-400 space-y-2">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-teal-400 mr-2 mt-1"></i>
+                            Peer support and coaching
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-teal-400 mr-2 mt-1"></i>
+                            Shared goal achievement
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-teal-400 mr-2 mt-1"></i>
+                            Collective problem-solving
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="principle-card methodology-card p-6">
+                    <div class="w-14 h-14 bg-teal-900 bg-opacity-50 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-building text-2xl text-teal-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Organizational Stewardship</h3>
+                    <p class="text-gray-400 mb-4">
+                        Long-term care and development of organizational resources, capabilities, and culture.
+                    </p>
+                    <ul class="text-sm text-gray-400 space-y-2">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-teal-400 mr-2 mt-1"></i>
+                            Resource optimization
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-teal-400 mr-2 mt-1"></i>
+                            Capability building
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-teal-400 mr-2 mt-1"></i>
+                            Culture development
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Implementation Guidelines -->
+        <div class="methodology-card p-8 mb-12 animate-fade-in-up delay-300">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8">
+                <i class="fas fa-map-marked-alt text-teal-400 mr-3"></i>
+                Implementation Guidelines
+            </h2>
+
+            <div class="space-y-8">
+                <div class="timeline-item">
+                    <div class="flex justify-between items-start mb-2">
+                        <h4 class="font-semibold text-lg">Step 1: Establish Clear Ownership</h4>
+                        <span class="stat-badge text-xs">Foundation</span>
+                    </div>
+                    <p class="text-gray-400 mb-3">
+                        Define specific areas of responsibility for each team member, ensuring no gaps or overlaps
+                        in accountability. Create ownership maps that clearly delineate who is responsible for what.
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">Role Mapping</span>
+                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">RACI Matrix</span>
+                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">Success Metrics</span>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="flex justify-between items-start mb-2">
+                        <h4 class="font-semibold text-lg">Step 2: Create Accountability Systems</h4>
+                        <span class="stat-badge text-xs">Structure</span>
+                    </div>
+                    <p class="text-gray-400 mb-3">
+                        Implement tracking mechanisms, regular check-ins, and feedback loops that make accountability
+                        visible and actionable. Establish both individual and team accountability measures.
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">Performance Dashboards</span>
+                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">Regular Reviews</span>
+                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">Feedback Mechanisms</span>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="flex justify-between items-start mb-2">
+                        <h4 class="font-semibold text-lg">Step 3: Foster Ownership Culture</h4>
+                        <span class="stat-badge text-xs">Culture</span>
+                    </div>
+                    <p class="text-gray-400 mb-3">
+                        Develop cultural practices that celebrate ownership behaviors, encourage proactive problem-solving,
+                        and support learning from mistakes. Create psychological safety for taking calculated risks.
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">Recognition Programs</span>
+                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">Learning Culture</span>
+                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">Empowerment Practices</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Practical Examples -->
+        <div class="methodology-card p-8 mb-12 animate-fade-in-up delay-400">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8">
+                <i class="fas fa-tools text-teal-400 mr-3"></i>
+                Practical Examples
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h4 class="font-semibold text-gray-900 mb-4 flex items-center">
+                        <i class="fas fa-clipboard-list text-teal-400 mr-2"></i>
+                        Daily Operations
+                    </h4>
+                    <ul class="space-y-3 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-arrow-right text-teal-400 mr-2 mt-1"></i>
+                            Taking ownership of equipment maintenance schedules and proactively identifying issues
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-arrow-right text-teal-400 mr-2 mt-1"></i>
+                            Owning the complete resolution of facility issues from identification to verification
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-arrow-right text-teal-400 mr-2 mt-1"></i>
+                            Taking responsibility for training and mentoring new team members
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-arrow-right text-teal-400 mr-2 mt-1"></i>
+                            Owning the accuracy and timeliness of inventory management systems
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-gray-900 mb-4 flex items-center">
+                        <i class="fas fa-chart-line text-teal-400 mr-2"></i>
+                        Strategic Initiatives
+                    </h4>
+                    <ul class="space-y-3 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-arrow-right text-teal-400 mr-2 mt-1"></i>
+                            Taking ownership of sustainability initiatives and their measurable outcomes
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-arrow-right text-teal-400 mr-2 mt-1"></i>
+                            Owning the implementation of new technology solutions from planning to adoption
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-arrow-right text-teal-400 mr-2 mt-1"></i>
+                            Taking responsibility for vendor relationship management and performance
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-arrow-right text-teal-400 mr-2 mt-1"></i>
+                            Owning continuous improvement projects and their long-term success
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success Metrics -->
+        <div class="mb-12 animate-fade-in-up delay-400">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">
+                <i class="fas fa-chart-pie text-teal-400 mr-3"></i>
+                Success Metrics
+            </h2>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="impact-metric">
+                    <div class="text-3xl font-bold text-teal-400 mb-2">92%</div>
+                    <div class="text-sm font-semibold text-gray-900">Accountability Score</div>
+                    <div class="text-xs text-gray-400">Team ownership behaviors</div>
+                </div>
+
+                <div class="impact-metric">
+                    <div class="text-3xl font-bold text-teal-400 mb-2">85%</div>
+                    <div class="text-sm font-semibold text-gray-900">Proactive Actions</div>
+                    <div class="text-xs text-gray-400">Issues identified early</div>
+                </div>
+
+                <div class="impact-metric">
+                    <div class="text-3xl font-bold text-teal-400 mb-2">76%</div>
+                    <div class="text-sm font-semibold text-gray-900">Follow-through Rate</div>
+                    <div class="text-xs text-gray-400">Commitments completed</div>
+                </div>
+
+                <div class="impact-metric">
+                    <div class="text-3xl font-bold text-teal-400 mb-2">3.8x</div>
+                    <div class="text-sm font-semibold text-gray-900">Problem Resolution</div>
+                    <div class="text-xs text-gray-400">Speed improvement</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Steps -->
+        <div class="methodology-card p-8 mb-12 animate-fade-in-up delay-500">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8">
+                <i class="fas fa-rocket text-teal-400 mr-3"></i>
+                Action Steps to Develop Responsibility & Ownership
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h4 class="font-semibold text-gray-900 mb-4">Individual Actions</h4>
+                    <div class="space-y-3">
+                        <div class="flex items-start bg-white p-3 rounded-lg">
+                            <div class="bg-teal-900 bg-opacity-50 p-1 rounded mr-3">
+                                <i class="fas fa-user text-teal-400 text-sm"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-900 text-sm">Personal Accountability Audit</h5>
+                                <p class="text-xs text-gray-400">Regularly assess your ownership behaviors and areas for improvement</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start bg-white p-3 rounded-lg">
+                            <div class="bg-teal-900 bg-opacity-50 p-1 rounded mr-3">
+                                <i class="fas fa-target text-teal-400 text-sm"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-900 text-sm">Set Ownership Goals</h5>
+                                <p class="text-xs text-gray-400">Define specific areas where you want to increase your ownership</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start bg-white p-3 rounded-lg">
+                            <div class="bg-teal-900 bg-opacity-50 p-1 rounded mr-3">
+                                <i class="fas fa-hands-helping text-teal-400 text-sm"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-900 text-sm">Proactive Support</h5>
+                                <p class="text-xs text-gray-400">Actively look for ways to help colleagues and improve systems</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-gray-900 mb-4">Team Actions</h4>
+                    <div class="space-y-3">
+                        <div class="flex items-start bg-white p-3 rounded-lg">
+                            <div class="bg-teal-900 bg-opacity-50 p-1 rounded mr-3">
+                                <i class="fas fa-users text-teal-400 text-sm"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-900 text-sm">Team Charter</h5>
+                                <p class="text-xs text-gray-400">Create shared accountability agreements and expectations</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start bg-white p-3 rounded-lg">
+                            <div class="bg-teal-900 bg-opacity-50 p-1 rounded mr-3">
+                                <i class="fas fa-calendar text-teal-400 text-sm"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-900 text-sm">Regular Check-ins</h5>
+                                <p class="text-xs text-gray-400">Schedule ownership and accountability review sessions</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start bg-white p-3 rounded-lg">
+                            <div class="bg-teal-900 bg-opacity-50 p-1 rounded mr-3">
+                                <i class="fas fa-trophy text-teal-400 text-sm"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-900 text-sm">Celebrate Ownership</h5>
+                                <p class="text-xs text-gray-400">Recognize and celebrate examples of exceptional ownership</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Next Steps -->
+        <div class="text-center animate-fade-in-up delay-500">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Ready to Take Ownership?</h2>
+            <p class="text-lg text-gray-300 mb-8 max-w-3xl mx-auto">
+                Responsibility & Ownership forms the foundation of all stewardship excellence.
+                Start by taking ownership of your current role and gradually expand your sphere of influence.
+            </p>
+
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="/methodology/principles/sustainability-focus" class="bg-teal-600 hover:bg-teal-700 text-gray-900 font-semibold py-3 px-8 rounded-lg transition duration-300 transform hover:scale-105">
+                    Next: Sustainability Focus
+                </a>
+                <a href="/methodology" class="border border-teal-500 text-teal-400 hover:bg-teal-900 hover:bg-opacity-30 font-semibold py-3 px-8 rounded-lg transition duration-300 transform hover:scale-105">
+                    Back to Methodology
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-50 border-t border-teal-500 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Responsibility & Ownership</h3>
+                    <p class="text-gray-400">
+                        Stewardship Principle 1 of The Sifiso Methodology - The foundational principle that drives
+                        personal accountability and exceptional outcomes in facilities management.
+                    </p>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Other Principles</h3>
+                    <ul class="space-y-2">
+                        <li><a href="/methodology/principles/sustainability-focus" class="text-gray-400 hover:text-teal-400 transition">Sustainability Focus</a></li>
+                        <li><a href="/methodology/principles/stakeholder-engagement" class="text-gray-400 hover:text-teal-400 transition">Stakeholder Engagement</a></li>
+                        <li><a href="/methodology/principles/innovation-excellence" class="text-gray-400 hover:text-teal-400 transition">Innovation & Excellence</a></li>
+                        <li><a href="/methodology/principles/knowledge-sharing" class="text-gray-400 hover:text-teal-400 transition">Knowledge Sharing</a></li>
+                        <li><a href="/methodology/principles/ethical-leadership" class="text-gray-400 hover:text-teal-400 transition">Ethical Leadership</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Navigation</h3>
+                    <ul class="space-y-2">
+                        <li><a href="/methodology" class="text-gray-400 hover:text-teal-400 transition">Methodology Overview</a></li>
+                        <li><a href="/methodology/pillars/systematic-processes" class="text-gray-400 hover:text-teal-400 transition">Systematic Processes</a></li>
+                        <li><a href="/methodology/pillars/stakeholder-integration" class="text-gray-400 hover:text-teal-400 transition">Stakeholder Integration</a></li>
+                        <li><a href="/methodology/pillars/data-intelligence" class="text-gray-400 hover:text-teal-400 transition">Data Intelligence</a></li>
+                        <li><a href="/methodology/pillars/continuous-innovation" class="text-gray-400 hover:text-teal-400 transition">Continuous Innovation</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-500 text-sm">
+                <p>&copy; 2025 Derivco Facilities Management. All rights reserved. | The Sifiso Methodology - Responsibility & Ownership</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate elements on scroll
+            const animatedElements = document.querySelectorAll('.animate-fade-in-up');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = 1;
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            animatedElements.forEach(el => {
+                el.style.opacity = 0;
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(el);
+            });
+        });
+    </script>
+</body>
+</html>

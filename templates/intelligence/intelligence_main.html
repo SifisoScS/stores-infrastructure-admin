@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strategic Facilities Intelligence Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --intelligence-purple: #6366f1;
+            --intelligence-indigo: #4f46e5;
+            --intelligence-blue: #3b82f6;
+            --text-light: #4b5563;
+            --primary-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --accent-color: #8b5cf6;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--primary-bg);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, #f0f4ff 0%, #e0e7ff 50%, #dbeafe 100%);
+            color: #f8fafc;
+            position: relative;
+            overflow: hidden;
+            padding: 2.5rem 0;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-3.134-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4z' fill='%238b5cf6' fill-opacity='0.08' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+
+        .intelligence-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .intelligence-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.1);
+            border-color: #c7d2fe;
+        }
+
+        .category-card {
+            border-left: 4px solid var(--intelligence-purple);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .category-card:hover {
+            border-left: 4px solid var(--accent-color);
+            transform: translateX(5px) scale(1.02);
+        }
+
+        .dashboard-btn {
+            border: none;
+            background: var(--card-bg);
+            color: inherit;
+            cursor: pointer;
+            display: block;
+            width: 100%;
+            text-align: left;
+        }
+
+        .dashboard-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 10px 20px rgba(139, 92, 246, 0.15);
+        }
+
+        .impact-metric {
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.03);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .impact-metric:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(139, 92, 246, 0.1);
+            border-color: #c7d2fe;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-500 { animation-delay: 0.5s; }
+        
+        .nav-active {
+            background-color: #f1f5f9;
+            color: var(--intelligence-purple);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="text-xl font-semibold text-purple-600">Derivco Facilities</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="javascript:void(0)" onclick="goBack()" class="text-blue-600 hover:text-blue-800 px-3 py-2 rounded-md font-medium flex items-center gap-2">
+                        <i class="fas fa-arrow-left"></i> Back
+                    </a>
+                    <a href="/" class="text-gray-600 hover:text-purple-600 px-3 py-2 rounded-md">Home</a>
+                    <a href="/inventory" class="text-gray-600 hover:text-purple-600 px-3 py-2 rounded-md">Inventory</a>
+                    <a href="/methodology" class="text-gray-600 hover:text-purple-600 px-3 py-2 rounded-md">Methodology</a>
+                    <a href="/intelligence" class="nav-active px-3 py-2 rounded-md font-medium">Intelligence</a>
+                    <a href="/signout/register" class="text-gray-600 hover:text-purple-600 px-3 py-2 rounded-md">Sign-Out</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero-section py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            <div class="mb-6 animate-fade-in-up">
+                <i class="fas fa-brain text-5xl mb-4 opacity-90 text-purple-500"></i>
+                <h1 class="text-3xl md:text-4xl font-bold mb-4">Strategic Facilities Intelligence</h1>
+                <p class="text-lg md:text-xl opacity-90 mb-6 text-gray-700">Data-Driven Excellence in Facilities Management</p>
+
+                <!-- Quote Section -->
+                <div class="bg-white bg-opacity-80 backdrop-filter backdrop-blur-lg rounded-xl p-6 max-w-4xl mx-auto border border-purple-200 shadow-sm">
+                    <blockquote class="text-lg italic mb-4 text-gray-800">
+                        "Intelligence without action is meaningless. These dashboards transform data into decisions,
+                        insights into improvements, and analytics into achievements that drive operational excellence."
+                    </blockquote>
+                    <footer class="text-sm opacity-90 text-purple-600">
+                        — Strategic Intelligence Philosophy, Derivco Facilities Management
+                    </footer>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <!-- Core Philosophy -->
+        <div class="intelligence-card p-8 mb-12 animate-fade-in-up">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center">
+                <i class="fas fa-lightbulb text-purple-500 mr-3"></i>
+                Intelligence-Driven Operations
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <p class="text-lg text-gray-600 mb-6">
+                        Strategic Facilities Intelligence transforms raw operational data into actionable insights
+                        that drive decision-making, optimize performance, and create sustainable competitive advantages
+                        in facilities management excellence.
+                    </p>
+
+                    <div class="bg-purple-50 border-l-4 border-purple-500 p-4 rounded-r-lg mb-6">
+                        <h4 class="font-semibold text-purple-700 mb-2">Intelligence Framework</h4>
+                        <p class="text-purple-600">
+                            Our intelligence ecosystem integrates real-time analytics, predictive insights, and strategic
+                            planning tools to create a comprehensive view of facilities performance and opportunities.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 p-6 rounded-lg border border-purple-200">
+                    <h4 class="font-semibold text-gray-800 mb-4">Intelligence Capabilities</h4>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="bg-purple-100 p-2 rounded-lg mr-4">
+                                <i class="fas fa-chart-line text-purple-600"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-800">Real-Time Analytics</h5>
+                                <p class="text-sm text-gray-600">Live performance monitoring and insights</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <div class="bg-purple-100 p-2 rounded-lg mr-4">
+                                <i class="fas fa-brain text-purple-600"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-800">Predictive Intelligence</h5>
+                                <p class="text-sm text-gray-600">Forecasting and trend analysis capabilities</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <div class="bg-purple-100 p-2 rounded-lg mr-4">
+                                <i class="fas fa-chess-queen text-purple-600"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-800">Strategic Planning</h5>
+                                <p class="text-sm text-gray-600">Long-term planning and optimization tools</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Intelligence Categories -->
+        <div class="mb-12 animate-fade-in-up delay-100">
+            <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">
+                <i class="fas fa-layer-group text-purple-500 mr-3"></i>
+                Intelligence Dashboard Categories
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Analytics & Dashboards -->
+                <div class="category-card intelligence-card p-8">
+                    <div class="w-16 h-16 bg-purple-100 rounded-xl flex items-center justify-center mb-6 mx-auto">
+                        <i class="fas fa-chart-bar text-3xl text-purple-600"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center">Analytics & Dashboards</h3>
+                    <p class="text-gray-600 mb-6 text-center">
+                        Comprehensive analytics suite providing real-time insights into operational performance,
+                        financial metrics, and sustainability initiatives.
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <button class="dashboard-btn intelligence-card p-4 transition-all duration-300 hover:scale-105" onclick="navigateToDashboard('fm-global')">
+                            <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mb-3">
+                                <i class="fas fa-globe text-purple-600"></i>
+                            </div>
+                            <h4 class="font-semibold text-gray-800 text-sm">Global FM Intelligence</h4>
+                            <p class="text-xs text-gray-500 mt-1">Worldwide facilities insights</p>
+                        </button>
+
+                        <button class="dashboard-btn intelligence-card p-4 transition-all duration-300 hover:scale-105" onclick="navigateToDashboard('kpi-legacy')">
+                            <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mb-3">
+                                <i class="fas fa-tachometer-alt text-purple-600"></i>
+                            </div>
+                            <h4 class="font-semibold text-gray-800 text-sm">KPI & Legacy Dashboard</h4>
+                            <p class="text-xs text-gray-500 mt-1">Performance metrics tracking</p>
+                        </button>
+
+                        <button class="dashboard-btn intelligence-card p-4 transition-all duration-300 hover:scale-105" onclick="navigateToDashboard('procurement')">
+                            <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mb-3">
+                                <i class="fas fa-dollar-sign text-purple-600"></i>
+                            </div>
+                            <h4 class="font-semibold text-gray-800 text-sm">Procurement Intelligence</h4>
+                            <p class="text-xs text-gray-500 mt-1">Cost optimization analytics</p>
+                        </button>
+
+                        <button class="dashboard-btn intelligence-card p-4 transition-all duration-300 hover:scale-105" onclick="navigateToDashboard('sustainability')">
+                            <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mb-3">
+                                <i class="fas fa-leaf text-purple-600"></i>
+                            </div>
+                            <h4 class="font-semibold text-gray-800 text-sm">Sustainability Ledger</h4>
+                            <p class="text-xs text-gray-500 mt-1">Environmental impact tracking</p>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Strategic Management -->
+                <div class="category-card intelligence-card p-8">
+                    <div class="w-16 h-16 bg-purple-100 rounded-xl flex items-center justify-center mb-6 mx-auto">
+                        <i class="fas fa-chess-king text-3xl text-purple-600"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center">Strategic Management</h3>
+                    <p class="text-gray-600 mb-6 text-center">
+                        Leadership and development tools that guide strategic decision-making and organizational
+                        capability building for long-term success.
+                    </p>
+
+                    <div class="grid grid-cols-1 gap-4">
+                        <button class="dashboard-btn intelligence-card p-6 transition-all duration-300 hover:scale-105" onclick="navigateToManagement('stewardship')">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-scroll text-purple-600"></i>
+                                </div>
+                                <div class="text-left">
+                                    <h4 class="font-semibold text-gray-800">Stewardship Charter</h4>
+                                    <p class="text-sm text-gray-500 mt-1">Leadership accountability framework</p>
+                                </div>
+                            </div>
+                        </button>
+
+                        <button class="dashboard-btn intelligence-card p-6 transition-all duration-300 hover:scale-105" onclick="navigateToManagement('training')">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-graduation-cap text-purple-600"></i>
+                                </div>
+                                <div class="text-left">
+                                    <h4 class="font-semibold text-gray-800">Training Module</h4>
+                                    <p class="text-sm text-gray-500 mt-1">Skills development and career planning</p>
+                                </div>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Intelligence Metrics -->
+        <div class="mb-12 animate-fade-in-up delay-200">
+            <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">
+                <i class="fas fa-chart-pie text-purple-500 mr-3"></i>
+                Intelligence Impact Metrics
+            </h2>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="impact-metric">
+                    <div class="text-3xl font-bold text-purple-600 mb-2">847</div>
+                    <div class="text-sm font-semibold text-gray-800">Data Points</div>
+                    <div class="text-xs text-gray-500">Real-time monitored</div>
+                </div>
+
+                <div class="impact-metric">
+                    <div class="text-3xl font-bold text-purple-600 mb-2">94.7%</div>
+                    <div class="text-sm font-semibold text-gray-800">Prediction Accuracy</div>
+                    <div class="text-xs text-gray-500">Analytics reliability</div>
+                </div>
+
+                <div class="impact-metric">
+                    <div class="text-3xl font-bold text-purple-600 mb-2">67%</div>
+                    <div class="text-sm font-semibold text-gray-800">Decision Speed</div>
+                    <div class="text-xs text-gray-500">Faster insights delivery</div>
+                </div>
+
+                <div class="impact-metric">
+                    <div class="text-3xl font-bold text-purple-600 mb-2">R89K</div>
+                    <div class="text-sm font-semibold text-gray-800">Monthly Savings</div>
+                    <div class="text-xs text-gray-500">Intelligence-driven optimization</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Intelligence Framework -->
+        <div class="intelligence-card p-8 mb-12 animate-fade-in-up delay-300">
+            <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">
+                <i class="fas fa-network-wired text-purple-500 mr-3"></i>
+                Integrated Intelligence Framework
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-database text-2xl text-purple-600"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-800 mb-2">Data Collection</h4>
+                    <p class="text-sm text-gray-600">Automated gathering from multiple operational sources and systems</p>
+                </div>
+
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-cogs text-2xl text-purple-600"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-800 mb-2">Analytics Processing</h4>
+                    <p class="text-sm text-gray-600">Advanced algorithms transform raw data into actionable insights</p>
+                </div>
+
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-rocket text-2xl text-purple-600"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-800 mb-2">Strategic Action</h4>
+                    <p class="text-sm text-gray-600">Intelligence drives decisions that optimize performance and outcomes</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ready to Explore -->
+        <div class="text-center animate-fade-in-up delay-400">
+            <div class="bg-gradient-to-r from-purple-50 to-indigo-50 p-8 rounded-xl max-w-4xl mx-auto border border-purple-200">
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">Ready to Explore Intelligence Insights?</h3>
+                <p class="text-gray-600 mb-6">
+                    Our Strategic Facilities Intelligence platform provides the data-driven foundation for
+                    operational excellence. Select a category above to access comprehensive analytics and
+                    strategic management tools designed to optimize your facilities operations.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button onclick="document.querySelector('.category-card').scrollIntoView({behavior: 'smooth'})" class="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 transform hover:scale-105">
+                        Explore Analytics Dashboard
+                    </button>
+                    <button onclick="document.querySelectorAll('.category-card')[1].scrollIntoView({behavior: 'smooth'})" class="border border-purple-500 text-purple-600 hover:bg-purple-50 font-semibold py-3 px-6 rounded-lg transition duration-300 transform hover:scale-105">
+                        View Strategic Management
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-gray-50 border-t border-gray-200 mt-12 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-gray-600">Strategic Facilities Intelligence Dashboard</p>
+            <p class="text-gray-600 mt-2">Transforming data into decisions for operational excellence</p>
+            <p class="text-gray-500 mt-4">&copy; 2025 Derivco Facilities Management System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Navigation functions for dashboards and management tools
+        function navigateToDashboard(dashboardId) {
+            const dashboardUrls = {
+                'fm-global': '/intelligence/dashboards/fm-global',
+                'kpi-legacy': '/intelligence/dashboards/kpi-legacy',
+                'procurement': '/intelligence/dashboards/procurement',
+                'sustainability': '/intelligence/dashboards/sustainability'
+            };
+
+            window.location.href = dashboardUrls[dashboardId] || '/intelligence';
+        }
+
+        function navigateToManagement(managementId) {
+            const managementUrls = {
+                'stewardship': '/intelligence/management/stewardship',
+                'training': '/intelligence/management/training'
+            };
+
+            window.location.href = managementUrls[managementId] || '/intelligence';
+        }
+
+        // Back button functionality
+        window.goBack = function() {
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                window.location.href = '/';
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate elements on scroll
+            const animatedElements = document.querySelectorAll('.animate-fade-in-up');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.visibility = 'visible';
+                        entry.target.classList.add('animate-fade-in-up');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            animatedElements.forEach(el => {
+                el.style.visibility = 'hidden';
+                observer.observe(el);
+            });
+        });
+    </script>
+</body>
+</html>

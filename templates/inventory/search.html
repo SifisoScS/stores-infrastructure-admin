@@ -1,0 +1,802 @@
+{% extends "base.html" %}
+
+{% block title %}Advanced Search - Derivco Stores Administration{% endblock %}
+
+{% block content %}
+<div class="search-page">
+    <div class="page-header">
+        <div class="breadcrumb">
+            <a href="/">Dashboard</a>
+            <span class="separator">/</span>
+            <span class="current">Advanced Search</span>
+        </div>
+        <h2><i class="fas fa-search"></i> Advanced Search</h2>
+        <p class="subtitle">Search across all categories with powerful filters</p>
+    </div>
+
+    <!-- Global Search Bar -->
+    <div class="global-search-container">
+        <div class="search-input-wrapper">
+            <input type="text" id="globalSearch" placeholder="Search for items, codes, descriptions..." autocomplete="off">
+            <div class="search-actions">
+                <button id="clearSearch" class="clear-btn" title="Clear search">
+                    <i class="fas fa-times"></i>
+                </button>
+                <button id="searchBtn" class="search-btn" title="Search">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            <div id="searchSuggestions" class="suggestions-dropdown"></div>
+        </div>
+    </div>
+
+    <!-- Advanced Filters -->
+    <div class="filters-section">
+        <div class="filters-header">
+            <h3><i class="fas fa-filter"></i> Advanced Filters</h3>
+            <div class="filter-actions">
+                <button id="toggleFilters" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-chevron-down"></i> Show Filters
+                </button>
+                <button id="clearFilters" class="btn btn-outline btn-sm">
+                    <i class="fas fa-trash"></i> Clear All
+                </button>
+                <button id="saveSearch" class="btn btn-primary btn-sm">
+                    <i class="fas fa-bookmark"></i> Save Search
+                </button>
+            </div>
+        </div>
+
+        <div id="filtersPanel" class="filters-panel collapsed">
+            <div class="filters-grid">
+                <!-- Categories Filter -->
+                <div class="filter-group">
+                    <label class="filter-label">
+                        <i class="fas fa-th-large"></i> Categories
+                    </label>
+                    <div class="category-checkboxes">
+                        {% for category in filter_options.categories %}
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="categories" value="{{ category }}" class="category-filter">
+                            <span class="checkmark"></span>
+                            {{ category }}
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Status Filter -->
+                <div class="filter-group">
+                    <label class="filter-label">
+                        <i class="fas fa-info-circle"></i> Stock Status
+                    </label>
+                    <select id="statusFilter" class="filter-select">
+                        <option value="">All Items</option>
+                        <option value="normal">Normal Stock</option>
+                        <option value="low_stock">Low Stock</option>
+                        <option value="out_of_stock">Out of Stock</option>
+                    </select>
+                </div>
+
+                <!-- Price Range Filter -->
+                <div class="filter-group">
+                    <label class="filter-label">
+                        <i class="fas fa-dollar-sign"></i> Price Range
+                    </label>
+                    <div class="range-inputs">
+                        <input type="number" id="priceMin" placeholder="Min" step="0.01" class="range-input">
+                        <span class="range-separator">—</span>
+                        <input type="number" id="priceMax" placeholder="Max" step="0.01" class="range-input">
+                    </div>
+                    {% if filter_options.price_range.min is not none %}
+                    <div class="range-info">
+                        Range: R{{ "%.2f"|format(filter_options.price_range.min) }} - R{{ "%.2f"|format(filter_options.price_range.max) }}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Quantity Range Filter -->
+                <div class="filter-group">
+                    <label class="filter-label">
+                        <i class="fas fa-warehouse"></i> Quantity Range
+                    </label>
+                    <div class="range-inputs">
+                        <input type="number" id="quantityMin" placeholder="Min" class="range-input">
+                        <span class="range-separator">—</span>
+                        <input type="number" id="quantityMax" placeholder="Max" class="range-input">
+                    </div>
+                    {% if filter_options.quantity_range.min is not none %}
+                    <div class="range-info">
+                        Range: {{ filter_options.quantity_range.min|int }} - {{ filter_options.quantity_range.max|int }}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Location Filter -->
+                <div class="filter-group">
+                    <label class="filter-label">
+                        <i class="fas fa-map-marker-alt"></i> Location
+                    </label>
+                    <select id="locationFilter" class="filter-select">
+                        <option value="">All Locations</option>
+                        {% for location in filter_options.locations %}
+                        <option value="{{ location }}">{{ location }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Supplier Filter -->
+                <div class="filter-group">
+                    <label class="filter-label">
+                        <i class="fas fa-truck"></i> Supplier
+                    </label>
+                    <select id="supplierFilter" class="filter-select">
+                        <option value="">All Suppliers</option>
+                        {% for supplier in filter_options.suppliers %}
+                        <option value="{{ supplier }}">{{ supplier }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Stats -->
+    <div class="search-stats">
+        <div class="stats-info">
+            <span id="searchResultsCount">Enter search terms or apply filters</span>
+        </div>
+        <div class="sort-options">
+            <label for="sortBy">Sort by:</label>
+            <select id="sortBy" class="sort-select">
+                <option value="relevance">Relevance</option>
+                <option value="name">Name A-Z</option>
+                <option value="name_desc">Name Z-A</option>
+                <option value="price_asc">Price: Low to High</option>
+                <option value="price_desc">Price: High to Low</option>
+                <option value="stock_asc">Stock: Low to High</option>
+                <option value="stock_desc">Stock: High to Low</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Search Results -->
+    <div id="searchResults" class="search-results">
+        <div class="no-search-state">
+            <div class="no-search-content">
+                <i class="fas fa-search"></i>
+                <h3>Start Your Search</h3>
+                <p>Enter search terms above or use the advanced filters to find items across all categories.</p>
+                <div class="quick-search-suggestions">
+                    <h4>Quick Searches:</h4>
+                    <div class="quick-search-buttons">
+                        <button onclick="quickSearch('low stock')" class="btn btn-outline btn-sm">Low Stock Items</button>
+                        <button onclick="quickSearch('electric')" class="btn btn-outline btn-sm">Electrical</button>
+                        <button onclick="quickSearch('plumbing')" class="btn btn-outline btn-sm">Plumbing</button>
+                        <button onclick="quickSearch('tools')" class="btn btn-outline btn-sm">Tools</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading State -->
+    <div id="searchLoading" class="loading-state" style="display: none;">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Searching...</p>
+        </div>
+    </div>
+
+    <!-- Saved Searches -->
+    <div class="saved-searches">
+        <div class="section-header">
+            <h3><i class="fas fa-bookmark"></i> Saved Searches</h3>
+        </div>
+        <div id="savedSearchesList" class="saved-searches-list">
+            <!-- Saved searches will be populated here -->
+        </div>
+    </div>
+</div>
+
+<!-- Save Search Modal -->
+<div id="saveSearchModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fas fa-bookmark"></i> Save Search</h3>
+            <span class="close" onclick="closeModal('saveSearchModal')">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="searchName">Search Name:</label>
+                <input type="text" id="searchName" placeholder="Enter a name for this search...">
+            </div>
+            <div class="search-preview">
+                <p><strong>Search Query:</strong> <span id="previewQuery"></span></p>
+                <p><strong>Filters Applied:</strong> <span id="previewFilters"></span></p>
+            </div>
+            <div class="modal-actions">
+                <button onclick="confirmSaveSearch()" class="btn btn-primary">Save Search</button>
+                <button onclick="closeModal('saveSearchModal')" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Global search state
+let currentQuery = '';
+let currentFilters = {};
+let searchTimeout = null;
+let suggestionTimeout = null;
+
+document.addEventListener('DOMContentLoaded', function() {
+    initializeSearch();
+    loadSavedSearches();
+});
+
+// Initialize search functionality
+function initializeSearch() {
+    const searchInput = document.getElementById('globalSearch');
+    const toggleFiltersBtn = document.getElementById('toggleFilters');
+    const clearFiltersBtn = document.getElementById('clearFilters');
+    const clearSearchBtn = document.getElementById('clearSearch');
+    const searchBtn = document.getElementById('searchBtn');
+
+    // Search input handlers
+    searchInput.addEventListener('input', handleSearchInput);
+    searchInput.addEventListener('keydown', handleSearchKeydown);
+    searchInput.addEventListener('focus', showSuggestions);
+    searchInput.addEventListener('blur', hideSuggestions);
+
+    // Button handlers
+    toggleFiltersBtn.addEventListener('click', toggleFilters);
+    clearFiltersBtn.addEventListener('click', clearAllFilters);
+    clearSearchBtn.addEventListener('click', clearSearch);
+    searchBtn.addEventListener('click', performSearch);
+
+    // Filter change handlers
+    document.querySelectorAll('.category-filter, .filter-select, .range-input').forEach(element => {
+        element.addEventListener('change', handleFilterChange);
+    });
+
+    document.getElementById('sortBy').addEventListener('change', handleSortChange);
+}
+
+// Handle search input with debouncing
+function handleSearchInput(event) {
+    const query = event.target.value;
+    currentQuery = query;
+
+    // Clear existing timeouts
+    if (searchTimeout) clearTimeout(searchTimeout);
+    if (suggestionTimeout) clearTimeout(suggestionTimeout);
+
+    // Update clear button visibility
+    document.getElementById('clearSearch').style.display = query ? 'block' : 'none';
+
+    // Get suggestions after a short delay
+    if (query.length >= 2) {
+        suggestionTimeout = setTimeout(() => getSuggestions(query), 200);
+    }
+
+    // Perform search after a longer delay
+    if (query.length >= 1 || Object.keys(currentFilters).length > 0) {
+        searchTimeout = setTimeout(performSearch, 500);
+    } else {
+        showNoSearchState();
+    }
+}
+
+// Handle search input keydown
+function handleSearchKeydown(event) {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        performSearch();
+    }
+}
+
+// Get search suggestions
+async function getSuggestions(query) {
+    if (!query || query.length < 2) {
+        hideSuggestions();
+        return;
+    }
+
+    try {
+        const response = await fetch(`/api/search/suggestions?q=${encodeURIComponent(query)}&limit=8`);
+        const suggestions = await response.json();
+
+        if (suggestions.length > 0) {
+            displaySuggestions(suggestions);
+        } else {
+            hideSuggestions();
+        }
+    } catch (error) {
+        console.error('Error fetching suggestions:', error);
+        hideSuggestions();
+    }
+}
+
+// Display search suggestions
+function displaySuggestions(suggestions) {
+    const dropdown = document.getElementById('searchSuggestions');
+    
+    dropdown.innerHTML = suggestions.map(suggestion => 
+        `<div class="suggestion-item" onclick="selectSuggestion('${suggestion.replace(/'/g, "\\'")}')">
+            <i class="fas fa-search"></i>
+            ${suggestion}
+        </div>`
+    ).join('');
+
+    dropdown.style.display = 'block';
+}
+
+// Select a suggestion
+function selectSuggestion(suggestion) {
+    document.getElementById('globalSearch').value = suggestion;
+    currentQuery = suggestion;
+    hideSuggestions();
+    performSearch();
+}
+
+// Show/hide suggestions
+function showSuggestions() {
+    const dropdown = document.getElementById('searchSuggestions');
+    if (dropdown.children.length > 0) {
+        dropdown.style.display = 'block';
+    }
+}
+
+function hideSuggestions() {
+    setTimeout(() => {
+        document.getElementById('searchSuggestions').style.display = 'none';
+    }, 200);
+}
+
+// Toggle filters panel
+function toggleFilters() {
+    const panel = document.getElementById('filtersPanel');
+    const button = document.getElementById('toggleFilters');
+    
+    panel.classList.toggle('collapsed');
+    const isCollapsed = panel.classList.contains('collapsed');
+    
+    button.innerHTML = isCollapsed 
+        ? '<i class="fas fa-chevron-down"></i> Show Filters'
+        : '<i class="fas fa-chevron-up"></i> Hide Filters';
+}
+
+// Handle filter changes
+function handleFilterChange() {
+    collectFilters();
+    performSearch();
+}
+
+// Collect current filters
+function collectFilters() {
+    currentFilters = {};
+
+    // Categories
+    const selectedCategories = Array.from(document.querySelectorAll('.category-filter:checked')).map(cb => cb.value);
+    if (selectedCategories.length > 0) {
+        currentFilters.categories = selectedCategories;
+    }
+
+    // Status
+    const status = document.getElementById('statusFilter').value;
+    if (status) {
+        currentFilters.status = status;
+    }
+
+    // Price range
+    const priceMin = parseFloat(document.getElementById('priceMin').value);
+    const priceMax = parseFloat(document.getElementById('priceMax').value);
+    if (!isNaN(priceMin)) currentFilters.price_min = priceMin;
+    if (!isNaN(priceMax)) currentFilters.price_max = priceMax;
+
+    // Quantity range
+    const quantityMin = parseFloat(document.getElementById('quantityMin').value);
+    const quantityMax = parseFloat(document.getElementById('quantityMax').value);
+    if (!isNaN(quantityMin)) currentFilters.quantity_min = quantityMin;
+    if (!isNaN(quantityMax)) currentFilters.quantity_max = quantityMax;
+
+    // Location and supplier
+    const location = document.getElementById('locationFilter').value;
+    if (location) currentFilters.location = location;
+
+    const supplier = document.getElementById('supplierFilter').value;
+    if (supplier) currentFilters.supplier = supplier;
+}
+
+// Perform search
+async function performSearch() {
+    if (!currentQuery && Object.keys(currentFilters).length === 0) {
+        showNoSearchState();
+        return;
+    }
+
+    showLoadingState();
+
+    try {
+        // Build query parameters
+        const params = new URLSearchParams();
+        if (currentQuery) params.append('q', currentQuery);
+        
+        // Add filters
+        Object.keys(currentFilters).forEach(key => {
+            if (key === 'categories') {
+                currentFilters[key].forEach(cat => params.append('categories', cat));
+            } else {
+                params.append(key, currentFilters[key]);
+            }
+        });
+
+        const response = await fetch(`/api/search?${params.toString()}`);
+        const data = await response.json();
+
+        displaySearchResults(data);
+    } catch (error) {
+        console.error('Search error:', error);
+        showErrorState('Search failed. Please try again.');
+    }
+}
+
+// Display search results
+function displaySearchResults(data) {
+    const resultsContainer = document.getElementById('searchResults');
+    const { results, total, query, filters } = data;
+
+    // Update stats
+    updateSearchStats(total, query, filters);
+
+    if (results.length === 0) {
+        showNoResultsState(query);
+        return;
+    }
+
+    // Generate results HTML
+    const resultsHTML = results.map(item => `
+        <div class="search-result-item" onclick="window.location.href='/item/${item.category}/${item['Item Code']}'">
+            <div class="result-header">
+                <div class="result-title">
+                    <h4>${item.search_highlights?.Description || item.Description || 'Unnamed Item'}</h4>
+                    <span class="result-category">
+                        <i class="fas fa-tag"></i> ${item.category}
+                    </span>
+                </div>
+                <div class="result-status">
+                    ${getStatusBadge(item)}
+                    ${item.relevance_score ? `<span class="relevance-score" title="Relevance: ${Math.round(item.relevance_score)}%">
+                        ${'★'.repeat(Math.min(5, Math.round(item.relevance_score / 20)))}
+                    </span>` : ''}
+                </div>
+            </div>
+            <div class="result-details">
+                <div class="result-info">
+                    <span class="info-item">
+                        <strong>Code:</strong> ${item.search_highlights?.['Item Code'] || item['Item Code'] || 'N/A'}
+                    </span>
+                    <span class="info-item">
+                        <strong>Stock:</strong> ${item['Quantity on Hand'] || 'N/A'} ${item['Unit of Measure'] || ''}
+                    </span>
+                    <span class="info-item">
+                        <strong>Location:</strong> ${item.search_highlights?.Location || item.Location || 'N/A'}
+                    </span>
+                    ${item['Cost/Unit'] ? `<span class="info-item">
+                        <strong>Unit Cost:</strong> R${parseFloat(item['Cost/Unit']).toFixed(2)}
+                    </span>` : ''}
+                </div>
+                <div class="result-actions">
+                    <button onclick="event.stopPropagation(); quickCheckout('${item['Item Code']}', '${item.Description}', '${item.category}')" class="btn btn-sm btn-success">
+                        <i class="fas fa-sign-out-alt"></i> Check Out
+                    </button>
+                </div>
+            </div>
+        </div>
+    `).join('');
+
+    resultsContainer.innerHTML = resultsHTML;
+}
+
+// Get status badge for item
+function getStatusBadge(item) {
+    const stock = parseFloat(item['Quantity on Hand']) || 0;
+    const minLevel = parseFloat(item['Min. Stock Level']) || 0;
+
+    if (stock === 0) {
+        return '<span class="status-badge critical">Out of Stock</span>';
+    } else if (stock <= minLevel) {
+        return '<span class="status-badge warning">Low Stock</span>';
+    } else {
+        return '<span class="status-badge normal">In Stock</span>';
+    }
+}
+
+// Update search statistics
+function updateSearchStats(total, query, filters) {
+    const statsElement = document.getElementById('searchResultsCount');
+    let statsText = `Found ${total} item${total !== 1 ? 's' : ''}`;
+    
+    if (query) {
+        statsText += ` for "${query}"`;
+    }
+    
+    const filterCount = Object.keys(filters).length;
+    if (filterCount > 0) {
+        statsText += ` with ${filterCount} filter${filterCount !== 1 ? 's' : ''}`;
+    }
+
+    statsElement.textContent = statsText;
+}
+
+// Show different states
+function showLoadingState() {
+    document.getElementById('searchLoading').style.display = 'block';
+    document.getElementById('searchResults').innerHTML = '';
+}
+
+function showNoSearchState() {
+    document.getElementById('searchLoading').style.display = 'none';
+    document.getElementById('searchResults').innerHTML = `
+        <div class="no-search-state">
+            <div class="no-search-content">
+                <i class="fas fa-search"></i>
+                <h3>Start Your Search</h3>
+                <p>Enter search terms above or use the advanced filters to find items across all categories.</p>
+            </div>
+        </div>
+    `;
+    document.getElementById('searchResultsCount').textContent = 'Enter search terms or apply filters';
+}
+
+function showNoResultsState(query) {
+    document.getElementById('searchLoading').style.display = 'none';
+    document.getElementById('searchResults').innerHTML = `
+        <div class="no-results-state">
+            <div class="no-results-content">
+                <i class="fas fa-search-minus"></i>
+                <h3>No Results Found</h3>
+                <p>No items match your search criteria${query ? ` for "${query}"` : ''}.</p>
+                <div class="search-suggestions">
+                    <p>Try:</p>
+                    <ul>
+                        <li>Checking your spelling</li>
+                        <li>Using different keywords</li>
+                        <li>Removing some filters</li>
+                        <li>Searching for broader terms</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function showErrorState(message) {
+    document.getElementById('searchLoading').style.display = 'none';
+    document.getElementById('searchResults').innerHTML = `
+        <div class="error-state">
+            <div class="error-content">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>Search Error</h3>
+                <p>${message}</p>
+                <button onclick="performSearch()" class="btn btn-primary">Try Again</button>
+            </div>
+        </div>
+    `;
+}
+
+// Clear functions
+function clearSearch() {
+    document.getElementById('globalSearch').value = '';
+    currentQuery = '';
+    document.getElementById('clearSearch').style.display = 'none';
+    hideSuggestions();
+    if (Object.keys(currentFilters).length === 0) {
+        showNoSearchState();
+    } else {
+        performSearch();
+    }
+}
+
+function clearAllFilters() {
+    // Clear all form controls
+    document.querySelectorAll('.category-filter').forEach(cb => cb.checked = false);
+    document.getElementById('statusFilter').value = '';
+    document.getElementById('priceMin').value = '';
+    document.getElementById('priceMax').value = '';
+    document.getElementById('quantityMin').value = '';
+    document.getElementById('quantityMax').value = '';
+    document.getElementById('locationFilter').value = '';
+    document.getElementById('supplierFilter').value = '';
+
+    currentFilters = {};
+    
+    if (!currentQuery) {
+        showNoSearchState();
+    } else {
+        performSearch();
+    }
+}
+
+// Quick search
+function quickSearch(term) {
+    document.getElementById('globalSearch').value = term;
+    currentQuery = term;
+    clearAllFilters();
+    performSearch();
+}
+
+// Quick checkout functionality
+async function quickCheckout(itemCode, description, category) {
+    const userName = prompt('Enter your name:');
+    if (!userName) return;
+    
+    const quantity = prompt('Enter quantity to check out:', '1');
+    if (!quantity || isNaN(quantity) || quantity <= 0) return;
+    
+    const notes = prompt('Enter notes (optional):', '');
+    
+    try {
+        const response = await fetch('/api/checkout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                item_code: itemCode,
+                category: category,
+                quantity: parseInt(quantity),
+                user_name: userName,
+                notes: notes || ''
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            alert(`Successfully checked out ${quantity} units of "${description}" to ${userName}`);
+            // Refresh search results
+            performSearch();
+        } else {
+            alert('Error: ' + result.message);
+        }
+    } catch (error) {
+        alert('Error checking out item: ' + error.message);
+    }
+}
+
+// Handle sort change
+function handleSortChange() {
+    // Re-sort current results based on selection
+    performSearch();
+}
+
+// Save search functionality (placeholder)
+function saveCurrentSearch() {
+    document.getElementById('previewQuery').textContent = currentQuery || '(no search terms)';
+    document.getElementById('previewFilters').textContent = Object.keys(currentFilters).length > 0 
+        ? Object.keys(currentFilters).join(', ') 
+        : '(no filters)';
+    
+    document.getElementById('saveSearchModal').style.display = 'block';
+}
+
+function confirmSaveSearch() {
+    const name = document.getElementById('searchName').value;
+    if (!name) {
+        alert('Please enter a name for this search');
+        return;
+    }
+    
+    // Save to localStorage (in a real app, this would be saved to the backend)
+    const savedSearches = JSON.parse(localStorage.getItem('savedSearches') || '[]');
+    savedSearches.push({
+        name: name,
+        query: currentQuery,
+        filters: currentFilters,
+        timestamp: new Date().toISOString()
+    });
+    localStorage.setItem('savedSearches', JSON.stringify(savedSearches));
+    
+    closeModal('saveSearchModal');
+    loadSavedSearches();
+    alert('Search saved successfully!');
+}
+
+function loadSavedSearches() {
+    const savedSearches = JSON.parse(localStorage.getItem('savedSearches') || '[]');
+    const container = document.getElementById('savedSearchesList');
+    
+    if (savedSearches.length === 0) {
+        container.innerHTML = '<p class="no-saved-searches">No saved searches yet</p>';
+        return;
+    }
+    
+    container.innerHTML = savedSearches.map((search, index) => `
+        <div class="saved-search-item">
+            <div class="saved-search-info">
+                <h4>${search.name}</h4>
+                <p>Query: ${search.query || '(none)'} | Filters: ${Object.keys(search.filters).length}</p>
+                <small>Saved: ${new Date(search.timestamp).toLocaleDateString()}</small>
+            </div>
+            <div class="saved-search-actions">
+                <button onclick="loadSavedSearch(${index})" class="btn btn-sm btn-primary">Load</button>
+                <button onclick="deleteSavedSearch(${index})" class="btn btn-sm btn-danger">Delete</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function loadSavedSearch(index) {
+    const savedSearches = JSON.parse(localStorage.getItem('savedSearches') || '[]');
+    const search = savedSearches[index];
+    
+    if (search) {
+        document.getElementById('globalSearch').value = search.query || '';
+        currentQuery = search.query || '';
+        currentFilters = search.filters || {};
+        
+        // Apply filters to form controls
+        applyFiltersToForm();
+        performSearch();
+    }
+}
+
+function deleteSavedSearch(index) {
+    if (confirm('Are you sure you want to delete this saved search?')) {
+        const savedSearches = JSON.parse(localStorage.getItem('savedSearches') || '[]');
+        savedSearches.splice(index, 1);
+        localStorage.setItem('savedSearches', JSON.stringify(savedSearches));
+        loadSavedSearches();
+    }
+}
+
+function applyFiltersToForm() {
+    // Clear existing filters
+    clearAllFilters();
+    
+    // Apply saved filters
+    if (currentFilters.categories) {
+        currentFilters.categories.forEach(cat => {
+            const checkbox = document.querySelector(`.category-filter[value="${cat}"]`);
+            if (checkbox) checkbox.checked = true;
+        });
+    }
+    
+    if (currentFilters.status) {
+        document.getElementById('statusFilter').value = currentFilters.status;
+    }
+    
+    if (currentFilters.price_min !== undefined) {
+        document.getElementById('priceMin').value = currentFilters.price_min;
+    }
+    
+    if (currentFilters.price_max !== undefined) {
+        document.getElementById('priceMax').value = currentFilters.price_max;
+    }
+    
+    // Apply other filters similarly
+}
+
+// Save search button handler
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('saveSearch').addEventListener('click', saveCurrentSearch);
+});
+
+// Close modal
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = 'none';
+}
+
+// Close modals when clicking outside
+window.onclick = function(event) {
+    const modals = document.querySelectorAll('.modal');
+    modals.forEach(modal => {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+}
+</script>
+{% endblock %}

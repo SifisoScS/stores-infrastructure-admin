@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leitch Garden Services - Derivco Facilities</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --derivco-blue: #003366;
+            --derivco-teal: #008080;
+            --leitch-blue: #00BFFF;
+            --leitch-navy: #191970;
+            --text-gray: #4a5568;
+            --primary-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--primary-bg);
+            color: #1a202c;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .nav-back {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            z-index: 20;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(0, 51, 102, 0.8);
+            color: #1a202c;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 1px solid var(--derivco-teal);
+        }
+
+        .back-button:hover {
+            background: var(--derivco-teal);
+            transform: translateX(-3px);
+        }
+
+        .back-button i {
+            margin-right: 0.5rem;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(135deg, var(--leitch-navy) 0%, var(--derivco-blue) 100%);
+            padding: 2.5rem 1rem 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="flowers" x="0" y="0" width="25" height="25" patternUnits="userSpaceOnUse"><circle cx="12.5" cy="12.5" r="3" fill="%2300BFFF" opacity="0.1"/><circle cx="12.5" cy="12.5" r="1" fill="%2300BFFF" opacity="0.2"/></pattern></defs><rect width="100" height="100" fill="url(%23flowers)"/></svg>');
+            opacity: 0.1;
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .provider-logo {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 2rem;
+            color: var(--leitch-blue);
+            border: 2px solid var(--leitch-blue);
+        }
+
+        .hero-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+            color: #1a202c;
+        }
+
+        .hero-subtitle {
+            font-size: 1rem;
+            color: var(--leitch-blue);
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            padding: 2rem 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--leitch-blue);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--leitch-blue) 0%, var(--leitch-navy) 100%);
+        }
+
+        .stat-icon {
+            font-size: 1.8rem;
+            color: var(--leitch-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--leitch-blue);
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+            font-weight: 500;
+        }
+
+        /* Services Section */
+        .services-section {
+            background: var(--card-bg);
+            padding: 2rem 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: #1a202c;
+        }
+
+        .services-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.2rem;
+        }
+
+        .service-card {
+            background: var(--primary-bg);
+            border: 1px solid var(--leitch-blue);
+            border-radius: 8px;
+            padding: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 191, 255, 0.2);
+        }
+
+        .service-card h3 {
+            color: var(--leitch-blue);
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .service-card h3 i {
+            margin-right: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .service-features {
+            list-style: none;
+            margin: 1rem 0;
+        }
+
+        .service-features li {
+            padding: 0.3rem 0;
+            color: var(--text-gray);
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .service-features li::before {
+            content: '🌺';
+            position: absolute;
+            left: 0;
+        }
+
+        /* Performance Chart Section */
+        .performance-section {
+            padding: 2rem 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .chart-container {
+            background: var(--card-bg);
+            border: 1px solid var(--leitch-blue);
+            border-radius: 8px;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+            max-height: 400px;
+        }
+
+        .chart-title {
+            text-align: center;
+            font-size: 1.2rem;
+            color: var(--leitch-blue);
+            margin-bottom: 1rem;
+        }
+
+        /* Contact Section */
+        .contact-section {
+            background: var(--card-bg);
+            padding: 3rem 1rem;
+            text-align: center;
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, var(--derivco-blue) 0%, var(--leitch-navy) 100%);
+            padding: 3rem 1rem 2rem;
+            margin-top: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="footerPattern" x="0" y="0" width="30" height="30" patternUnits="userSpaceOnUse"><circle cx="15" cy="15" r="1" fill="%23ffffff" opacity="0.1"/><circle cx="5" cy="5" r="0.5" fill="%23ffffff" opacity="0.05"/><circle cx="25" cy="8" r="0.8" fill="%23ffffff" opacity="0.08"/></pattern></defs><rect width="100" height="100" fill="url(%23footerPattern)"/></svg>');
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            color: var(--leitch-blue);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .footer-section p,
+        .footer-section li {
+            color: var(--text-gray);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li::before {
+            content: '🌺';
+            margin-right: 0.5rem;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(0, 191, 255, 0.3);
+            padding-top: 1.5rem;
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            color: #1a202c;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .footer-logo i {
+            color: var(--leitch-blue);
+            margin-right: 0.5rem;
+            font-size: 1.3rem;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--text-gray);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--leitch-blue);
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .footer-social a {
+            color: var(--text-gray);
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .footer-social a:hover {
+            color: var(--leitch-blue);
+            transform: translateY(-2px);
+        }
+
+        .contact-card {
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--primary-bg);
+            border: 1px solid var(--leitch-blue);
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        .contact-info {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            color: var(--text-gray);
+        }
+
+        .contact-item i {
+            color: var(--leitch-blue);
+            margin-right: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-back {
+                top: 0.5rem;
+                left: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <div class="nav-back">
+        <a href="/" class="back-button">
+            <i class="fas fa-arrow-left"></i> Back to Home
+        </a>
+    </div>
+
+    <!-- Header Navigation Links -->
+    <div style="position: absolute; top: 1rem; right: 1rem; z-index: 20; display: flex; gap: 1rem; flex-wrap: wrap;">
+        <a href="/inventory" style="color: #1a202c; text-decoration: none; background: rgba(0, 51, 102, 0.8); padding: 0.5rem 1rem; border-radius: 4px; font-size: 0.9rem; border: 1px solid var(--derivco-teal); transition: all 0.3s ease;" onmouseover="this.style.background='var(--derivco-teal)'" onmouseout="this.style.background='rgba(0, 51, 102, 0.8)'">
+            <i class="fas fa-boxes"></i> Inventory
+        </a>
+        <a href="/smart-insights" style="color: #1a202c; text-decoration: none; background: rgba(0, 51, 102, 0.8); padding: 0.5rem 1rem; border-radius: 4px; font-size: 0.9rem; border: 1px solid var(--derivco-teal); transition: all 0.3s ease;" onmouseover="this.style.background='var(--derivco-teal)'" onmouseout="this.style.background='rgba(0, 51, 102, 0.8)'">
+            <i class="fas fa-brain"></i> Smart Insights
+        </a>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <div class="provider-logo">
+                <i class="fas fa-seedling"></i>
+            </div>
+            <h1 class="hero-title">Leitch Garden Services</h1>
+            <p class="hero-subtitle">Professional Landscape & Garden Design</p>
+            <p class="hero-description">
+                Creating beautiful, sustainable landscapes and providing expert garden maintenance
+                for Derivco's corporate facilities with precision and care.
+            </p>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-value">24</div>
+                <div class="stat-label">Hours per Week</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="stat-value">87%</div>
+                <div class="stat-label">Coverage Efficiency</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <div class="stat-value">92%</div>
+                <div class="stat-label">Maintenance Quality</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-value">2</div>
+                <div class="stat-label">Active Alerts</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services-section">
+        <h2 class="section-title">Our Services</h2>
+        <div class="services-grid">
+            <div class="service-card">
+                <h3><i class="fas fa-palette"></i> Landscape Design</h3>
+                <p>Professional landscape architecture and design services for corporate environments.</p>
+                <ul class="service-features">
+                    <li>Custom landscape planning</li>
+                    <li>Aesthetic garden layouts</li>
+                    <li>Corporate environment design</li>
+                    <li>Seasonal color schemes</li>
+                </ul>
+            </div>
+
+            <div class="service-card">
+                <h3><i class="fas fa-cut"></i> Garden Maintenance</h3>
+                <p>Regular maintenance and care to keep your gardens looking pristine year-round.</p>
+                <ul class="service-features">
+                    <li>Weekly garden upkeep</li>
+                    <li>Pruning and trimming</li>
+                    <li>Seasonal plant care</li>
+                    <li>Pest control management</li>
+                </ul>
+            </div>
+
+            <div class="service-card">
+                <h3><i class="fas fa-tint"></i> Irrigation Systems</h3>
+                <p>Efficient water management systems to ensure optimal plant health and water conservation.</p>
+                <ul class="service-features">
+                    <li>Smart irrigation design</li>
+                    <li>Water conservation techniques</li>
+                    <li>System maintenance</li>
+                    <li>Seasonal adjustments</li>
+                </ul>
+            </div>
+
+            <div class="service-card">
+                <h3><i class="fas fa-calendar-alt"></i> Seasonal Care</h3>
+                <p>Specialized seasonal services to maintain garden health throughout the year.</p>
+                <ul class="service-features">
+                    <li>Spring preparation</li>
+                    <li>Summer heat protection</li>
+                    <li>Autumn cleanup</li>
+                    <li>Winter plant protection</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Performance Chart -->
+    <section class="performance-section">
+        <div class="chart-container">
+            <h3 class="chart-title">Service Performance Trends</h3>
+            <canvas id="performanceChart" width="400" height="150"></canvas>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact-section">
+        <div class="contact-card">
+            <h2 style="color: var(--leitch-blue); margin-bottom: 1rem;">Contact Leitch Garden Services</h2>
+            <p style="color: var(--text-gray); margin-bottom: 1.5rem;">
+                Professional landscape design and maintenance solutions
+            </p>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <i class="fas fa-phone"></i>
+                    <span>+27 31 456-7890</span>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <span>contact@leitch.co.za</span>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Durban, KZN</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content" style="text-align: center;">
+            <p style="color: var(--leitch-blue); font-size: 1rem; margin-bottom: 0.5rem;">Designed by Sifiso Cyprian Shezi</p>
+            <p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 0.5rem;">Facilities Assistant Level 1 — Derivco Durban | Transforming facility management through innovation</p>
+            <p style="color: var(--text-gray); font-size: 0.8rem;">&copy; 2025 Derivco Facilities Management System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Performance Chart
+            const ctx = document.getElementById('performanceChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Coverage', 'Quality', 'Efficiency', 'Client Satisfaction', 'Sustainability', 'Innovation'],
+                    datasets: [{
+                        label: 'Current Performance',
+                        data: [87, 92, 89, 94, 85, 88],
+                        borderColor: '#00BFFF',
+                        backgroundColor: 'rgba(0, 191, 255, 0.2)',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#00BFFF',
+                        pointBorderColor: '#00BFFF',
+                        pointRadius: 5
+                    }, {
+                        label: 'Target Performance',
+                        data: [90, 95, 92, 96, 90, 92],
+                        borderColor: '#191970',
+                        backgroundColor: 'rgba(25, 25, 112, 0.1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#191970',
+                        pointBorderColor: '#191970',
+                        pointRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#CCCCCC'
+                            }
+                        }
+                    },
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                color: '#CCCCCC'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            pointLabels: {
+                                color: '#CCCCCC'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Animate stats on scroll
+            const observerOptions = {
+                threshold: 0.5,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const statValue = entry.target.querySelector('.stat-value');
+                        const finalValue = statValue.textContent;
+                        animateValue(statValue, 0, parseFloat(finalValue) || 0, 2000);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.stat-card').forEach(card => {
+                observer.observe(card);
+            });
+
+            function animateValue(element, start, end, duration) {
+                let startTimestamp = null;
+                const step = (timestamp) => {
+                    if (!startTimestamp) startTimestamp = timestamp;
+                    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                    const current = progress * (end - start) + start;
+
+                    if (element.textContent.includes('%')) {
+                        element.textContent = Math.floor(current) + '%';
+                    } else {
+                        element.textContent = Math.floor(current);
+                    }
+
+                    if (progress < 1) {
+                        window.requestAnimationFrame(step);
+                    }
+                };
+                window.requestAnimationFrame(step);
+            }
+        });
+    </script>
+</body>
+</html>

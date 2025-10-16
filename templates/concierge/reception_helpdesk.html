@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reception & Helpdesk Services - Derivco Durban</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --derivco-blue: #004289;
+            --derivco-cyan: #00bfff;
+            --derivco-light: #f8fafc;
+            --derivco-gray: #64748b;
+            --text-primary: #1a202c;
+            --text-secondary: #4a5568;
+            --success: #059669;
+            --warning: #d97706;
+            --border-light: #e2e8f0;
+            --shadow-light: rgba(0, 66, 137, 0.08);
+            --shadow-hover: rgba(0, 66, 137, 0.15);
+            --reception-purple: #8B5CF6;
+            --helpdesk-orange: #F59E0B;
+            --card-green-cyan: #00c9b7;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            min-height: 100vh;
+            color: #1a202c;
+        }
+
+        /* Header styling */
+        .page-header {
+            background: linear-gradient(135deg, var(--derivco-blue) 0%, var(--derivco-cyan) 100%);
+            color: white;
+            padding: 2.5rem 0;
+        }
+
+        /* Compact Card Styling */
+        .compact-card {
+            background: linear-gradient(135deg, var(--card-green-cyan) 0%, #00a8b5 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 201, 183, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .compact-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 201, 183, 0.3);
+        }
+
+        .compact-card.active {
+            height: auto;
+            min-height: 600px;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .card-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.5rem;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .card-info {
+            flex: 1;
+        }
+
+        .card-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 0 0 5px 0;
+        }
+
+        .card-title {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin: 0 0 3px 0;
+        }
+
+        .card-location {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            margin: 0;
+        }
+
+        .card-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            opacity: 0.9;
+        }
+
+        .card-expand-content {
+            display: none;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .compact-card.active .card-expand-content {
+            display: block;
+        }
+
+        .workspace-tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 0.25rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .workspace-tab {
+            padding: 0.5rem 1rem;
+            color: white;
+            cursor: pointer;
+            font-weight: 500;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            text-align: center;
+            flex: 1;
+        }
+        
+        .workspace-tab.active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 0.75rem;
+        }
+        
+        .app-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 0.75rem 0.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .app-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .app-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .app-name {
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+        
+        .compact-form {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 0.75rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.25rem;
+            font-weight: 500;
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            font-size: 0.8rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .btn-compact {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.8rem;
+            flex: 1;
+        }
+        
+        .btn-compact:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn-compact.primary {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn-compact.primary:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+        
+        .stat-item-small {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 0.75rem;
+            text-align: center;
+        }
+        
+        .stat-value-small {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-label-small {
+            font-size: 0.7rem;
+            opacity: 0.9;
+        }
+        
+        .visitor-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.8rem;
+        }
+        
+        .visitor-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .visitor-details {
+            font-size: 0.7rem;
+            opacity: 0.9;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .work-order-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.8rem;
+            border-left: 3px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        .work-order-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .work-order-details {
+            font-size: 0.7rem;
+            opacity: 0.9;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .phone-dialer {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .dialer-btn {
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 1rem;
+        }
+        
+        .dialer-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .dialer-btn.call {
+            grid-column: span 3;
+            background: rgba(255, 255, 255, 0.3);
+            font-weight: 600;
+        }
+        
+        .dialer-btn.call:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="page-header">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <a href="/" class="back-btn">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Back to Main System
+            </a>
+
+            <div class="text-center">
+                <h1 class="text-4xl font-bold mb-2">🏢 Reception & Helpdesk Services</h1>
+                <p class="text-xl opacity-90">First Point of Contact & Technical Support - Derivco Durban</p>
+                <p class="text-lg opacity-80 mt-2">Visitor management, contractor coordination & building support services</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Compact Cards Section -->
+        <div class="section-header mb-6">
+            <h2 class="section-title">
+                <i class="fas fa-id-card"></i>
+                Helpdesk Coordinator Workspaces
+            </h2>
+            <p class="text-gray-600 mt-2">Click on a card to expand and access the full workspace</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <!-- Nichelle Naidoo - Compact Card -->
+            <div class="compact-card" id="nichelle-card">
+                <div>
+                    <div class="card-header">
+                        <div class="card-avatar">
+                            <i class="fas fa-concierge-bell"></i>
+                        </div>
+                        <div class="card-info">
+                            <h3 class="card-name">Nichelle Naidoo</h3>
+                            <p class="card-title">Reception Coordinator</p>
+                            <p class="card-location">🏢 Front Desk • Durban Office</p>
+                        </div>
+                        <div class="status-indicator">
+                            <i class="fas fa-circle text-green-400"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="card-stats">
+                        <div class="stat-item">
+                            <div class="stat-value">32</div>
+                            <div class="stat-label">Visitors Today</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">12</div>
+                            <div class="stat-label">Deliveries</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">45</div>
+                            <div class="stat-label">Calls</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Expanded Content -->
+                <div class="card-expand-content">
+                    <div class="workspace-tabs">
+                        <div class="workspace-tab active" data-tab="dashboard">Dashboard</div>
+                        <div class="workspace-tab" data-tab="visitors">Visitors</div>
+                        <div class="workspace-tab" data-tab="tools">Tools</div>
+                    </div>
+                    
+                    <!-- Dashboard Tab -->
+                    <div class="tab-content active" id="dashboard-tab">
+                        <div class="stats-grid">
+                            <div class="stat-item-small">
+                                <div class="stat-value-small">32</div>
+                                <div class="stat-label-small">Visitors Today</div>
+                            </div>
+                            <div class="stat-item-small">
+                                <div class="stat-value-small">12</div>
+                                <div class="stat-label-small">Deliveries</div>
+                            </div>
+                            <div class="stat-item-small">
+                                <div class="stat-value-small">45</div>
+                                <div class="stat-label-small">Calls</div>
+                            </div>
+                            <div class="stat-item-small">
+                                <div class="stat-value-small">7</div>
+                                <div class="stat-label-small">Permits</div>
+                            </div>
+                        </div>
+                        
+                        <h4 class="font-semibold mt-4 mb-2">Active Visitors</h4>
+                        <div class="visitor-item">
+                            <div class="visitor-name">International Delegation</div>
+                            <div class="visitor-details">
+                                <span>Meeting Room A</span>
+                                <span>09:30-12:30</span>
+                            </div>
+                        </div>
+                        <div class="visitor-item">
+                            <div class="visitor-name">Contractor Team - HVAC</div>
+                            <div class="visitor-details">
+                                <span>Floor 3</span>
+                                <span>All day</span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions mt-4">
+                            <button class="btn-compact primary">
+                                <i class="fas fa-user-plus mr-1"></i>
+                                Check-in
+                            </button>
+                            <button class="btn-compact">
+                                <i class="fas fa-id-card mr-1"></i>
+                                Issue Card
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Visitors Tab -->
+                    <div class="tab-content" id="visitors-tab">
+                        <div class="compact-form">
+                            <h4 class="font-semibold mb-3">New Visitor Registration</h4>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Full Name</label>
+                                <input type="text" class="form-input" placeholder="Visitor name">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Company</label>
+                                <input type="text" class="form-input" placeholder="Company name">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Visit Purpose</label>
+                                <select class="form-input">
+                                    <option>Meeting</option>
+                                    <option>Interview</option>
+                                    <option>Delivery</option>
+                                    <option>Contractor</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button class="btn-compact primary">
+                                    <i class="fas fa-save mr-1"></i>
+                                    Save
+                                </button>
+                                <button class="btn-compact">
+                                    <i class="fas fa-print mr-1"></i>
+                                    Print Badge
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tools Tab -->
+                    <div class="tab-content" id="tools-tab">
+                        <div class="app-grid">
+                            <div class="app-item" onclick="openOutlook()">
+                                <div class="app-icon">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <div class="app-name">Outlook</div>
+                            </div>
+                            
+                            <div class="app-item" onclick="openTeams()">
+                                <div class="app-icon">
+                                    <i class="fas fa-comments"></i>
+                                </div>
+                                <div class="app-name">Teams</div>
+                            </div>
+                            
+                            <div class="app-item" onclick="openVisitorSystem()">
+                                <div class="app-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="app-name">Visitors</div>
+                            </div>
+                            
+                            <div class="app-item" onclick="openCardSystem()">
+                                <div class="app-icon">
+                                    <i class="fas fa-id-card"></i>
+                                </div>
+                                <div class="app-name">Cards</div>
+                            </div>
+                            
+                            <div class="app-item" onclick="openCourierTracker()">
+                                <div class="app-icon">
+                                    <i class="fas fa-shipping-fast"></i>
+                                </div>
+                                <div class="app-name">Courier</div>
+                            </div>
+                            
+                            <div class="app-item" onclick="openCalendar()">
+                                <div class="app-icon">
+                                    <i class="fas fa-calendar"></i>
+                                </div>
+                                <div class="app-name">Calendar</div>
+                            </div>
+                        </div>
+                        
+                        <div class="phone-dialer mt-4">
+                            <div class="dialer-btn">1</div>
+                            <div class="dialer-btn">2</div>
+                            <div class="dialer-btn">3</div>
+                            <div class="dialer-btn">4</div>
+                            <div class="dialer-btn">5</div>
+                            <div class="dialer-btn">6</div>
+                            <div class="dialer-btn">7</div>
+                            <div class="dialer-btn">8</div>
+                            <div class="dialer-btn">9</div>
+                            <div class="dialer-btn">*</div>
+                            <div class="dialer-btn">0</div>
+                            <div class="dialer-btn">#</div>
+                            <div class="dialer-btn call">
+                                <i class="fas fa-phone mr-1"></i>
+                                Call
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ntobeko Ngcobo - Compact Card -->
+            <div class="compact-card" id="ntobeko-card">
+                <div>
+                    <div class="card-header">
+                        <div class="card-avatar">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                        <div class="card-info">
+                            <h3 class="card-name">Ntobeko Ngcobo</h3>
+                            <p class="card-title">Helpdesk Coordinator</p>
+                            <p class="card-location">🛠️ Helpdesk Station • Durban Office</p>
+                        </div>
+                        <div class="status-indicator">
+                            <i class="fas fa-circle text-green-400"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="card-stats">
+                        <div class="stat-item">
+                            <div class="stat-value">18</div>
+                            <div class="stat-label">Active Calls</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">12</div>
+                            <div class="stat-label">Work Orders</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">98%</div>
+                            <div class="stat-label">Response Rate</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Expanded Content -->
+                <div class="card-expand-content">
+                    <div class="workspace-tabs">
+                        <div class="workspace-tab active" data-tab="dashboard">Dashboard</div>
+                        <div class="workspace-tab" data-tab="remedy">Remedy</div>
+                        <div class="workspace-tab" data-tab="tools">Tools</div>
+                    </div>
+                    
+                    <!-- Dashboard Tab -->
+                    <div class="tab-content active" id="dashboard-tab">
+                        <div class="stats-grid">
+                            <div class="stat-item-small">
+                                <div class="stat-value-small">18</div>
+                                <div class="stat-label-small">Active Calls</div>
+                            </div>
+                            <div class="stat-item-small">
+                                <div class="stat-value-small">12</div>
+                                <div class="stat-label-small">Work Orders</div>
+                            </div>
+                            <div class="stat-item-small">
+                                <div class="stat-value-small">8</div>
+                                <div class="stat-label-small">Follow-ups</div>
+                            </div>
+                            <div class="stat-item-small">
+                                <div class="stat-value-small">98%</div>
+                                <div class="stat-label-small">Response Rate</div>
+                            </div>
+                        </div>
+                        
+                        <h4 class="font-semibold mt-4 mb-2">Priority Work Orders</h4>
+                        <div class="work-order-item">
+                            <div class="work-order-title">WO-2025-142 - HVAC Failure</div>
+                            <div class="work-order-details">
+                                <span>Conference Room A</span>
+                                <span>In Progress</span>
+                            </div>
+                        </div>
+                        <div class="work-order-item">
+                            <div class="work-order-title">WO-2025-143 - Electrical Issue</div>
+                            <div class="work-order-details">
+                                <span>Server Room</span>
+                                <span>Scheduled</span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions mt-4">
+                            <button class="btn-compact primary">
+                                <i class="fas fa-plus mr-1"></i>
+                                New WO
+                            </button>
+                            <button class="btn-compact">
+                                <i class="fas fa-clipboard-check mr-1"></i>
+                                Follow-up
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Remedy Tab -->
+                    <div class="tab-content" id="remedy-tab">
+                        <div class="compact-form">
+                            <h4 class="font-semibold mb-3">Add Progress Note</h4>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Call Reference</label>
+                                <select class="form-input">
+                                    <option>REQ-2025-001 - AC not cooling</option>
+                                    <option>REQ-2025-002 - Leaking tap</option>
+                                    <option>REQ-2025-003 - Flickering lights</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Progress Update</label>
+                                <textarea class="form-input" rows="3" placeholder="Enter progress details..."></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Status</label>
+                                <select class="form-input">
+                                    <option>In Progress</option>
+                                    <option>Awaiting Parts</option>
+                                    <option>Completed</option>
+                                    <option>On Hold</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button class="btn-compact primary">
+                                    <i class="fas fa-save mr-1"></i>
+                                    Update
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tools Tab -->
+                    <div class="tab-content" id="tools-tab">
+                        <div class="app-grid">
+                            <div class="app-item" onclick="openOutlook()">
+                                <div class="app-icon">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <div class="app-name">Outlook</div>
+                            </div>
+                            
+                            <div class="app-item" onclick="openTeams()">
+                                <div class="app-icon">
+                                    <i class="fas fa-comments"></i>
+                                </div>
+                                <div class="app-name">Teams</div>
+                            </div>
+                            
+                            <div class="app-item" onclick="openRemedySystem()">
+                                <div class="app-icon">
+                                    <i class="fas fa-desktop"></i>
+                                </div>
+                                <div class="app-name">Remedy</div>
+                            </div>
+                            
+                            <div class="app-item" onclick="openWorkOrderSystem()">
+                                <div class="app-icon">
+                                    <i class="fas fa-file-alt"></i>
+                                </div>
+                                <div class="app-name">Work Orders</div>
+                            </div>
+                            
+                            <div class="app-item" onclick="openSupervisorContacts()">
+                                <div class="app-icon">
+                                    <i class="fas fa-address-book"></i>
+                                </div>
+                                <div class="app-name">Contacts</div>
+                            </div>
+                            
+                            <div class="app-item" onclick="openPowerBI()">
+                                <div class="app-icon">
+                                    <i class="fas fa-chart-bar"></i>
+                                </div>
+                                <div class="app-name">Power BI</div>
+                            </div>
+                        </div>
+                        
+                        <div class="phone-dialer mt-4">
+                            <div class="dialer-btn">1</div>
+                            <div class="dialer-btn">2</div>
+                            <div class="dialer-btn">3</div>
+                            <div class="dialer-btn">4</div>
+                            <div class="dialer-btn">5</div>
+                            <div class="dialer-btn">6</div>
+                            <div class="dialer-btn">7</div>
+                            <div class="dialer-btn">8</div>
+                            <div class="dialer-btn">9</div>
+                            <div class="dialer-btn">*</div>
+                            <div class="dialer-btn">0</div>
+                            <div class="dialer-btn">#</div>
+                            <div class="dialer-btn call">
+                                <i class="fas fa-phone mr-1"></i>
+                                Call
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- The rest of your existing content would go here -->
+        <!-- Today's Operations Dashboard, System Integration, etc. -->
+
+    </div>
+
+    <script>
+        // Card expansion functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.compact-card');
+            
+            cards.forEach(card => {
+                card.addEventListener('click', function(e) {
+                    // Don't trigger if clicking on interactive elements inside the card
+                    if (e.target.closest('.app-item') || 
+                        e.target.closest('.btn-compact') || 
+                        e.target.closest('.workspace-tab') ||
+                        e.target.closest('.dialer-btn') ||
+                        e.target.tagName === 'INPUT' ||
+                        e.target.tagName === 'SELECT' ||
+                        e.target.tagName === 'TEXTAREA') {
+                        return;
+                    }
+                    
+                    // If this card is already active, close it
+                    if (this.classList.contains('active')) {
+                        this.classList.remove('active');
+                    } else {
+                        // Close all cards
+                        cards.forEach(c => c.classList.remove('active'));
+                        // Open this card
+                        this.classList.add('active');
+                    }
+                });
+            });
+            
+            // Tab functionality for expanded cards
+            const workspaceTabs = document.querySelectorAll('.workspace-tab');
+            
+            workspaceTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    const parentCard = this.closest('.compact-card');
+                    
+                    // Remove active class from all tabs in this card
+                    const tabsInCard = parentCard.querySelectorAll('.workspace-tab');
+                    tabsInCard.forEach(t => t.classList.remove('active'));
+                    
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+                    
+                    // Hide all tab contents in this card
+                    const tabContents = parentCard.querySelectorAll('.tab-content');
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Show the selected tab content
+                    const targetTab = parentCard.querySelector(`#${tabId}-tab`);
+                    if (targetTab) {
+                        targetTab.classList.add('active');
+                    }
+                });
+            });
+        });
+
+        // App integration functions
+        function openOutlook() {
+            alert('Opening Outlook...');
+        }
+
+        function openTeams() {
+            alert('Opening Microsoft Teams...');
+        }
+
+        function openVisitorSystem() {
+            alert('Opening Visitor Management System...');
+        }
+
+        function openCardSystem() {
+            alert('Opening Card Programming System...');
+        }
+
+        function openCourierTracker() {
+            alert('Opening Courier Tracking System...');
+        }
+
+        function openCalendar() {
+            alert('Opening Calendar...');
+        }
+
+        function openRemedySystem() {
+            alert('Opening Remedy System...');
+        }
+
+        function openWorkOrderSystem() {
+            alert('Opening Work Order System...');
+        }
+
+        function openSupervisorContacts() {
+            alert('Opening Supervisor Contacts...');
+        }
+
+        function openPowerBI() {
+            alert('Opening Power BI...');
+        }
+    </script>
+</body>
+</html>

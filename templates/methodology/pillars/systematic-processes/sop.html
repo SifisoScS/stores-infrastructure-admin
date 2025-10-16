@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Standard Operating Procedures - The Sifiso Methodology</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --derivco-blue: #003366;
+            --derivco-teal: #008080;
+            --derivco-blue-light: rgba(0, 51, 102, 0.1);
+            --derivco-teal-light: rgba(0, 128, 128, 0.1);
+            --stat-green: #00FF99;
+            --text-gray: #4a5568;
+            --primary-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--primary-bg);
+            min-height: 100vh;
+            color: #1a202c;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--derivco-blue) 0%, var(--derivco-teal) 100%);
+            color: #1a202c;
+            position: relative;
+            overflow: hidden;
+            padding: 2rem 0;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.3;
+        }
+
+        .methodology-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .methodology-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 128, 128, 0.2);
+        }
+
+        .framework-phase {
+            border-left: 4px solid var(--derivco-teal);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .framework-phase:hover {
+            border-left: 4px solid var(--stat-green);
+            transform: translateX(5px);
+        }
+
+        .stat-badge {
+            background: linear-gradient(135deg, var(--derivco-blue) 0%, var(--derivco-teal) 100%);
+            color: #1a202c;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(0, 51, 102, 0.8);
+            color: #1a202c;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 1px solid var(--derivco-teal);
+        }
+
+        .back-button:hover {
+            background: var(--derivco-teal);
+            transform: translateX(-3px);
+        }
+
+        .back-button i {
+            margin-right: 0.5rem;
+        }
+
+        .breadcrumb {
+            background: rgba(0, 128, 128, 0.1);
+            border: 1px solid var(--derivco-teal);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .breadcrumb a {
+            color: var(--derivco-teal);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--stat-green);
+        }
+
+        .phase-step {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .phase-step::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(135deg, var(--derivco-blue) 0%, var(--derivco-teal) 100%);
+        }
+
+        .kpi-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px -5px rgba(0, 128, 128, 0.2);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-500 { animation-delay: 0.5s; }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b border-teal-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="text-xl font-semibold text-teal-400">Derivco Facilities</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/methodology/pillars/systematic-processes" class="text-blue-600 hover:text-blue-800 px-3 py-2 rounded-md font-medium flex items-center gap-2">
+                        <i class="fas fa-arrow-left"></i> Back to Systematic Processes
+                    </a>
+                    <a href="/" class="text-teal-300 hover:text-teal-100 px-3 py-2 rounded-md">Home</a>
+                    <a href="/inventory" class="text-teal-300 hover:text-teal-100 px-3 py-2 rounded-md">Inventory</a>
+                    <a href="/methodology" class="bg-teal-600 text-gray-900 px-3 py-2 rounded-md font-medium">Methodology</a>
+                    <a href="/signout/register" class="text-teal-300 hover:text-teal-100 px-3 py-2 rounded-md">Sign-Out</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero-section py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="mb-6 animate-fade-in-up">
+                <div class="w-24 h-24 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-clipboard-list text-4xl text-teal-400"></i>
+                </div>
+                <h1 class="text-3xl md:text-4xl font-bold mb-4 text-center">Standard Operating Procedures</h1>
+                <p class="text-lg md:text-xl opacity-90 mb-6 text-teal-200 text-center">Systematic Processes Component</p>
+                <p class="text-xl max-w-4xl mx-auto text-teal-100 text-center">
+                    Establishing consistent, documented procedures that ensure reliable execution of all critical facility management operations
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <!-- Breadcrumb Navigation -->
+        <div class="breadcrumb animate-fade-in-up">
+            <nav class="flex items-center space-x-2 text-sm">
+                <a href="/methodology" class="hover:underline">Methodology</a>
+                <i class="fas fa-chevron-right text-teal-400"></i>
+                <a href="/methodology/pillars/systematic-processes" class="hover:underline">Systematic Processes</a>
+                <i class="fas fa-chevron-right text-teal-400"></i>
+                <span class="text-gray-900 font-medium">Standard Operating Procedures</span>
+            </nav>
+        </div>
+
+
+        <!-- Overview -->
+        <div class="methodology-card p-8 mb-12 animate-fade-in-up">
+            <h2 class="text-3xl font-bold text-gray-900 mb-6 flex items-center">
+                <i class="fas fa-file-contract text-teal-400 mr-3"></i>
+                SOP Framework Overview
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <p class="text-lg text-gray-300 mb-6">
+                        Standard Operating Procedures (SOPs) are the backbone of consistent facility management operations.
+                        They provide step-by-step instructions that eliminate guesswork and ensure every task is performed
+                        to the same high standard, regardless of who executes it.
+                    </p>
+
+                    <div class="bg-teal-900 bg-opacity-30 border-l-4 border-teal-500 p-4 rounded-r-lg mb-6">
+                        <h4 class="font-semibold text-teal-300 mb-2">Core Principle</h4>
+                        <p class="text-teal-200">
+                            "Excellence is not an act, but a habit. SOPs make excellence repeatable and measurable
+                            across every aspect of facility management."
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg border border-teal-500 border-opacity-30">
+                    <h4 class="font-semibold text-gray-900 mb-4">SOP Benefits</h4>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="bg-teal-900 bg-opacity-50 p-2 rounded-lg mr-4">
+                                <i class="fas fa-shield-alt text-teal-400"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-900">Risk Mitigation</h5>
+                                <p class="text-sm text-gray-400">Reduce operational risks through standardization</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <div class="bg-teal-900 bg-opacity-50 p-2 rounded-lg mr-4">
+                                <i class="fas fa-graduation-cap text-teal-400"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-900">Training Acceleration</h5>
+                                <p class="text-sm text-gray-400">Faster, more effective staff onboarding</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <div class="bg-teal-900 bg-opacity-50 p-2 rounded-lg mr-4">
+                                <i class="fas fa-balance-scale text-teal-400"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-900">Compliance Assurance</h5>
+                                <p class="text-sm text-gray-400">Meet regulatory and quality standards consistently</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Implementation Framework -->
+        <div class="methodology-card p-8 mb-12 animate-fade-in-up delay-100">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8">
+                <i class="fas fa-tasks text-teal-400 mr-3"></i>
+                SOP Development Framework
+            </h2>
+
+            <div class="space-y-6">
+                <div class="phase-step">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-bold text-gray-900">Phase 1: Process Identification & Mapping</h3>
+                        <span class="stat-badge text-sm">Week 1</span>
+                    </div>
+                    <p class="text-gray-300 mb-4">
+                        Systematic identification and documentation of all critical facility management processes requiring standardization.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-semibold text-teal-300 mb-3">Key Activities</h4>
+                            <ul class="text-gray-400 space-y-2">
+                                <li class="flex items-start">
+                                    <i class="fas fa-chevron-right text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Conduct comprehensive process audit
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-chevron-right text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Map current operational workflows
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-chevron-right text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Identify critical control points
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-chevron-right text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Prioritize processes for SOP development
+                                </li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-teal-300 mb-3">Deliverables</h4>
+                            <ul class="text-gray-400 space-y-2">
+                                <li class="flex items-start">
+                                    <i class="fas fa-file-alt text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Process inventory matrix
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-file-alt text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Current state workflow diagrams
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-file-alt text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Risk assessment report
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-file-alt text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    SOP development priority list
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="phase-step">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-bold text-gray-900">Phase 2: SOP Creation & Documentation</h3>
+                        <span class="stat-badge text-sm">Weeks 2-3</span>
+                    </div>
+                    <p class="text-gray-300 mb-4">
+                        Development of comprehensive, detailed SOPs using standardized templates and best practice frameworks.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-semibold text-teal-300 mb-3">Key Activities</h4>
+                            <ul class="text-gray-400 space-y-2">
+                                <li class="flex items-start">
+                                    <i class="fas fa-chevron-right text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Create standardized SOP templates
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-chevron-right text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Document step-by-step procedures
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-chevron-right text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Define quality checkpoints
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-chevron-right text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Include troubleshooting guides
+                                </li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-teal-300 mb-3">Deliverables</h4>
+                            <ul class="text-gray-400 space-y-2">
+                                <li class="flex items-start">
+                                    <i class="fas fa-file-alt text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Master SOP template library
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-file-alt text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Complete SOP documentation set
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-file-alt text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Quality control checklists
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-file-alt text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Emergency procedure protocols
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="phase-step">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-bold text-gray-900">Phase 3: Validation & Testing</h3>
+                        <span class="stat-badge text-sm">Week 4</span>
+                    </div>
+                    <p class="text-gray-300 mb-4">
+                        Comprehensive testing and validation of all SOPs to ensure accuracy, completeness, and practical applicability.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-semibold text-teal-300 mb-3">Key Activities</h4>
+                            <ul class="text-gray-400 space-y-2">
+                                <li class="flex items-start">
+                                    <i class="fas fa-chevron-right text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Conduct pilot testing sessions
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-chevron-right text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Gather stakeholder feedback
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-chevron-right text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Perform usability assessments
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-chevron-right text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Refine and optimize procedures
+                                </li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-teal-300 mb-3">Deliverables</h4>
+                            <ul class="text-gray-400 space-y-2">
+                                <li class="flex items-start">
+                                    <i class="fas fa-file-alt text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Validation test results
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-file-alt text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Stakeholder feedback report
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-file-alt text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Revised SOP documentation
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-file-alt text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Implementation readiness report
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="phase-step">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-bold text-gray-900">Phase 4: Training & Rollout</h3>
+                        <span class="stat-badge text-sm">Weeks 5-6</span>
+                    </div>
+                    <p class="text-gray-300 mb-4">
+                        Comprehensive training program and systematic rollout to ensure successful SOP adoption across all teams.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-semibold text-teal-300 mb-3">Key Activities</h4>
+                            <ul class="text-gray-400 space-y-2">
+                                <li class="flex items-start">
+                                    <i class="fas fa-chevron-right text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Develop training materials
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-chevron-right text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Conduct hands-on training sessions
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-chevron-right text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Implement certification program
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-chevron-right text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Monitor initial implementation
+                                </li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-teal-300 mb-3">Deliverables</h4>
+                            <ul class="text-gray-400 space-y-2">
+                                <li class="flex items-start">
+                                    <i class="fas fa-file-alt text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Training curriculum and materials
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-file-alt text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Certification framework
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-file-alt text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Implementation tracking system
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-file-alt text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Performance measurement dashboard
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tools & Templates -->
+        <div class="methodology-card p-8 mb-12 animate-fade-in-up delay-200">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8">
+                <i class="fas fa-toolbox text-teal-400 mr-3"></i>
+                SOP Tools & Templates
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-lg border border-teal-500 border-opacity-30">
+                    <div class="w-12 h-12 bg-teal-900 bg-opacity-50 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-file-alt text-teal-400"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 mb-3">Master SOP Template</h4>
+                    <p class="text-sm text-gray-400 mb-4">
+                        Standardized template ensuring consistency across all procedure documentation.
+                    </p>
+                    <div class="text-xs text-teal-400 font-medium">
+                        Includes: Header, Purpose, Scope, Procedures, Quality Checks, References
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg border border-teal-500 border-opacity-30">
+                    <div class="w-12 h-12 bg-teal-900 bg-opacity-50 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-clipboard-check text-teal-400"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 mb-3">Quality Control Checklist</h4>
+                    <p class="text-sm text-gray-400 mb-4">
+                        Comprehensive checklists for validating SOP completeness and accuracy.
+                    </p>
+                    <div class="text-xs text-teal-400 font-medium">
+                        Features: Validation criteria, approval workflow, version control
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg border border-teal-500 border-opacity-30">
+                    <div class="w-12 h-12 bg-teal-900 bg-opacity-50 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-graduation-cap text-teal-400"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 mb-3">Training Matrix</h4>
+                    <p class="text-sm text-gray-400 mb-4">
+                        Structured framework for SOP training and competency assessment.
+                    </p>
+                    <div class="text-xs text-teal-400 font-medium">
+                        Components: Learning objectives, assessment criteria, certification tracking
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg border border-teal-500 border-opacity-30">
+                    <div class="w-12 h-12 bg-teal-900 bg-opacity-50 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-chart-line text-teal-400"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 mb-3">Compliance Tracker</h4>
+                    <p class="text-sm text-gray-400 mb-4">
+                        Monitoring system for tracking SOP adherence and performance metrics.
+                    </p>
+                    <div class="text-xs text-teal-400 font-medium">
+                        Metrics: Compliance rates, execution times, quality scores
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg border border-teal-500 border-opacity-30">
+                    <div class="w-12 h-12 bg-teal-900 bg-opacity-50 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-sync-alt text-teal-400"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 mb-3">Version Control System</h4>
+                    <p class="text-sm text-gray-400 mb-4">
+                        Document management system ensuring current versions are always accessible.
+                    </p>
+                    <div class="text-xs text-teal-400 font-medium">
+                        Features: Change tracking, approval workflows, distribution control
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg border border-teal-500 border-opacity-30">
+                    <div class="w-12 h-12 bg-teal-900 bg-opacity-50 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-exclamation-triangle text-teal-400"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 mb-3">Emergency Protocols</h4>
+                    <p class="text-sm text-gray-400 mb-4">
+                        Specialized SOPs for emergency situations and crisis management.
+                    </p>
+                    <div class="text-xs text-teal-400 font-medium">
+                        Coverage: Safety procedures, escalation paths, communication protocols
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Performance Indicators -->
+        <div class="mb-12 animate-fade-in-up delay-300">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">
+                <i class="fas fa-chart-bar text-teal-400 mr-3"></i>
+                SOP Performance Indicators
+            </h2>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="kpi-card">
+                    <div class="text-3xl font-bold text-teal-400 mb-2">96%</div>
+                    <div class="text-sm font-semibold text-gray-900">Compliance Rate</div>
+                    <div class="text-xs text-gray-400">Adherence to documented procedures</div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="text-3xl font-bold text-teal-400 mb-2">68%</div>
+                    <div class="text-sm font-semibold text-gray-900">Time Reduction</div>
+                    <div class="text-xs text-gray-400">In task completion duration</div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="text-3xl font-bold text-teal-400 mb-2">42%</div>
+                    <div class="text-sm font-semibold text-gray-900">Error Decrease</div>
+                    <div class="text-xs text-gray-400">In operational mistakes</div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="text-3xl font-bold text-teal-400 mb-2">3.2x</div>
+                    <div class="text-sm font-semibold text-gray-900">Training Speed</div>
+                    <div class="text-xs text-gray-400">Faster new staff onboarding</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Implementation Examples -->
+        <div class="methodology-card p-8 mb-12 animate-fade-in-up delay-400">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8">
+                <i class="fas fa-building text-teal-400 mr-3"></i>
+                Facilities SOP Implementation Examples
+            </h2>
+
+            <div class="space-y-8">
+                <div class="border-l-4 border-teal-500 bg-white bg-opacity-50 p-6 rounded-r-lg">
+                    <h4 class="font-semibold text-gray-900 mb-3">HVAC System Maintenance SOP</h4>
+                    <p class="text-gray-300 mb-4">
+                        Comprehensive procedure covering daily inspections, preventive maintenance schedules,
+                        emergency protocols, and quality verification steps.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <h5 class="font-medium text-teal-300 mb-2">Key Components:</h5>
+                            <ul class="text-sm text-gray-400 space-y-1">
+                                <li>• Pre-inspection safety checks</li>
+                                <li>• Step-by-step maintenance procedures</li>
+                                <li>• Quality control checkpoints</li>
+                                <li>• Documentation requirements</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h5 class="font-medium text-teal-300 mb-2">Results:</h5>
+                            <ul class="text-sm text-gray-400 space-y-1">
+                                <li>• 87% reduction in system downtime</li>
+                                <li>• 94% compliance with maintenance schedules</li>
+                                <li>• 76% faster technician onboarding</li>
+                                <li>• Zero safety incidents</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border-l-4 border-teal-500 bg-white bg-opacity-50 p-6 rounded-r-lg">
+                    <h4 class="font-semibold text-gray-900 mb-3">Inventory Management SOP</h4>
+                    <p class="text-gray-300 mb-4">
+                        Detailed procedures for stock monitoring, procurement workflows, vendor management,
+                        and quality assurance protocols.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <h5 class="font-medium text-teal-300 mb-2">Key Components:</h5>
+                            <ul class="text-sm text-gray-400 space-y-1">
+                                <li>• Daily stock level monitoring</li>
+                                <li>• Automated reorder procedures</li>
+                                <li>• Vendor performance tracking</li>
+                                <li>• Quality inspection protocols</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h5 class="font-medium text-teal-300 mb-2">Results:</h5>
+                            <ul class="text-sm text-gray-400 space-y-1">
+                                <li>• 62% reduction in stockouts</li>
+                                <li>• 89% improvement in order accuracy</li>
+                                <li>• 43% decrease in carrying costs</li>
+                                <li>• 98% supplier compliance rate</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Next Steps -->
+        <div class="text-center animate-fade-in-up delay-500">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Ready to Implement SOPs?</h2>
+            <p class="text-lg text-gray-300 mb-8 max-w-3xl mx-auto">
+                Standard Operating Procedures are the foundation of reliable facility management.
+                Start with critical processes and expand systematically across all operations.
+            </p>
+
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="/methodology/pillars/systematic-processes/workflow" class="bg-teal-600 hover:bg-teal-700 text-gray-900 font-semibold py-3 px-8 rounded-lg transition duration-300 transform hover:scale-105">
+                    Next: Workflow Management
+                </a>
+                <a href="/methodology/pillars/systematic-processes" class="border border-teal-500 text-teal-400 hover:bg-teal-900 hover:bg-opacity-30 font-semibold py-3 px-8 rounded-lg transition duration-300 transform hover:scale-105">
+                    Back to Systematic Processes
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-50 border-t border-teal-500 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Standard Operating Procedures</h3>
+                    <p class="text-gray-400">
+                        Core component of Systematic Processes - Establishing documented, repeatable procedures
+                        that ensure consistent excellence in facility management operations.
+                    </p>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Related Components</h3>
+                    <ul class="space-y-2">
+                        <li><a href="/methodology/pillars/systematic-processes/workflow" class="text-gray-400 hover:text-teal-400 transition">Workflow Management</a></li>
+                        <li><a href="/methodology/pillars/systematic-processes/quality-control" class="text-gray-400 hover:text-teal-400 transition">Quality Control</a></li>
+                        <li><a href="/methodology/pillars/systematic-processes" class="text-gray-400 hover:text-teal-400 transition">Systematic Processes Overview</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Implementation Support</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-teal-400 transition">SOP Templates</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-teal-400 transition">Training Materials</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-teal-400 transition">Compliance Tools</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-teal-400 transition">Support Resources</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-500 text-sm">
+                <p>&copy; 2025 Derivco Facilities Management. All rights reserved. | The Sifiso Methodology - Standard Operating Procedures</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate elements on scroll
+            const animatedElements = document.querySelectorAll('.animate-fade-in-up');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = 1;
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            animatedElements.forEach(el => {
+                el.style.opacity = 0;
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(el);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,328 @@
+{% extends "base.html" %}
+
+{% block title %}Maintenance Log - Derivco Stores Administration{% endblock %}
+
+{% block content %}
+<div class="maintenance-page">
+    <div class="page-header">
+        <div class="breadcrumb">
+            <a href="/">Dashboard</a>
+            <span class="separator">/</span>
+            <span class="current">Maintenance Log</span>
+        </div>
+        <h2><i class="fas fa-tools"></i> Maintenance Log</h2>
+        <p class="subtitle">Track maintenance activities and completed tasks</p>
+    </div>
+
+    <div class="maintenance-stats">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-clipboard-list"></i>
+            </div>
+            <div class="stat-content">
+                <h3>{{ maintenance_entries|length }}</h3>
+                <p>Total Entries</p>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon info">
+                <i class="fas fa-calendar-week"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="recent-entries">0</h3>
+                <p>This Month</p>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon active">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="avg-time">0h</h3>
+                <p>Avg Time</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="actions-bar">
+        <div class="filter-controls">
+            <select id="category-filter" class="filter-select">
+                <option value="">All Categories</option>
+                <option value="Electric">Electric</option>
+                <option value="Plumbing">Plumbing</option>
+                <option value="Carpentry">Carpentry</option>
+                <option value="Painting">Painting</option>
+                <option value="Aircon">Aircon</option>
+                <option value="Safety">Safety</option>
+                <option value="Other">Other</option>
+            </select>
+            
+            <input type="date" id="date-filter" class="filter-input">
+        </div>
+        
+        <div class="action-buttons">
+            <button onclick="window.print()" class="btn btn-secondary">
+                <i class="fas fa-print"></i> Print Log
+            </button>
+            <button onclick="exportMaintenanceData()" class="btn btn-info">
+                <i class="fas fa-download"></i> Export CSV
+            </button>
+            <a href="/" class="btn btn-primary">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    {% if maintenance_entries %}
+    <div class="maintenance-log">
+        {% for entry in maintenance_entries %}
+        <div class="maintenance-entry" data-category="{{ entry.get('Category', '').lower() }}" data-date="{{ entry.get('Date', '') }}">
+            <div class="entry-header">
+                <div class="entry-title">
+                    <h4><i class="fas fa-wrench"></i> {{ entry.get('Task Completed', 'Unknown Task') }}</h4>
+                    <span class="category-tag">{{ entry.get('Category', 'General') }}</span>
+                </div>
+                <div class="entry-date">
+                    {{ entry.get('Date', 'No Date') }}
+                </div>
+            </div>
+            
+            <div class="entry-content">
+                <div class="entry-details">
+                    <div class="detail-item">
+                        <i class="fas fa-users"></i>
+                        <span class="label">Technicians:</span>
+                        <span class="value">{{ entry.get('Technicians Involved', 'N/A') }}</span>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <i class="fas fa-clock"></i>
+                        <span class="label">Time Taken:</span>
+                        <span class="value">{{ entry.get('Time Taken', 'N/A') }}</span>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <i class="fas fa-impact"></i>
+                        <span class="label">Impact:</span>
+                        <span class="value">{{ entry.get('Impact', 'N/A') }}</span>
+                    </div>
+                </div>
+                
+                {% if entry.get('Special Notes / Challenges') %}
+                <div class="entry-notes">
+                    <h5><i class="fas fa-sticky-note"></i> Notes & Challenges:</h5>
+                    <p>{{ entry.get('Special Notes / Challenges') }}</p>
+                </div>
+                {% endif %}
+                
+                {% if entry.get('Before & After Photos Link') %}
+                <div class="entry-photos">
+                    <h5><i class="fas fa-camera"></i> Photos:</h5>
+                    <a href="{{ entry.get('Before & After Photos Link') }}" target="_blank" class="photo-link">
+                        <i class="fas fa-external-link-alt"></i> View Before & After Photos
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% else %}
+    <div class="no-data">
+        <div class="no-data-content">
+            <i class="fas fa-clipboard"></i>
+            <h3>No Maintenance Records</h3>
+            <p>No maintenance activities have been logged yet.</p>
+            <p>Add maintenance entries to the Excel spreadsheet and reload the data.</p>
+            <div class="no-data-actions">
+                <button onclick="reloadData()" class="btn btn-info">
+                    <i class="fas fa-sync-alt"></i> Reload Data
+                </button>
+                <a href="/" class="btn btn-primary">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Add Entry Modal (Future Feature) -->
+<div id="addEntryModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fas fa-plus"></i> Add Maintenance Entry</h3>
+            <span class="close" onclick="closeModal('addEntryModal')">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="form-note">
+                <p><i class="fas fa-info-circle"></i> This feature would allow adding new maintenance entries directly through the web interface.</p>
+                <p>Currently, entries should be added to the Excel spreadsheet.</p>
+            </div>
+            <div class="modal-actions">
+                <button onclick="closeModal('addEntryModal')" class="btn btn-primary">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    calculateStats();
+    setupFilters();
+});
+
+// Calculate and display statistics
+function calculateStats() {
+    const entries = document.querySelectorAll('.maintenance-entry');
+    const currentMonth = new Date().getMonth();
+    const currentYear = new Date().getFullYear();
+    
+    let recentEntries = 0;
+    let totalMinutes = 0;
+    let timeEntries = 0;
+    
+    entries.forEach(entry => {
+        // Count recent entries (this month)
+        const dateText = entry.dataset.date;
+        if (dateText) {
+            const entryDate = new Date(dateText);
+            if (entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear) {
+                recentEntries++;
+            }
+        }
+        
+        // Calculate average time
+        const timeValue = entry.querySelector('.detail-item .value');
+        if (timeValue && timeValue.textContent !== 'N/A') {
+            const timeText = timeValue.textContent.toLowerCase();
+            let minutes = 0;
+            
+            // Parse time (assuming formats like "2h", "30min", "1.5h", etc.)
+            if (timeText.includes('h')) {
+                const hours = parseFloat(timeText.replace(/[^\d.]/g, ''));
+                minutes = hours * 60;
+            } else if (timeText.includes('min')) {
+                minutes = parseFloat(timeText.replace(/[^\d.]/g, ''));
+            }
+            
+            if (minutes > 0) {
+                totalMinutes += minutes;
+                timeEntries++;
+            }
+        }
+    });
+    
+    // Update display
+    document.getElementById('recent-entries').textContent = recentEntries;
+    
+    if (timeEntries > 0) {
+        const avgMinutes = totalMinutes / timeEntries;
+        const avgHours = (avgMinutes / 60).toFixed(1);
+        document.getElementById('avg-time').textContent = avgHours + 'h';
+    }
+}
+
+// Setup filter functionality
+function setupFilters() {
+    const categoryFilter = document.getElementById('category-filter');
+    const dateFilter = document.getElementById('date-filter');
+    const entries = document.querySelectorAll('.maintenance-entry');
+    
+    function applyFilters() {
+        const selectedCategory = categoryFilter.value.toLowerCase();
+        const selectedDate = dateFilter.value;
+        
+        entries.forEach(entry => {
+            let showEntry = true;
+            
+            // Category filter
+            if (selectedCategory && !entry.dataset.category.includes(selectedCategory)) {
+                showEntry = false;
+            }
+            
+            // Date filter
+            if (selectedDate && entry.dataset.date !== selectedDate) {
+                showEntry = false;
+            }
+            
+            entry.style.display = showEntry ? 'block' : 'none';
+        });
+    }
+    
+    categoryFilter.addEventListener('change', applyFilters);
+    dateFilter.addEventListener('change', applyFilters);
+}
+
+// Export maintenance data
+function exportMaintenanceData() {
+    const entries = document.querySelectorAll('.maintenance-entry:not([style*="display: none"])');
+    let csvContent = 'Date,Task,Category,Technicians,Time Taken,Impact,Notes\n';
+    
+    entries.forEach(entry => {
+        const date = entry.dataset.date || 'N/A';
+        const task = entry.querySelector('.entry-title h4').textContent.replace('🔧 ', '');
+        const category = entry.querySelector('.category-tag').textContent;
+        const technicians = entry.querySelector('.detail-item:nth-child(1) .value').textContent;
+        const time = entry.querySelector('.detail-item:nth-child(2) .value').textContent;
+        const impact = entry.querySelector('.detail-item:nth-child(3) .value').textContent;
+        const notes = entry.querySelector('.entry-notes p') ? 
+                     entry.querySelector('.entry-notes p').textContent.replace(/"/g, '""') : 'N/A';
+        
+        csvContent += `"${date}","${task}","${category}","${technicians}","${time}","${impact}","${notes}"\n`;
+    });
+    
+    // Create download
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'maintenance_log.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+}
+
+// Close modal
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = 'none';
+}
+
+// Reload data function
+async function reloadData() {
+    try {
+        const response = await fetch('/api/reload-data', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            alert('Data reloaded successfully!');
+            window.location.reload();
+        } else {
+            alert('Error reloading data: ' + result.message);
+        }
+    } catch (error) {
+        alert('Error reloading data: ' + error.message);
+    }
+}
+
+// Close modals when clicking outside
+window.onclick = function(event) {
+    const modals = document.querySelectorAll('.modal');
+    modals.forEach(modal => {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+}
+</script>
+{% endblock %}

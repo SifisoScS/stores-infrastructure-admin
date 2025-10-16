@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Department Achievements & KPIs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --derivco-blue: rgb(0, 66, 137);
+            --derivco-cyan: rgb(0, 191, 255);
+            --derivco-blue-light: rgba(0, 66, 137, 0.1);
+            --derivco-cyan-light: rgba(0, 191, 255, 0.1);
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            min-height: 100vh;
+        }
+        
+        /* Header styling */
+        .page-header {
+            background: linear-gradient(135deg, var(--derivco-blue) 0%, var(--derivco-cyan) 100%);
+            color: #1a202c;
+        }
+        
+        /* Card design */
+        .clean-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0, 66, 137, 0.08);
+            transition: all 0.3s ease;
+        }
+        
+        .clean-card:hover {
+            box-shadow: 0 8px 24px rgba(0, 66, 137, 0.12);
+            transform: translateY(-2px);
+        }
+        
+        /* Stat cards */
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 66, 137, 0.08);
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            box-shadow: 0 8px 16px rgba(0, 66, 137, 0.12);
+            transform: translateY(-1px);
+        }
+        
+        /* Status indicators */
+        .status-active { background: #10b981; }
+        .status-learning { background: #f59e0b; }
+        .status-development { background: #3b82f6; }
+        
+        /* Pulse animation */
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        /* Custom buttons */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--derivco-blue) 0%, var(--derivco-cyan) 100%);
+            color: #1a202c;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 66, 137, 0.3);
+        }
+        
+        /* KPI progress bars */
+        .kpi-progress {
+            height: 8px;
+            border-radius: 4px;
+            background: #e5e7eb;
+            overflow: hidden;
+        }
+        
+        .kpi-progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            background: linear-gradient(90deg, var(--derivco-blue) 0%, var(--derivco-cyan) 100%);
+        }
+        
+        /* Tab navigation */
+        .tab-button {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .tab-button.active {
+            background: var(--derivco-blue-light);
+            color: var(--derivco-blue);
+        }
+        
+        /* Heatmap cells */
+        .heatmap-cell {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        /* Risk indicators */
+        .risk-low { background: #dcfce7; color: #166534; }
+        .risk-medium { background: #fef3c7; color: #92400e; }
+        .risk-high { background: #fee2e2; color: #991b1b; }
+        
+        /* Glass morphism effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="text-xl font-semibold text-gray-900">Derivco Facilities</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md">Home</a>
+                    <a href="/inventory" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md">Inventory</a>
+                    <a href="/signout/register" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md">Sign-Out</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold mb-2">Department Achievements & KPIs</h1>
+                    <p class="text-lg opacity-90">Performance metrics and operational excellence tracking</p>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <div class="glass px-4 py-2 rounded-lg">
+                        <div class="text-sm">Reporting Period: <span class="font-bold">Q3 2025</span></div>
+                    </div>
+                    <div class="bg-white bg-opacity-20 px-4 py-2 rounded-lg">
+                        <div class="text-sm">Last updated: <span id="current-time">Just now</span></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Strategic KPIs -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+                <div class="glass p-4 rounded-lg">
+                    <div class="text-sm">Productivity Index</div>
+                    <div class="text-xl font-bold">87.2<span class="text-sm">%</span></div>
+                    <div class="text-sm flex items-center">
+                        <i class="fas fa-arrow-up text-green-400 mr-1"></i> 5.3% vs last quarter
+                    </div>
+                </div>
+                <div class="glass p-4 rounded-lg">
+                    <div class="text-sm">Cost Efficiency</div>
+                    <div class="text-xl font-bold">R15.4K</div>
+                    <div class="text-sm">22% savings vs budget</div>
+                </div>
+                <div class="glass p-4 rounded-lg">
+                    <div class="text-sm">ESG Score</div>
+                    <div class="text-xl font-bold">A-</div>
+                    <div class="text-sm flex items-center">
+                        <i class="fas fa-arrow-up text-green-400 mr-1"></i> Improved from B+
+                    </div>
+                </div>
+                <div class="glass p-4 rounded-lg">
+                    <div class="text-sm">Team Engagement</div>
+                    <div class="text-xl font-bold">4.7/5</div>
+                    <div class="text-sm">+0.4 from last survey</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Tab Navigation -->
+        <div class="flex space-x-2 mb-8 border-b border-gray-200">
+            <button class="tab-button active">Performance</button>
+            <button class="tab-button">Efficiency</button>
+            <button class="tab-button">Sustainability</button>
+            <button class="tab-button">Team</button>
+            <button class="tab-button">Goals</button>
+        </div>
+
+        <!-- Key Metrics -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 mb-8">
+            <div class="stat-card">
+                <div class="flex items-center">
+                    <div class="rounded-xl w-10 h-10 flex items-center justify-center mr-3" style="background: var(--derivco-blue-light); color: var(--derivco-blue);">
+                        <i class="fas fa-tasks text-lg"></i>
+                    </div>
+                    <div>
+                        <div class="text-xl font-bold text-gray-900">156</div>
+                        <div class="text-xs text-gray-600">Calls Completed</div>
+                    </div>
+                </div>
+                <div class="text-xs mt-2 flex items-center text-green-600">
+                    <i class="fas fa-arrow-up mr-1"></i> 12%
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="flex items-center">
+                    <div class="rounded-xl w-10 h-10 flex items-center justify-center mr-3" style="background: var(--derivco-cyan-light); color: var(--derivco-cyan);">
+                        <i class="fas fa-clock text-lg"></i>
+                    </div>
+                    <div>
+                        <div class="text-xl font-bold text-gray-900">2.3h</div>
+                        <div class="text-xs text-gray-600">Avg Resolution</div>
+                    </div>
+                </div>
+                <div class="text-xs mt-2 flex items-center text-green-600">
+                    <i class="fas fa-arrow-down mr-1"></i> 18%
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="flex items-center">
+                    <div class="rounded-xl w-10 h-10 flex items-center justify-center mr-3" style="background: var(--derivco-blue-light); color: var(--derivco-blue);">
+                        <i class="fas fa-bullseye text-lg"></i>
+                    </div>
+                    <div>
+                        <div class="text-xl font-bold text-gray-900">96.2%</div>
+                        <div class="text-xs text-gray-600">Inventory Accuracy</div>
+                    </div>
+                </div>
+                <div class="text-xs mt-2 flex items-center text-green-600">
+                    <i class="fas fa-arrow-up mr-1"></i> 3.5%
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="flex items-center">
+                    <div class="rounded-xl w-10 h-10 flex items-center justify-center mr-3" style="background: var(--derivco-cyan-light); color: var(--derivco-cyan);">
+                        <i class="fas fa-piggy-bank text-lg"></i>
+                    </div>
+                    <div>
+                        <div class="text-xl font-bold text-gray-900">R15.4K</div>
+                        <div class="text-xs text-gray-600">Cost Savings</div>
+                    </div>
+                </div>
+                <div class="text-xs mt-2 flex items-center text-green-600">
+                    <i class="fas fa-arrow-up mr-1"></i> 22%
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="flex items-center">
+                    <div class="rounded-xl w-10 h-10 flex items-center justify-center mr-3" style="background: var(--derivco-blue-light); color: var(--derivco-blue);">
+                        <i class="fas fa-shield-alt text-lg"></i>
+                    </div>
+                    <div>
+                        <div class="text-xl font-bold text-green-600">Excellent</div>
+                        <div class="text-xs text-gray-600">Compliance</div>
+                    </div>
+                </div>
+                <div class="text-xs mt-2 flex items-center text-green-600">
+                    <i class="fas fa-check mr-1"></i> 100%
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="flex items-center">
+                    <div class="rounded-xl w-10 h-10 flex items-center justify-center mr-3" style="background: var(--derivco-cyan-light); color: var(--derivco-cyan);">
+                        <i class="fas fa-star text-lg"></i>
+                    </div>
+                    <div>
+                        <div class="text-xl font-bold text-gray-900">4.8/5</div>
+                        <div class="text-xs text-gray-600">Customer Rating</div>
+                    </div>
+                </div>
+                <div class="text-xs mt-2 flex items-center text-green-600">
+                    <i class="fas fa-arrow-up mr-1"></i> 0.3
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Dashboard Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <!-- Performance Charts -->
+            <div class="clean-card p-6 lg:col-span-2">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center">
+                        <div class="rounded-lg w-10 h-10 flex items-center justify-center mr-3" style="background: var(--derivco-blue-light); color: var(--derivco-blue);">
+                            <i class="fas fa-chart-area text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900">Monthly Performance Trends</h3>
+                            <p class="text-sm text-gray-600">Key metrics over the last 6 months</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button class="text-sm font-medium px-3 py-1 rounded-md bg-gray-100 hover:bg-gray-200">
+                            <i class="fas fa-download mr-1"></i> Export
+                        </button>
+                        <div class="relative">
+                            <button class="text-sm font-medium px-3 py-1 rounded-md bg-gray-100 hover:bg-gray-200">
+                                <i class="fas fa-cog mr-1"></i> Options
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-tabs flex space-x-2 mb-6">
+                    <button class="chart-tab active px-4 py-2 rounded-lg text-sm font-medium" style="background: var(--derivco-blue-light); color: var(--derivco-blue);">
+                        Tickets
+                    </button>
+                    <button class="chart-tab px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">
+                        Satisfaction
+                    </button>
+                    <button class="chart-tab px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">
+                        Efficiency
+                    </button>
+                </div>
+                
+                <div class="chart-container">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="flex items-center space-x-4">
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 rounded-full bg-blue-500 mr-2"></div>
+                                <span class="text-sm">Tickets Completed</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 rounded-full bg-green-500 mr-2"></div>
+                                <span class="text-sm">Target</span>
+                            </div>
+                        </div>
+                        <div class="text-sm font-medium text-green-600">
+                            Target: 140 tickets
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-6 gap-4 h-48 items-end">
+                        <div class="flex flex-col items-center">
+                            <div class="text-xs text-gray-500 mb-2">Sep</div>
+                            <div class="w-full bg-blue-500 rounded-t-md relative" style="height: 85%;">
+                                <div class="absolute -top-6 left-0 right-0 text-center text-xs font-medium">156</div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div class="text-xs text-gray-500 mb-2">Aug</div>
+                            <div class="w-full bg-blue-500 rounded-t-md relative" style="height: 78%;">
+                                <div class="absolute -top-6 left-0 right-0 text-center text-xs font-medium">142</div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div class="text-xs text-gray-500 mb-2">Jul</div>
+                            <div class="w-full bg-blue-500 rounded-t-md relative" style="height: 73%;">
+                                <div class="absolute -top-6 left-0 right-0 text-center text-xs font-medium">134</div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div class="text-xs text-gray-500 mb-2">Jun</div>
+                            <div class="w-full bg-blue-500 rounded-t-md relative" style="height: 70%;">
+                                <div class="absolute -top-6 left-0 right-0 text-center text-xs font-medium">128</div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div class="text-xs text-gray-500 mb-2">May</div>
+                            <div class="w-full bg-blue-500 rounded-t-md relative" style="height: 65%;">
+                                <div class="absolute -top-6 left-0 right-0 text-center text-xs font-medium">118</div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div class="text-xs text-gray-500 mb-2">Apr</div>
+                            <div class="w-full bg-blue-500 rounded-t-md relative" style="height: 60%;">
+                                <div class="absolute -top-6 left-0 right-0 text-center text-xs font-medium">112</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="relative mt-2">
+                        <div class="absolute left-0 right-0 h-0.5 bg-green-500" style="top: -165px;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Achievements Panel -->
+            <div class="clean-card p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center">
+                        <div class="rounded-lg w-10 h-10 flex items-center justify-center mr-3" style="background: var(--derivco-cyan-light); color: var(--derivco-cyan);">
+                            <i class="fas fa-trophy text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900">Department Achievements</h3>
+                            <p class="text-sm text-gray-600">Recent recognitions & milestones</p>
+                        </div>
+                    </div>
+                    <button class="text-sm font-medium" style="color: var(--derivco-blue);">View All</button>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="flex items-start p-3 rounded-lg" style="background: var(--derivco-blue-light);">
+                        <div class="rounded-lg w-8 h-8 flex items-center justify-center mr-3 mt-1" style="background: var(--derivco-blue); color: #1a202c;">
+                            <i class="fas fa-medal text-sm"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-900">Excellence in Service</h4>
+                            <p class="text-sm text-gray-600">Q3 2025 Achievement Award</p>
+                            <span class="text-xs" style="color: var(--derivco-blue);">September 2025</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start p-3 rounded-lg bg-gray-50">
+                        <div class="rounded-lg w-8 h-8 flex items-center justify-center mr-3 mt-1" style="background: var(--derivco-cyan); color: #1a202c;">
+                            <i class="fas fa-chart-line text-sm"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-900">Performance Growth</h4>
+                            <p class="text-sm text-gray-600">15% improvement in efficiency</p>
+                            <span class="text-xs" style="color: var(--derivco-cyan);">August 2025</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start p-3 rounded-lg bg-gray-50">
+                        <div class="rounded-lg w-8 h-8 flex items-center justify-center mr-3 mt-1" style="background: var(--derivco-blue); color: #1a202c;">
+                            <i class="fas fa-shield-alt text-sm"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-900">Safety Compliance</h4>
+                            <p class="text-sm text-gray-600">Zero incidents for 6 months</p>
+                            <span class="text-xs" style="color: var(--derivco-blue);">July 2025</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start p-3 rounded-lg bg-gray-50">
+                        <div class="rounded-lg w-8 h-8 flex items-center justify-center mr-3 mt-1" style="background: var(--derivco-cyan); color: #1a202c;">
+                            <i class="fas fa-lightbulb text-sm"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-900">Innovation Award</h4>
+                            <p class="text-sm text-gray-600">Process optimization initiative</p>
+                            <span class="text-xs" style="color: var(--derivco-cyan);">June 2025</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Operational Efficiency -->
+            <div class="clean-card p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center">
+                        <div class="rounded-lg w-10 h-10 flex items-center justify-center mr-3" style="background: var(--derivco-blue-light); color: var(--derivco-blue);">
+                            <i class="fas fa-cogs text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900">Operational Efficiency</h3>
+                            <p class="text-sm text-gray-600">Key performance indicators</p>
+                        </div>
+                    </div>
+                    <button class="text-sm font-medium" style="color: var(--derivco-blue);">Details</button>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="text-gray-600">Work Order Completion</span>
+                            <span class="font-medium">94%</span>
+                        </div>
+                        <div class="kpi-progress">
+                            <div class="kpi-progress-fill" style="width: 94%"></div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="text-gray-600">Preventive Maintenance</span>
+                            <span class="font-medium">89%</span>
+                        </div>
+                        <div class="kpi-progress">
+                            <div class="kpi-progress-fill" style="width: 89%"></div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="text-gray-600">Emergency Response</span>
+                            <span class="font-medium">96%</span>
+                        </div>
+                        <div class="kpi-progress">
+                            <div class="kpi-progress-fill" style="width: 96%"></div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="text-gray-600">Asset Utilization</span>
+                            <span class="font-medium">87%</span>
+                        </div>
+                        <div class="kpi-progress">
+                            <div class="kpi-progress-fill" style="width: 87%"></div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="text-gray-600">Energy Efficiency</span>
+                            <span class="font-medium">91%</span>
+                        </div>
+                        <div class="kpi-progress">
+                            <div class="kpi-progress-fill" style="width: 91%"></div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="text-gray-600">Budget Adherence</span>
+                            <span class="font-medium">98%</span>
+                        </div>
+                        <div class="kpi-progress">
+                            <div class="kpi-progress-fill" style="width: 98%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Performance -->
+            <div class="clean-card p-6 lg:col-span-2">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center">
+                        <div class="rounded-lg w-10 h-10 flex items-center justify-center mr-3" style="background: var(--derivco-cyan-light); color: var(--derivco-cyan);">
+                            <i class="fas fa-users text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900">Team Performance</h3>
+                            <p class="text-sm text-gray-600">Key metrics vs targets</p>
+                        </div>
+                    </div>
+                    <button class="text-sm font-medium" style="color: var(--derivco-cyan);">View Details</button>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="text-left text-sm text-gray-500 border-b">
+                                <th class="pb-3">Metric</th>
+                                <th class="pb-3">Current</th>
+                                <th class="pb-3">Target</th>
+                                <th class="pb-3">Status</th>
+                                <th class="pb-3">Trend</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y">
+                            <tr class="text-sm">
+                                <td class="py-3 font-medium">Response Time</td>
+                                <td class="py-3">2.3h</td>
+                                <td class="py-3">3.0h</td>
+                                <td class="py-3">
+                                    <span class="px-2 py-1 rounded-full text-xs bg-green-100 text-green-800">Exceeds</span>
+                                </td>
+                                <td class="py-3">
+                                    <div class="flex items-center text-green-600">
+                                        <i class="fas fa-arrow-down mr-1"></i> 18%
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="text-sm">
+                                <td class="py-3 font-medium">Resolution Rate</td>
+                                <td class="py-3">94%</td>
+                                <td class="py-3">90%</td>
+                                <td class="py-3">
+                                    <span class="px-2 py-1 rounded-full text-xs bg-green-100 text-green-800">Exceeds</span>
+                                </td>
+                                <td class="py-3">
+                                    <div class="flex items-center text-green-600">
+                                        <i class="fas fa-arrow-up mr-1"></i> 4.4%
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="text-sm">
+                                <td class="py-3 font-medium">Customer Satisfaction</td>
+                                <td class="py-3">4.8/5</td>
+                                <td class="py-3">4.5/5</td>
+                                <td class="py-3">
+                                    <span class="px-2 py-1 rounded-full text-xs bg-green-100 text-green-800">Exceeds</span>
+                                </td>
+                                <td class="py-3">
+                                    <div class="flex items-center text-green-600">
+                                        <i class="fas fa-arrow-up mr-1"></i> 6.7%
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="text-sm">
+                                <td class="py-3 font-medium">Training Completion</td>
+                                <td class="py-3">100%</td>
+                                <td class="py-3">95%</td>
+                                <td class="py-3">
+                                    <span class="px-2 py-1 rounded-full text-xs bg-green-100 text-green-800">Exceeds</span>
+                                </td>
+                                <td class="py-3">
+                                    <div class="flex items-center text-green-600">
+                                        <i class="fas fa-check mr-1"></i> 100%
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="text-sm">
+                                <td class="py-3 font-medium">Safety Incidents</td>
+                                <td class="py-3">0</td>
+                                <td class="py-3">0</td>
+                                <td class="py-3">
+                                    <span class="px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-800">Meets</span>
+                                </td>
+                                <td class="py-3">
+                                    <div class="flex items-center text-green-600">
+                                        <i class="fas fa-check mr-1"></i> 0%
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Items & Goals -->
+        <div class="clean-card p-6">
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center">
+                    <div class="rounded-lg w-10 h-10 flex items-center justify-center mr-3" style="background: var(--derivco-blue-light); color: var(--derivco-blue);">
+                        <i class="fas fa-clipboard-list text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900">Action Items & Goals</h3>
+                        <p class="text-sm text-gray-600">Department objectives and progress</p>
+                    </div>
+                </div>
+                <button class="text-sm font-medium" style="color: var(--derivco-blue);">Add New</button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                    <h4 class="text-lg font-semibold mb-4 flex items-center">
+                        <span class="w-2 h-2 rounded-full bg-green-500 mr-2"></span>
+                        <span>Completed Goals</span>
+                    </h4>
+                    <div class="space-y-4">
+                        <div class="p-4 rounded-lg border border-green-200 bg-green-50">
+                            <div class="flex items-start">
+                                <div class="rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 bg-green-500 text-white">
+                                    <i class="fas fa-check text-xs"></i>
+                                </div>
+                                <div>
+                                    <h5 class="font-medium text-gray-900">Implement inventory system</h5>
+                                    <p class="text-sm text-gray-600">Completed: September 15, 2025</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="p-4 rounded-lg border border-green-200 bg-green-50">
+                            <div class="flex items-start">
+                                <div class="rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 bg-green-500 text-white">
+                                    <i class="fas fa-check text-xs"></i>
+                                </div>
+                                <div>
+                                    <h5 class="font-medium text-gray-900">Achieve 95% satisfaction</h5>
+                                    <p class="text-sm text-gray-600">Completed: August 30, 2025</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="p-4 rounded-lg border border-green-200 bg-green-50">
+                            <div class="flex items-start">
+                                <div class="rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 bg-green-500 text-white">
+                                    <i class="fas fa-check text-xs"></i>
+                                </div>
+                                <div>
+                                    <h5 class="font-medium text-gray-900">Complete safety training</h5>
+                                    <p class="text-sm text-gray-600">Completed: July 22, 2025</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4 flex items-center">
+                        <span class="w-2 h-2 rounded-full bg-yellow-500 mr-2"></span>
+                        <span>In Progress</span>
+                    </h4>
+                    <div class="space-y-4">
+                        <div class="p-4 rounded-lg border border-yellow-200 bg-yellow-50">
+                            <div class="flex items-start">
+                                <div class="relative mr-3 mt-1">
+                                    <div class="w-6 h-6 rounded-full border-2 border-yellow-500"></div>
+                                    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-xs font-medium">65%</div>
+                                </div>
+                                <div>
+                                    <h5 class="font-medium text-gray-900">Digital transformation</h5>
+                                    <p class="text-sm text-gray-600">Deadline: October 31, 2025</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="p-4 rounded-lg border border-yellow-200 bg-yellow-50">
+                            <div class="flex items-start">
+                                <div class="relative mr-3 mt-1">
+                                    <div class="w-6 h-6 rounded-full border-2 border-yellow-500"></div>
+                                    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-xs font-medium">40%</div>
+                                </div>
+                                <div>
+                                    <h5 class="font-medium text-gray-900">Energy efficiency</h5>
+                                    <p class="text-sm text-gray-600">Deadline: November 15, 2025</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="p-4 rounded-lg border border-yellow-200 bg-yellow-50">
+                            <div class="flex items-start">
+                                <div class="relative mr-3 mt-1">
+                                    <div class="w-6 h-6 rounded-full border-2 border-yellow-500"></div>
+                                    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-xs font-medium">80%</div>
+                                </div>
+                                <div>
+                                    <h5 class="font-medium text-gray-900">Staff development</h5>
+                                    <p class="text-sm text-gray-600">Deadline: December 5, 2025</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4 flex items-center">
+                        <span class="w-2 h-2 rounded-full bg-blue-500 mr-2"></span>
+                        <span>Upcoming Goals</span>
+                    </h4>
+                    <div class="space-y-4">
+                        <div class="p-4 rounded-lg border border-blue-200 bg-blue-50">
+                            <div class="flex items-start">
+                                <div class="rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 bg-blue-500 text-white">
+                                    <i class="fas fa-calendar text-xs"></i>
+                                </div>
+                                <div>
+                                    <h5 class="font-medium text-gray-900">AI integration</h5>
+                                    <p class="text-sm text-gray-600">Start Date: January 2026</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="p-4 rounded-lg border border-blue-200 bg-blue-50">
+                            <div class="flex items-start">
+                                <div class="rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 bg-blue-500 text-white">
+                                    <i class="fas fa-calendar text-xs"></i>
+                                </div>
+                                <div>
+                                    <h5 class="font-medium text-gray-900">Mobile accessibility</h5>
+                                    <p class="text-sm text-gray-600">Start Date: February 2026</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="p-4 rounded-lg border border-blue-200 bg-blue-50">
+                            <div class="flex items-start">
+                                <div class="rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 bg-blue-500 text-white">
+                                    <i class="fas fa-calendar text-xs"></i>
+                                </div>
+                                <div>
+                                    <h5 class="font-medium text-gray-900">Sustainability initiatives</h5>
+                                    <p class="text-sm text-gray-600">Start Date: March 2026</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white text-white py-8 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <div class="mb-4">
+                    <h4 class="text-lg font-semibold mb-2">Designed by Sifiso Cyprian Shezi</h4>
+                    <p class="text-gray-400">Facilities Assistant Level 1 — Derivco Durban | Transforming facility management through innovation</p>
+                </div>
+                <div class="border-t border-gray-700 pt-4">
+                    <p class="text-sm text-gray-500">&copy; 2025 Derivco Facilities Management System. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    // Update current time
+    function updateCurrentTime() {
+        const now = new Date();
+        const options = { 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric',
+            hour: '2-digit', 
+            minute: '2-digit'
+        };
+        document.getElementById('current-time').textContent = now.toLocaleDateString('en-US', options);
+    }
+    
+    updateCurrentTime();
+    setInterval(updateCurrentTime, 60000);
+    
+    // Tab navigation
+    document.querySelectorAll('.tab-button').forEach(button => {
+        button.addEventListener('click', function() {
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+    
+    // Chart tabs functionality
+    document.querySelectorAll('.chart-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            document.querySelectorAll('.chart-tab').forEach(t => {
+                t.style.background = '';
+                t.style.color = '';
+            });
+            this.style.background = 'var(--derivco-blue-light)';
+            this.style.color = 'var(--derivco-blue)';
+        });
+    });
+    </script>
+</body>
+</html>

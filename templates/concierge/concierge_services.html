@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Concierge Services - Office Experience</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --secondary: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #06b6d4;
+            --light: #f8fafc;
+            --dark: #f8fafc;
+            --office-beige: #f5f1e6;
+            --office-blue: #1e3a5f;
+            --office-green: #2e5e4e;
+            --wood: #8b5a2b;
+            --carpet: #4a6572;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1e3a5f 0%, #2e5e4e 100%);
+            color: #333;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .office-container {
+            min-height: 100vh;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.05) 0%, transparent 50%),
+                linear-gradient(135deg, #1e3a5f 0%, #2e5e4e 100%);
+            position: relative;
+            padding: 20px;
+        }
+
+        /* Office Background Elements */
+        .office-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .wall {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 30%;
+            background: var(--office-beige);
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
+        }
+
+        .carpet {
+            position: absolute;
+            bottom: 0;
+            left: 10%;
+            width: 80%;
+            height: 20%;
+            background: var(--carpet);
+            border-radius: 10px 10px 0 0;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.2);
+        }
+
+        .window {
+            position: absolute;
+            top: 15%;
+            right: 10%;
+            width: 200px;
+            height: 150px;
+            background: linear-gradient(135deg, #87CEEB 0%, #4682B4 100%);
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255,255,255,0.3);
+            border: 5px solid var(--wood);
+        }
+
+        .window::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 5px;
+            height: 100%;
+            background: var(--wood);
+        }
+
+        .window::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: 5px;
+            background: var(--wood);
+        }
+
+        .plant {
+            position: absolute;
+            bottom: 20%;
+            left: 15%;
+            width: 80px;
+            height: 120px;
+            background: #2e5e4e;
+            border-radius: 40px 40px 0 0;
+            z-index: 1;
+        }
+
+        .plant::after {
+            content: '';
+            position: absolute;
+            top: -30px;
+            left: 10px;
+            width: 60px;
+            height: 80px;
+            background: #2e5e4e;
+            border-radius: 50%;
+        }
+
+        /* Office Furniture */
+        .desk {
+            position: absolute;
+            bottom: 20%;
+            left: 25%;
+            width: 300px;
+            height: 150px;
+            background: var(--wood);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 2;
+        }
+
+        .desk::before {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 20px;
+            width: 50px;
+            height: 20px;
+            background: var(--wood);
+        }
+
+        .desk::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            right: 20px;
+            width: 50px;
+            height: 20px;
+            background: var(--wood);
+        }
+
+        .computer {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 180px;
+            height: 100px;
+            background: #333;
+            border-radius: 5px;
+            z-index: 3;
+        }
+
+        .computer-screen {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            width: 170px;
+            height: 90px;
+            background: #f8fafc;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .screen-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #0a192f 0%, #172a45 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64ffda;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* Main Content */
+        .office-content {
+            position: relative;
+            z-index: 10;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .office-header {
+            background: linear-gradient(135deg, var(--office-blue) 0%, var(--office-green) 100%);
+            color: #1a202c;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .office-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><path d="M0,0 L100,100 M100,0 L0,100" stroke="white" stroke-width="1"/></svg>');
+        }
+
+        .office-title {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .office-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .specialist-card {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .specialist-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            color: var(--office-blue);
+        }
+
+        .specialist-info h3 {
+            margin-bottom: 5px;
+            font-size: 1.3rem;
+        }
+
+        .specialist-info p {
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            background: var(--secondary);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* Office Grid Layout */
+        .office-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 30px;
+        }
+
+        .office-room {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .office-room:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .room-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: #1a202c;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .room-header i {
+            font-size: 1.5rem;
+        }
+
+        .room-content {
+            padding: 20px;
+        }
+
+        /* Service Buttons */
+        .service-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .service-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 10px;
+            background: #f8fafc;
+            border-radius: 8px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .service-button:hover {
+            background: white;
+            border-color: var(--primary);
+            transform: scale(1.05);
+        }
+
+        .service-button i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .service-button h4 {
+            margin-bottom: 5px;
+            font-size: 1rem;
+        }
+
+        .service-button p {
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        /* Request Table */
+        .request-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .request-table th {
+            background: #f1f5f9;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .request-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .request-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .badge-primary { background: rgba(59, 130, 246, 0.1); color: var(--primary); }
+        .badge-success { background: rgba(16, 185, 129, 0.1); color: var(--secondary); }
+        .badge-warning { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+        .badge-danger { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+
+        /* Metrics */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .metric-card {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin: 10px 0;
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        /* Team Status */
+        .team-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .team-member {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+
+        .member-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #94a3b8;
+        }
+
+        .member-status {
+            margin-left: auto;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-available { background: rgba(16, 185, 129, 0.1); color: var(--secondary); }
+        .status-busy { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+        .status-away { background: rgba(6, 182, 212, 0.1); color: var(--info); }
+
+        /* Footer */
+        .office-footer {
+            background: var(--dark);
+            color: #1a202c;
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .office-room {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .office-room:nth-child(1) { animation-delay: 0.1s; }
+        .office-room:nth-child(2) { animation-delay: 0.2s; }
+        .office-room:nth-child(3) { animation-delay: 0.3s; }
+        .office-room:nth-child(4) { animation-delay: 0.4s; }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .office-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .service-buttons {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .office-title {
+                font-size: 2rem;
+            }
+            
+            .service-buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .specialist-card {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="office-container">
+        <!-- Office Background Elements -->
+        <div class="office-background">
+            <div class="wall"></div>
+            <div class="carpet"></div>
+            <div class="window"></div>
+            <div class="plant"></div>
+            <div class="desk">
+                <div class="computer">
+                    <div class="computer-screen">
+                        <div class="screen-content">Concierge Services Active</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Office Content -->
+        <div class="office-content">
+            <div class="office-header">
+                <!-- Back Navigation Button -->
+                <div style="position: absolute; top: 20px; left: 20px;">
+                    <a href="/" style="color: #1a202c; text-decoration: none; display: flex; align-items: center; gap: 10px; background: rgba(255, 255, 255, 0.2); padding: 10px 15px; border-radius: 20px; transition: all 0.3s ease;">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Back to Home</span>
+                    </a>
+                </div>
+
+                <h1 class="office-title">
+                    <i class="fas fa-concierge-bell"></i> Concierge Services
+                </h1>
+                <p class="office-subtitle">Your Virtual Office Experience</p>
+                
+                <div class="specialist-card">
+                    <div class="specialist-avatar">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <div class="specialist-info">
+                        <h3>Livania Achary</h3>
+                        <p>Concierge Service Specialist</p>
+                        <span class="status-badge">Available</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="office-grid">
+                <!-- Service Desk Room -->
+                <div class="office-room">
+                    <div class="room-header">
+                        <i class="fas fa-user-tie"></i>
+                        <h2>Service Desk</h2>
+                    </div>
+                    <div class="room-content">
+                        <div class="service-buttons">
+                            <div class="service-button" onclick="openServiceModal('new-request')">
+                                <i class="fas fa-plus"></i>
+                                <h4>New Request</h4>
+                                <p>Submit a new service request</p>
+                            </div>
+                            <div class="service-button" onclick="openServiceModal('vehicle-reg')">
+                                <i class="fas fa-car"></i>
+                                <h4>Vehicle Registration</h4>
+                                <p>Register or update vehicle info</p>
+                            </div>
+                            <div class="service-button" onclick="openServiceModal('meeting-room')">
+                                <i class="fas fa-calendar"></i>
+                                <h4>Book Meeting Room</h4>
+                                <p>Reserve a meeting space</p>
+                            </div>
+                            <div class="service-button" onclick="openServiceModal('maintenance')">
+                                <i class="fas fa-tools"></i>
+                                <h4>Maintenance Request</h4>
+                                <p>Report facility issues</p>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 20px;">
+                            <h4>Emergency Contacts</h4>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+                                <div style="padding: 10px; background: #f1f5f9; border-radius: 5px;">
+                                    <strong>Security</strong><br>Ext. 911
+                                </div>
+                                <div style="padding: 10px; background: #f1f5f9; border-radius: 5px;">
+                                    <strong>Maintenance</strong><br>Ext. 2233
+                                </div>
+                                <div style="padding: 10px; background: #f1f5f9; border-radius: 5px;">
+                                    <strong>IT Support</strong><br>Ext. 4455
+                                </div>
+                                <div style="padding: 10px; background: #f1f5f9; border-radius: 5px;">
+                                    <strong>Facilities</strong><br>Ext. 5577
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service Status Room -->
+                <div class="office-room">
+                    <div class="room-header">
+                        <i class="fas fa-clipboard-list"></i>
+                        <h2>Service Status</h2>
+                    </div>
+                    <div class="room-content">
+                        <table class="request-table">
+                            <thead>
+                                <tr>
+                                    <th>Request #</th>
+                                    <th>Type</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>CR-2025-001</strong></td>
+                                    <td>Vehicle Registration</td>
+                                    <td><span class="badge badge-success">Completed</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>CR-2025-002</strong></td>
+                                    <td>Meeting Room Booking</td>
+                                    <td><span class="badge badge-warning">In Progress</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>CR-2025-003</strong></td>
+                                    <td>Maintenance Request</td>
+                                    <td><span class="badge badge-primary">Assigned</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>CR-2025-004</strong></td>
+                                    <td>VIP Services</td>
+                                    <td><span class="badge badge-warning">In Progress</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Performance Metrics Room -->
+                <div class="office-room">
+                    <div class="room-header">
+                        <i class="fas fa-chart-line"></i>
+                        <h2>Performance Metrics</h2>
+                    </div>
+                    <div class="room-content">
+                        <div class="metrics-grid">
+                            <div class="metric-card">
+                                <div class="metric-value">1.2 hours</div>
+                                <div class="metric-label">Avg. Response Time</div>
+                                <div style="color: var(--secondary); font-size: 0.8rem;">
+                                    <i class="fas fa-arrow-down"></i> 15% faster
+                                </div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value">92%</div>
+                                <div class="metric-label">Resolution Rate</div>
+                                <div style="color: var(--secondary); font-size: 0.8rem;">
+                                    <i class="fas fa-arrow-up"></i> 5% improvement
+                                </div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value">4.7/5</div>
+                                <div class="metric-label">Satisfaction Score</div>
+                                <div style="color: var(--warning); font-size: 0.8rem;">
+                                    <i class="fas fa-minus"></i> Stable
+                                </div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value">89%</div>
+                                <div class="metric-label">Completion Rate</div>
+                                <div style="color: var(--secondary); font-size: 0.8rem;">
+                                    <i class="fas fa-arrow-up"></i> 7% improvement
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Team Room -->
+                <div class="office-room">
+                    <div class="room-header">
+                        <i class="fas fa-users"></i>
+                        <h2>Team Availability</h2>
+                    </div>
+                    <div class="room-content">
+                        <div class="team-grid">
+                            <div class="team-member">
+                                <div class="member-avatar">
+                                    <i class="fas fa-user-tie"></i>
+                                </div>
+                                <div>
+                                    <h4>Livania Achary</h4>
+                                    <p>Concierge Specialist</p>
+                                </div>
+                                <span class="member-status status-available">Available</span>
+                            </div>
+                            <div class="team-member">
+                                <div class="member-avatar">
+                                    <i class="fas fa-user-cog"></i>
+                                </div>
+                                <div>
+                                    <h4>Sifiso Shezi</h4>
+                                    <p>Facilities Support</p>
+                                </div>
+                                <span class="member-status status-available">Available</span>
+                            </div>
+                            <div class="team-member">
+                                <div class="member-avatar">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div>
+                                    <h4>Team Member 2</h4>
+                                    <p>Concierge Support</p>
+                                </div>
+                                <span class="member-status status-busy">Busy</span>
+                            </div>
+                            <div class="team-member">
+                                <div class="member-avatar">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div>
+                                    <h4>Team Member 3</h4>
+                                    <p>Admin Support</p>
+                                </div>
+                                <span class="member-status status-away">On Break</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="office-footer">
+                <p>Designed by Sifiso Cyprian Shezi</p>
+                <p>Facilities Assistant Level 1 — Derivco Durban | Transforming facility management through innovation</p>
+                <p>&copy; 2025 Derivco Facilities Management System. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to handle service button clicks
+        function openServiceModal(serviceType) {
+            // In a real implementation, this would open a modal or navigate to a service page
+            const serviceNames = {
+                'new-request': 'New Service Request',
+                'vehicle-reg': 'Vehicle Registration',
+                'meeting-room': 'Meeting Room Booking',
+                'maintenance': 'Maintenance Request'
+            };
+            
+            alert(`Opening ${serviceNames[serviceType]} form...`);
+            console.log(`Service selected: ${serviceType}`);
+        }
+
+        // Simulate live updates
+        setInterval(() => {
+            // Randomly update team status for demonstration
+            const statusElements = document.querySelectorAll('.member-status');
+            statusElements.forEach(el => {
+                if (Math.random() > 0.7) { // 30% chance to change status
+                    const statuses = ['status-available', 'status-busy', 'status-away'];
+                    const texts = ['Available', 'Busy', 'On Break'];
+                    const randomIndex = Math.floor(Math.random() * statuses.length);
+                    
+                    // Remove all status classes
+                    el.classList.remove('status-available', 'status-busy', 'status-away');
+                    // Add new random status
+                    el.classList.add(statuses[randomIndex]);
+                    el.textContent = texts[randomIndex];
+                }
+            });
+        }, 5000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+# Systematic Processes Sub-components
+@app.route('/methodology/pillars/systematic-processes/sop')
+def systematic_processes_sop():
+    """Standard Operating Procedures component page"""
+    return render_template('methodology/pillars/systematic-processes/sop.html')
+
+@app.route('/methodology/pillars/systematic-processes/workflow')
+def systematic_processes_workflow():
+    """Workflow Management component page"""
+    return render_template('methodology/pillars/systematic-processes/workflow.html')
+
+@app.route('/methodology/pillars/systematic-processes/quality-control')
+def systematic_processes_quality_control():
+    """Quality Control component page"""
+    return render_template('methodology/pillars/systematic-processes/quality_control.html')

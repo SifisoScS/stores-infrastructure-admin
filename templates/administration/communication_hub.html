@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Communication Hub - Global Facilities Coordination</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --derivco-blue: rgb(0, 66, 137);
+            --derivco-cyan: rgb(0, 191, 255);
+            --derivco-blue-light: rgba(0, 66, 137, 0.1);
+            --derivco-cyan-light: rgba(0, 191, 255, 0.1);
+            --primary-blue: #003366;
+            --secondary-teal: #008080;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            min-height: 100vh;
+            color: #1a202c;
+        }
+
+        /* Header styling */
+        .page-header {
+            background: linear-gradient(135deg, var(--derivco-blue) 0%, var(--derivco-cyan) 100%);
+            color: white;
+            padding: 2rem 0;
+        }
+
+        /* Card design */
+        .clean-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0, 66, 137, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .clean-card:hover {
+            box-shadow: 0 8px 24px rgba(0, 66, 137, 0.12);
+            transform: translateY(-2px);
+        }
+
+        /* Back button */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Location indicators */
+        .location-isle-of-man {
+            background: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+            border: 1px solid #22c55e;
+        }
+
+        .location-durban {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+            border: 1px solid #3b82f6;
+        }
+
+        .location-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 16px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        /* Priority indicators */
+        .priority-high { border-left: 4px solid #ef4444; background: rgba(239, 68, 68, 0.05); }
+        .priority-medium { border-left: 4px solid #f59e0b; background: rgba(245, 158, 11, 0.05); }
+        .priority-low { border-left: 4px solid #10b981; background: rgba(16, 185, 129, 0.05); }
+        .priority-urgent { border-left: 4px solid #dc2626; background: rgba(220, 38, 38, 0.05); }
+
+        /* Status badges */
+        .status-online { background: rgba(34, 197, 94, 0.1); color: #22c55e; }
+        .status-busy { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+        .status-away { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+        .status-offline { background: rgba(156, 163, 175, 0.1); color: #6b7280; }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 16px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Section headers */
+        .section-header {
+            border-bottom: 2px solid var(--derivco-blue);
+            padding-bottom: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--derivco-blue);
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title i {
+            margin-right: 0.75rem;
+            font-size: 1.25rem;
+        }
+
+        /* Action buttons */
+        .action-btn {
+            background: linear-gradient(135deg, var(--derivco-blue) 0%, var(--derivco-cyan) 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 66, 137, 0.3);
+        }
+
+        .action-btn i {
+            margin-right: 0.5rem;
+        }
+
+        /* Message cards */
+        .message-card {
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .message-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 66, 137, 0.08);
+            transform: translateX(5px);
+        }
+
+        /* Time display */
+        .time-display {
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            color: var(--derivco-blue);
+        }
+
+        /* Live indicators */
+        .live-indicator {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+            padding: 0.25rem 0.75rem;
+            border-radius: 16px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .live-indicator::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Meeting room status */
+        .room-available {
+            background: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+        }
+        .room-occupied {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+        .room-reserved {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+
+        /* World clock */
+        .world-clock {
+            text-align: center;
+            padding: 1rem;
+            border-radius: 8px;
+            background: rgba(0, 66, 137, 0.05);
+            border: 1px solid rgba(0, 66, 137, 0.1);
+        }
+
+        .clock-time {
+            font-size: 1.5rem;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+        }
+
+        .clock-location {
+            font-size: 0.9rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="page-header">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <a href="/administration" class="back-btn">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Back to Administration Portal
+            </a>
+
+            <div class="text-center">
+                <h1 class="text-4xl font-bold mb-2">💬 Communication Hub</h1>
+                <p class="text-xl opacity-90">Global Facilities Coordination - Isle of Man & Durban</p>
+                <p class="text-lg opacity-80 mt-2">Multi-timezone stakeholder management and coordination</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- World Clock & Live Status -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <!-- Isle of Man Time -->
+            <div class="clean-card p-6">
+                <div class="world-clock">
+                    <div class="clock-time text-green-600" id="isleOfManTime">14:32:15</div>
+                    <div class="clock-location">🇮🇲 Isle of Man (GMT)</div>
+                    <div class="live-indicator mt-2">
+                        LIVE TIME
+                    </div>
+                </div>
+            </div>
+
+            <!-- Durban Time -->
+            <div class="clean-card p-6">
+                <div class="world-clock">
+                    <div class="clock-time text-blue-600" id="durbanTime">16:32:15</div>
+                    <div class="clock-location">🇿🇦 Durban (SAST)</div>
+                    <div class="live-indicator mt-2">
+                        LIVE TIME
+                    </div>
+                </div>
+            </div>
+
+            <!-- Working Hours Status -->
+            <div class="clean-card p-6">
+                <div class="world-clock">
+                    <div class="clock-time text-purple-600" id="workingStatus">BOTH ACTIVE</div>
+                    <div class="clock-location">⏰ Working Hours Status</div>
+                    <div class="text-sm text-gray-600 mt-2">
+                        <i class="fas fa-business-time mr-1"></i>Optimal coordination window
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Management Team Status -->
+        <div class="clean-card p-6 mb-8">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-users-cog"></i>
+                    Management Team Status
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Adriaan Verduyn - Head of Support Services -->
+                <div class="clean-card p-4 border-l-4 border-green-500">
+                    <div class="flex items-center justify-between mb-3">
+                        <div>
+                            <h3 class="font-semibold text-gray-800">Adriaan Verduyn</h3>
+                            <p class="text-sm text-gray-600">Head of Support Services</p>
+                        </div>
+                        <span class="status-badge status-online">ONLINE</span>
+                    </div>
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="location-badge location-isle-of-man">
+                            <i class="fas fa-map-marker-alt mr-1"></i>Isle of Man
+                        </span>
+                        <span class="text-sm text-gray-500 time-display">GMT 14:32</span>
+                    </div>
+                    <div class="text-xs text-gray-600">
+                        <i class="fas fa-calendar mr-1"></i>Next meeting: 15:00 GMT with Aidan
+                    </div>
+                </div>
+
+                <!-- Aidan Harris - Estate Manager -->
+                <div class="clean-card p-4 border-l-4 border-blue-500">
+                    <div class="flex items-center justify-between mb-3">
+                        <div>
+                            <h3 class="font-semibold text-gray-800">Aidan Harris</h3>
+                            <p class="text-sm text-gray-600">Estate Manager</p>
+                        </div>
+                        <span class="status-badge status-online">ONLINE</span>
+                    </div>
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="location-badge location-durban">
+                            <i class="fas fa-map-marker-alt mr-1"></i>Durban
+                        </span>
+                        <span class="text-sm text-gray-500 time-display">SAST 16:32</span>
+                    </div>
+                    <div class="text-xs text-gray-600">
+                        <i class="fas fa-building mr-1"></i>Reports to: Adriaan Verduyn
+                    </div>
+                </div>
+
+                <!-- Neren Kisten - Facilities Manager -->
+                <div class="clean-card p-4 border-l-4 border-purple-500">
+                    <div class="flex items-center justify-between mb-3">
+                        <div>
+                            <h3 class="font-semibold text-gray-800">Neren Kisten</h3>
+                            <p class="text-sm text-gray-600">Facilities Manager</p>
+                        </div>
+                        <span class="status-badge status-online">ONLINE</span>
+                    </div>
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="location-badge location-durban">
+                            <i class="fas fa-map-marker-alt mr-1"></i>Durban
+                        </span>
+                        <span class="text-sm text-gray-500 time-display">SAST 16:32</span>
+                    </div>
+                    <div class="text-xs text-gray-600">
+                        <i class="fas fa-user-tie mr-1"></i>Reports to: Aidan Harris
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Communications -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Urgent Messages -->
+            <div class="clean-card p-6">
+                <div class="section-header">
+                    <h3 class="font-semibold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-exclamation-circle text-red-600 mr-2"></i>
+                        Urgent Messages
+                    </h3>
+                </div>
+                <div class="space-y-3 max-h-64 overflow-y-auto">
+                    <div class="message-card priority-urgent">
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <div class="font-medium text-sm">HVAC System Critical Alert</div>
+                                <div class="text-xs text-gray-600">From: Neren Kisten → Aidan Harris</div>
+                            </div>
+                            <span class="location-badge location-durban">DURBAN</span>
+                        </div>
+                        <div class="text-xs text-gray-600 mb-2">Conference Room A HVAC failure - Elton on site</div>
+                        <div class="text-xs text-gray-500 time-display">15:45 SAST | 13:45 GMT</div>
+                    </div>
+
+                    <div class="message-card priority-high">
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <div class="font-medium text-sm">Q4 Budget Review Required</div>
+                                <div class="text-xs text-gray-600">From: Adriaan Verduyn → All Managers</div>
+                            </div>
+                            <span class="location-badge location-isle-of-man">ISLE OF MAN</span>
+                        </div>
+                        <div class="text-xs text-gray-600 mb-2">Need Durban facilities spend report by COB</div>
+                        <div class="text-xs text-gray-500 time-display">12:30 GMT | 14:30 SAST</div>
+                    </div>
+
+                    <div class="message-card priority-medium">
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <div class="font-medium text-sm">MAC Project Update</div>
+                                <div class="text-xs text-gray-600">From: Aidan Harris → Adriaan Verduyn</div>
+                            </div>
+                            <span class="location-badge location-durban">DURBAN</span>
+                        </div>
+                        <div class="text-xs text-gray-600 mb-2">Engineering relocation 75% complete - on schedule</div>
+                        <div class="text-xs text-gray-500 time-display">11:15 SAST | 09:15 GMT</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Teams & Email Integration -->
+            <div class="clean-card p-6">
+                <div class="section-header">
+                    <h3 class="font-semibold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-envelope text-blue-600 mr-2"></i>
+                        Teams & Email Activity
+                    </h3>
+                </div>
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between p-3 bg-blue-50 rounded">
+                        <div class="flex items-center">
+                            <i class="fab fa-microsoft text-blue-600 mr-3"></i>
+                            <div>
+                                <div class="font-medium text-sm">Teams Meeting</div>
+                                <div class="text-xs text-gray-600">Weekly Facilities Review</div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-xs text-gray-500">Starting in 28 mins</div>
+                            <div class="text-xs font-medium text-blue-600">15:00 GMT</div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between p-3 bg-green-50 rounded">
+                        <div class="flex items-center">
+                            <i class="fas fa-envelope text-green-600 mr-3"></i>
+                            <div>
+                                <div class="font-medium text-sm">Unread Emails</div>
+                                <div class="text-xs text-gray-600">12 new messages</div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-xs text-gray-500">Last: 2 mins ago</div>
+                            <div class="text-xs font-medium text-green-600">Urgent: 3</div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between p-3 bg-purple-50 rounded">
+                        <div class="flex items-center">
+                            <i class="fas fa-calendar text-purple-600 mr-3"></i>
+                            <div>
+                                <div class="font-medium text-sm">Outlook Calendar</div>
+                                <div class="text-xs text-gray-600">5 meetings today</div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-xs text-gray-500">Next: 15:00</div>
+                            <div class="text-xs font-medium text-purple-600">3 pending</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Meeting Rooms Status -->
+        <div class="clean-card p-6 mb-8">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-door-open"></i>
+                    Meeting Rooms Status - Durban Office
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="clean-card p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-medium">Conference Room A</h4>
+                        <span class="status-badge room-occupied">OCCUPIED</span>
+                    </div>
+                    <div class="text-xs text-gray-600">
+                        <div>Budget Review Meeting</div>
+                        <div>Until: 17:00 SAST</div>
+                        <div>Attendees: 8 people</div>
+                    </div>
+                </div>
+
+                <div class="clean-card p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-medium">Conference Room B</h4>
+                        <span class="status-badge room-available">AVAILABLE</span>
+                    </div>
+                    <div class="text-xs text-gray-600">
+                        <div>Next booking: 18:00 SAST</div>
+                        <div>Capacity: 6 people</div>
+                        <div>AV Equipment: Ready</div>
+                    </div>
+                </div>
+
+                <div class="clean-card p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-medium">Meeting Room 1</h4>
+                        <span class="status-badge room-reserved">RESERVED</span>
+                    </div>
+                    <div class="text-xs text-gray-600">
+                        <div>Teams Call - Isle of Man</div>
+                        <div>15:00 - 16:00 SAST</div>
+                        <div>Booked by: Aidan Harris</div>
+                    </div>
+                </div>
+
+                <div class="clean-card p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-medium">Meeting Room 2</h4>
+                        <span class="status-badge room-available">AVAILABLE</span>
+                    </div>
+                    <div class="text-xs text-gray-600">
+                        <div>Available all day</div>
+                        <div>Capacity: 4 people</div>
+                        <div>Whiteboard: Available</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stakeholder Communication Matrix -->
+        <div class="clean-card p-6 mb-8">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-network-wired"></i>
+                    Stakeholder Communication Matrix
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Executive Level -->
+                <div class="clean-card p-4">
+                    <h3 class="font-semibold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-crown text-yellow-600 mr-2"></i>
+                        Executive Level
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-2 rounded border">
+                            <span class="text-sm">Adriaan Verduyn</span>
+                            <span class="location-badge location-isle-of-man">GMT</span>
+                        </div>
+                        <div class="text-xs text-gray-600">
+                            • Strategic oversight & approvals<br>
+                            • Budget authorization<br>
+                            • Policy decisions<br>
+                            • Cross-regional coordination
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Management Level -->
+                <div class="clean-card p-4">
+                    <h3 class="font-semibold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-user-tie text-blue-600 mr-2"></i>
+                        Management Level
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-2 rounded border">
+                            <span class="text-sm">Aidan Harris</span>
+                            <span class="location-badge location-durban">SAST</span>
+                        </div>
+                        <div class="text-xs text-gray-600">
+                            • Estate management coordination<br>
+                            • Resource allocation<br>
+                            • Team oversight<br>
+                            • Reporting to executive
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Operational Level -->
+                <div class="clean-card p-4">
+                    <h3 class="font-semibold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-cogs text-green-600 mr-2"></i>
+                        Operational Level
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-2 rounded border">
+                            <span class="text-sm">Neren Kisten</span>
+                            <span class="location-badge location-durban">SAST</span>
+                        </div>
+                        <div class="text-xs text-gray-600">
+                            • Daily operations management<br>
+                            • Team coordination<br>
+                            • Issue escalation<br>
+                            • Performance monitoring
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Daily Office Tasks & Schedules -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Today's Schedule & Meetings -->
+            <div class="clean-card p-6">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-calendar-day"></i>
+                        Today's Schedule & Meetings
+                    </h2>
+                </div>
+                <div class="space-y-4">
+                    <div class="p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <h4 class="font-semibold text-blue-800">Executive Leadership Meeting</h4>
+                                <p class="text-sm text-blue-600">Monthly strategy review with board</p>
+                            </div>
+                            <span class="text-xs bg-blue-600 text-white px-2 py-1 rounded">09:00 GMT</span>
+                        </div>
+                        <div class="flex items-center text-xs text-blue-600">
+                            <i class="fab fa-microsoft mr-2"></i>Teams Meeting
+                            <i class="fas fa-users ml-4 mr-1"></i>8 attendees
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-green-50 rounded-lg border-l-4 border-green-500">
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <h4 class="font-semibold text-green-800">Durban Operations Check-in</h4>
+                                <p class="text-sm text-green-600">Weekly coordination with Aidan & Neren</p>
+                            </div>
+                            <span class="text-xs bg-green-600 text-white px-2 py-1 rounded">15:00 GMT</span>
+                        </div>
+                        <div class="flex items-center text-xs text-green-600">
+                            <i class="fas fa-video mr-2"></i>Video Conference
+                            <i class="fas fa-clock ml-4 mr-1"></i>60 minutes
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-purple-50 rounded-lg border-l-4 border-purple-500">
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <h4 class="font-semibold text-purple-800">Vendor Performance Review</h4>
+                                <p class="text-sm text-purple-600">LivClean & CSG Foods quarterly assessment</p>
+                            </div>
+                            <span class="text-xs bg-purple-600 text-white px-2 py-1 rounded">14:30 GMT</span>
+                        </div>
+                        <div class="flex items-center text-xs text-purple-600">
+                            <i class="fas fa-handshake mr-2"></i>Vendor Meeting
+                            <i class="fas fa-chart-line ml-4 mr-1"></i>Performance Review
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Daily Office Activities -->
+            <div class="clean-card p-6">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-tasks"></i>
+                        Daily Office Activities
+                    </h2>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex items-center p-3 bg-gray-50 rounded border-l-4 border-blue-500">
+                        <i class="fas fa-envelope text-blue-600 mr-3 text-lg"></i>
+                        <div class="flex-1">
+                            <div class="font-medium text-gray-800">Outlook Email Management</div>
+                            <div class="text-sm text-gray-600">24 unread messages • 3 urgent</div>
+                        </div>
+                        <button class="text-blue-600 hover:bg-blue-100 px-3 py-1 rounded text-sm" onclick="openOutlook()">
+                            Open
+                        </button>
+                    </div>
+
+                    <div class="flex items-center p-3 bg-gray-50 rounded border-l-4 border-green-500">
+                        <i class="fas fa-file-powerpoint text-green-600 mr-3 text-lg"></i>
+                        <div class="flex-1">
+                            <div class="font-medium text-gray-800">SharePoint Document Review</div>
+                            <div class="text-sm text-gray-600">5 policies pending approval</div>
+                        </div>
+                        <button class="text-green-600 hover:bg-green-100 px-3 py-1 rounded text-sm" onclick="openSharePoint()">
+                            Review
+                        </button>
+                    </div>
+
+                    <div class="flex items-center p-3 bg-gray-50 rounded border-l-4 border-purple-500">
+                        <i class="fas fa-chart-bar text-purple-600 mr-3 text-lg"></i>
+                        <div class="flex-1">
+                            <div class="font-medium text-gray-800">Weekly Budget Review</div>
+                            <div class="text-sm text-gray-600">R2.4M budget utilization: 76%</div>
+                        </div>
+                        <button class="text-purple-600 hover:bg-purple-100 px-3 py-1 rounded text-sm" onclick="openBudgetDashboard()">
+                            View
+                        </button>
+                    </div>
+
+                    <div class="flex items-center p-3 bg-gray-50 rounded border-l-4 border-orange-500">
+                        <i class="fas fa-phone text-orange-600 mr-3 text-lg"></i>
+                        <div class="flex-1">
+                            <div class="font-medium text-gray-800">Stakeholder Calls</div>
+                            <div class="text-sm text-gray-600">3 scheduled • Isle of Man timezone</div>
+                        </div>
+                        <button class="text-orange-600 hover:bg-orange-100 px-3 py-1 rounded text-sm" onclick="viewCallSchedule()">
+                            Schedule
+                        </button>
+                    </div>
+
+                    <div class="flex items-center p-3 bg-gray-50 rounded border-l-4 border-teal-500">
+                        <i class="fas fa-clipboard-check text-teal-600 mr-3 text-lg"></i>
+                        <div class="flex-1">
+                            <div class="font-medium text-gray-800">Daily Operations Report</div>
+                            <div class="text-sm text-gray-600">Durban facility status review</div>
+                        </div>
+                        <button class="text-teal-600 hover:bg-teal-100 px-3 py-1 rounded text-sm" onclick="generateReport()">
+                            Generate
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vendor Communication & Coordination -->
+        <div class="clean-card p-6 mb-8">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-handshake"></i>
+                    Vendor Communication & Coordination
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+                    <div class="flex items-center mb-3">
+                        <i class="fas fa-broom text-blue-600 mr-2"></i>
+                        <h4 class="font-semibold text-gray-800">LivClean Hygiene</h4>
+                    </div>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Last Contact:</span>
+                            <span class="font-medium">Yesterday</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Performance:</span>
+                            <span class="text-green-600 font-medium">Excellent</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Next Review:</span>
+                            <span class="text-blue-600 font-medium">Friday</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+                    <div class="flex items-center mb-3">
+                        <i class="fas fa-utensils text-orange-600 mr-2"></i>
+                        <h4 class="font-semibold text-gray-800">CSG Foods</h4>
+                    </div>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Last Contact:</span>
+                            <span class="font-medium">This Morning</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Performance:</span>
+                            <span class="text-green-600 font-medium">Good</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Next Review:</span>
+                            <span class="text-blue-600 font-medium">Today 14:30</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+                    <div class="flex items-center mb-3">
+                        <i class="fas fa-seedling text-green-600 mr-2"></i>
+                        <h4 class="font-semibold text-gray-800">Sabeliwe Gardens</h4>
+                    </div>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Last Contact:</span>
+                            <span class="font-medium">Monday</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Performance:</span>
+                            <span class="text-green-600 font-medium">Excellent</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Next Review:</span>
+                            <span class="text-blue-600 font-medium">Next Week</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+                    <div class="flex items-center mb-3">
+                        <i class="fas fa-palette text-purple-600 mr-2"></i>
+                        <h4 class="font-semibold text-gray-800">Leitch Landscapes</h4>
+                    </div>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Last Contact:</span>
+                            <span class="font-medium">2 days ago</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Performance:</span>
+                            <span class="text-green-600 font-medium">Excellent</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Next Review:</span>
+                            <span class="text-blue-600 font-medium">End of Month</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions Panel -->
+        <div class="clean-card p-6">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-bolt"></i>
+                    Communication Quick Actions
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <button class="action-btn" onclick="openOutlook()">
+                    <i class="fas fa-envelope"></i>
+                    Open Outlook
+                </button>
+                <button class="action-btn bg-purple-600" onclick="joinTeams()">
+                    <i class="fab fa-microsoft"></i>
+                    Join Teams
+                </button>
+                <button class="action-btn bg-green-600" onclick="bookMeeting()">
+                    <i class="fas fa-calendar-plus"></i>
+                    Book Meeting
+                </button>
+                <button class="action-btn bg-orange-600" onclick="escalateIssue()">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Escalate Issue
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Update world clocks
+        function updateWorldClocks() {
+            const now = new Date();
+
+            // Isle of Man time (GMT)
+            const isleOfManTime = new Date(now.toLocaleString("en-US", {timeZone: "Europe/London"}));
+            document.getElementById('isleOfManTime').textContent = isleOfManTime.toLocaleTimeString();
+
+            // Durban time (SAST - GMT+2)
+            const durbanTime = new Date(now.toLocaleString("en-US", {timeZone: "Africa/Johannesburg"}));
+            document.getElementById('durbanTime').textContent = durbanTime.toLocaleTimeString();
+
+            // Working hours status
+            const isleHour = isleOfManTime.getHours();
+            const durbanHour = durbanTime.getHours();
+
+            let status = "OFFLINE";
+            if ((isleHour >= 9 && isleHour < 17) && (durbanHour >= 9 && durbanHour < 17)) {
+                status = "BOTH ACTIVE";
+            } else if (isleHour >= 9 && isleHour < 17) {
+                status = "ISLE ACTIVE";
+            } else if (durbanHour >= 9 && durbanHour < 17) {
+                status = "DURBAN ACTIVE";
+            }
+
+            document.getElementById('workingStatus').textContent = status;
+        }
+
+        // Quick action functions
+        function openOutlook() {
+            alert('Opening Microsoft Outlook...');
+        }
+
+        function joinTeams() {
+            alert('Launching Microsoft Teams meeting...');
+        }
+
+        function bookMeeting() {
+            alert('Opening meeting booking interface...');
+        }
+
+        function escalateIssue() {
+            alert('Creating priority escalation to management...');
+        }
+
+        // Daily office activity functions
+        function openSharePoint() {
+            alert('Opening SharePoint Document Center...\n\n• Policy Review Dashboard\n• Document Approval Workflow\n• Compliance Records Access');
+        }
+
+        function openBudgetDashboard() {
+            alert('Opening Budget Management Dashboard...\n\n• R2.4M Total Budget\n• 76% Current Utilization\n• Department Breakdowns\n• Variance Reports');
+        }
+
+        function viewCallSchedule() {
+            alert('Opening Call Schedule...\n\n• 09:00 GMT - Executive Meeting\n• 14:30 GMT - Vendor Review\n• 15:00 GMT - Durban Check-in');
+        }
+
+        function generateReport() {
+            alert('Generating Daily Operations Report...\n\n• Durban Facility Status\n• Team Performance Metrics\n• Budget Utilization Summary\n• Vendor Performance Updates');
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateWorldClocks();
+
+            // Update clocks every 30 seconds
+            setInterval(updateWorldClocks, 30000);
+        });
+
+        console.log('Communication Hub - Global Facilities Coordination initialized');
+    </script>
+</body>
+</html>

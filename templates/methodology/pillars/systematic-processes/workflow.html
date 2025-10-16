@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workflow Management - The Sifiso Methodology</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --derivco-blue: #003366;
+            --derivco-teal: #008080;
+            --derivco-blue-light: rgba(0, 51, 102, 0.1);
+            --derivco-teal-light: rgba(0, 128, 128, 0.1);
+            --stat-green: #00FF99;
+            --text-gray: #4a5568;
+            --primary-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--primary-bg);
+            min-height: 100vh;
+            color: #1a202c;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--derivco-blue) 0%, var(--derivco-teal) 100%);
+            color: #1a202c;
+            position: relative;
+            overflow: hidden;
+            padding: 2rem 0;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.3;
+        }
+
+        .methodology-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .methodology-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 128, 128, 0.2);
+        }
+
+        .workflow-step {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .workflow-step::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(135deg, var(--derivco-blue) 0%, var(--derivco-teal) 100%);
+        }
+
+        .workflow-diagram {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .workflow-node {
+            text-align: center;
+            flex: 1;
+            min-width: 120px;
+            position: relative;
+        }
+
+        .workflow-node:not(:last-child)::after {
+            content: '→';
+            position: absolute;
+            right: -15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--derivco-teal);
+            font-size: 1.5rem;
+            z-index: 1;
+        }
+
+        .node-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--derivco-blue) 0%, var(--derivco-teal) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .node-icon:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(0, 128, 128, 0.4);
+        }
+
+        .stat-badge {
+            background: linear-gradient(135deg, var(--derivco-blue) 0%, var(--derivco-teal) 100%);
+            color: #1a202c;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(0, 51, 102, 0.8);
+            color: #1a202c;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 1px solid var(--derivco-teal);
+        }
+
+        .back-button:hover {
+            background: var(--derivco-teal);
+            transform: translateX(-3px);
+        }
+
+        .back-button i {
+            margin-right: 0.5rem;
+        }
+
+        .breadcrumb {
+            background: rgba(0, 128, 128, 0.1);
+            border: 1px solid var(--derivco-teal);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .breadcrumb a {
+            color: var(--derivco-teal);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--stat-green);
+        }
+
+        .metric-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px -5px rgba(0, 128, 128, 0.2);
+        }
+
+        .optimization-area {
+            border-left: 4px solid var(--derivco-teal);
+            background: var(--card-bg);
+            border-radius: 0 8px 8px 0;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .optimization-area:hover {
+            border-left: 4px solid var(--stat-green);
+            transform: translateX(5px);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-500 { animation-delay: 0.5s; }
+
+        @media (max-width: 768px) {
+            .workflow-diagram {
+                flex-direction: column;
+            }
+
+            .workflow-node:not(:last-child)::after {
+                content: '↓';
+                right: auto;
+                left: 50%;
+                top: auto;
+                bottom: -15px;
+                transform: translateX(-50%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b border-teal-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="text-xl font-semibold text-teal-400">Derivco Facilities</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/methodology/pillars/systematic-processes" class="text-blue-600 hover:text-blue-800 px-3 py-2 rounded-md font-medium flex items-center gap-2">
+                        <i class="fas fa-arrow-left"></i> Back to Systematic Processes
+                    </a>
+                    <a href="/" class="text-teal-300 hover:text-teal-100 px-3 py-2 rounded-md">Home</a>
+                    <a href="/inventory" class="text-teal-300 hover:text-teal-100 px-3 py-2 rounded-md">Inventory</a>
+                    <a href="/methodology" class="bg-teal-600 text-gray-900 px-3 py-2 rounded-md font-medium">Methodology</a>
+                    <a href="/signout/register" class="text-teal-300 hover:text-teal-100 px-3 py-2 rounded-md">Sign-Out</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero-section py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="mb-6 animate-fade-in-up">
+                <div class="w-24 h-24 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-project-diagram text-4xl text-teal-400"></i>
+                </div>
+                <h1 class="text-3xl md:text-4xl font-bold mb-4 text-center">Workflow Management</h1>
+                <p class="text-lg md:text-xl opacity-90 mb-6 text-teal-200 text-center">Systematic Processes Component</p>
+                <p class="text-xl max-w-4xl mx-auto text-teal-100 text-center">
+                    Optimizing operational sequences to maximize efficiency and eliminate waste across all facility management activities
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <!-- Breadcrumb Navigation -->
+        <div class="breadcrumb animate-fade-in-up">
+            <nav class="flex items-center space-x-2 text-sm">
+                <a href="/methodology" class="hover:underline">Methodology</a>
+                <i class="fas fa-chevron-right text-teal-400"></i>
+                <a href="/methodology/pillars/systematic-processes" class="hover:underline">Systematic Processes</a>
+                <i class="fas fa-chevron-right text-teal-400"></i>
+                <span class="text-gray-900 font-medium">Workflow Management</span>
+            </nav>
+        </div>
+
+
+        <!-- Overview -->
+        <div class="methodology-card p-8 mb-12 animate-fade-in-up">
+            <h2 class="text-3xl font-bold text-gray-900 mb-6 flex items-center">
+                <i class="fas fa-stream text-teal-400 mr-3"></i>
+                Workflow Optimization Framework
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <p class="text-lg text-gray-300 mb-6">
+                        Workflow Management transforms disparate facility operations into seamlessly integrated,
+                        efficient processes. By analyzing, designing, and optimizing operational sequences, we
+                        eliminate bottlenecks and maximize resource utilization across all facilities functions.
+                    </p>
+
+                    <div class="bg-teal-900 bg-opacity-30 border-l-4 border-teal-500 p-4 rounded-r-lg mb-6">
+                        <h4 class="font-semibold text-teal-300 mb-2">Optimization Philosophy</h4>
+                        <p class="text-teal-200">
+                            "Efficiency is not about doing more things—it's about doing the right things in the right order,
+                            with the right resources, at the right time."
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg border border-teal-500 border-opacity-30">
+                    <h4 class="font-semibold text-gray-900 mb-4">Workflow Benefits</h4>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="bg-teal-900 bg-opacity-50 p-2 rounded-lg mr-4">
+                                <i class="fas fa-tachometer-alt text-teal-400"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-900">Performance Acceleration</h5>
+                                <p class="text-sm text-gray-400">Streamline processes for maximum throughput</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <div class="bg-teal-900 bg-opacity-50 p-2 rounded-lg mr-4">
+                                <i class="fas fa-cut text-teal-400"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-900">Waste Elimination</h5>
+                                <p class="text-sm text-gray-400">Remove non-value-added activities and delays</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <div class="bg-teal-900 bg-opacity-50 p-2 rounded-lg mr-4">
+                                <i class="fas fa-sync text-teal-400"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-900">Resource Optimization</h5>
+                                <p class="text-sm text-gray-400">Maximize utilization of people and assets</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Workflow Analysis Process -->
+        <div class="methodology-card p-8 mb-12 animate-fade-in-up delay-100">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8">
+                <i class="fas fa-search text-teal-400 mr-3"></i>
+                Workflow Analysis Process
+            </h2>
+
+            <div class="workflow-diagram">
+                <div class="workflow-node">
+                    <div class="node-icon">
+                        <i class="fas fa-map"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900">Process Mapping</h4>
+                    <p class="text-sm text-gray-400">Visualize current workflows</p>
+                </div>
+
+                <div class="workflow-node">
+                    <div class="node-icon">
+                        <i class="fas fa-stopwatch"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900">Time Analysis</h4>
+                    <p class="text-sm text-gray-400">Measure task durations</p>
+                </div>
+
+                <div class="workflow-node">
+                    <div class="node-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900">Bottleneck ID</h4>
+                    <p class="text-sm text-gray-400">Identify constraint points</p>
+                </div>
+
+                <div class="workflow-node">
+                    <div class="node-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900">Optimization</h4>
+                    <p class="text-sm text-gray-400">Design improved flows</p>
+                </div>
+
+                <div class="workflow-node">
+                    <div class="node-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900">Implementation</h4>
+                    <p class="text-sm text-gray-400">Deploy new workflows</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Implementation Framework -->
+        <div class="methodology-card p-8 mb-12 animate-fade-in-up delay-200">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8">
+                <i class="fas fa-cogs text-teal-400 mr-3"></i>
+                Workflow Optimization Framework
+            </h2>
+
+            <div class="space-y-6">
+                <div class="workflow-step">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-bold text-gray-900">Phase 1: Current State Analysis</h3>
+                        <span class="stat-badge text-sm">Weeks 1-2</span>
+                    </div>
+                    <p class="text-gray-300 mb-4">
+                        Comprehensive mapping and analysis of existing workflows to establish baseline performance and identify improvement opportunities.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-semibold text-teal-300 mb-3">Analysis Activities</h4>
+                            <ul class="text-gray-400 space-y-2">
+                                <li class="flex items-start">
+                                    <i class="fas fa-chevron-right text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Process flow documentation
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-chevron-right text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Time and motion studies
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-chevron-right text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Resource utilization assessment
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-chevron-right text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Stakeholder input sessions
+                                </li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-teal-300 mb-3">Key Outputs</h4>
+                            <ul class="text-gray-400 space-y-2">
+                                <li class="flex items-start">
+                                    <i class="fas fa-file-alt text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Current state workflow maps
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-file-alt text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Performance baseline metrics
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-file-alt text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Bottleneck identification report
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-file-alt text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Improvement opportunity matrix
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="workflow-step">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-bold text-gray-900">Phase 2: Workflow Redesign</h3>
+                        <span class="stat-badge text-sm">Weeks 3-4</span>
+                    </div>
+                    <p class="text-gray-300 mb-4">
+                        Design optimized workflows that eliminate waste, reduce cycle times, and improve resource allocation across all facility operations.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-semibold text-teal-300 mb-3">Design Activities</h4>
+                            <ul class="text-gray-400 space-y-2">
+                                <li class="flex items-start">
+                                    <i class="fas fa-chevron-right text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Future state workflow design
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-chevron-right text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Process simplification initiatives
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-chevron-right text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Automation opportunity assessment
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-chevron-right text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Resource reallocation planning
+                                </li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-teal-300 mb-3">Key Outputs</h4>
+                            <ul class="text-gray-400 space-y-2">
+                                <li class="flex items-start">
+                                    <i class="fas fa-file-alt text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Optimized workflow blueprints
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-file-alt text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Process improvement specifications
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-file-alt text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Automation roadmap
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-file-alt text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Expected performance improvements
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="workflow-step">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-bold text-gray-900">Phase 3: Pilot Implementation</h3>
+                        <span class="stat-badge text-sm">Week 5</span>
+                    </div>
+                    <p class="text-gray-300 mb-4">
+                        Controlled rollout of optimized workflows in select areas to validate improvements and fine-tune processes before full implementation.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-semibold text-teal-300 mb-3">Pilot Activities</h4>
+                            <ul class="text-gray-400 space-y-2">
+                                <li class="flex items-start">
+                                    <i class="fas fa-chevron-right text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Select pilot areas and teams
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-chevron-right text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Deploy new workflow processes
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-chevron-right text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Monitor performance metrics
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-chevron-right text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Collect feedback and adjustments
+                                </li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-teal-300 mb-3">Key Outputs</h4>
+                            <ul class="text-gray-400 space-y-2">
+                                <li class="flex items-start">
+                                    <i class="fas fa-file-alt text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Pilot performance results
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-file-alt text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Process refinement recommendations
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-file-alt text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Implementation lessons learned
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-file-alt text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Full rollout readiness assessment
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="workflow-step">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-bold text-gray-900">Phase 4: Full Deployment & Monitoring</h3>
+                        <span class="stat-badge text-sm">Week 6</span>
+                    </div>
+                    <p class="text-gray-300 mb-4">
+                        Organization-wide deployment of optimized workflows with comprehensive monitoring systems to ensure sustained performance improvements.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-semibold text-teal-300 mb-3">Deployment Activities</h4>
+                            <ul class="text-gray-400 space-y-2">
+                                <li class="flex items-start">
+                                    <i class="fas fa-chevron-right text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Systematic rollout to all areas
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-chevron-right text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Staff training and support
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-chevron-right text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Performance monitoring setup
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-chevron-right text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Continuous improvement processes
+                                </li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-teal-300 mb-3">Key Outputs</h4>
+                            <ul class="text-gray-400 space-y-2">
+                                <li class="flex items-start">
+                                    <i class="fas fa-file-alt text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Full implementation report
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-file-alt text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Performance monitoring dashboard
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-file-alt text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Training completion records
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-file-alt text-teal-400 mr-2 mt-1 text-xs"></i>
+                                    Continuous improvement framework
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Optimization Areas -->
+        <div class="methodology-card p-8 mb-12 animate-fade-in-up delay-300">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8">
+                <i class="fas fa-bullseye text-teal-400 mr-3"></i>
+                Key Optimization Areas
+            </h2>
+
+            <div class="space-y-6">
+                <div class="optimization-area">
+                    <h4 class="font-semibold text-gray-900 mb-3 flex items-center">
+                        <i class="fas fa-wrench text-teal-400 mr-3"></i>
+                        Maintenance Workflows
+                    </h4>
+                    <p class="text-gray-300 mb-4">
+                        Streamlining preventive and reactive maintenance processes to minimize downtime and maximize asset utilization.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <h5 class="font-medium text-teal-300 mb-2">Current Challenges</h5>
+                            <ul class="text-sm text-gray-400 space-y-1">
+                                <li>• Unscheduled maintenance disruptions</li>
+                                <li>• Inefficient part sourcing processes</li>
+                                <li>• Poor coordination between teams</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h5 class="font-medium text-teal-300 mb-2">Optimizations</h5>
+                            <ul class="text-sm text-gray-400 space-y-1">
+                                <li>• Predictive maintenance scheduling</li>
+                                <li>• Integrated inventory management</li>
+                                <li>• Cross-functional team coordination</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h5 class="font-medium text-teal-300 mb-2">Expected Results</h5>
+                            <ul class="text-sm text-gray-400 space-y-1">
+                                <li>• 45% reduction in downtime</li>
+                                <li>• 32% faster repair completion</li>
+                                <li>• 28% improvement in asset availability</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="optimization-area">
+                    <h4 class="font-semibold text-gray-900 mb-3 flex items-center">
+                        <i class="fas fa-boxes text-teal-400 mr-3"></i>
+                        Inventory Management Workflows
+                    </h4>
+                    <p class="text-gray-300 mb-4">
+                        Optimizing stock management, procurement, and distribution processes to ensure optimal inventory levels and availability.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <h5 class="font-medium text-teal-300 mb-2">Current Challenges</h5>
+                            <ul class="text-sm text-gray-400 space-y-1">
+                                <li>• Manual stock checking processes</li>
+                                <li>• Delayed procurement cycles</li>
+                                <li>• Excess inventory carrying costs</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h5 class="font-medium text-teal-300 mb-2">Optimizations</h5>
+                            <ul class="text-sm text-gray-400 space-y-1">
+                                <li>• Automated inventory tracking</li>
+                                <li>• Streamlined procurement workflows</li>
+                                <li>• Just-in-time delivery systems</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h5 class="font-medium text-teal-300 mb-2">Expected Results</h5>
+                            <ul class="text-sm text-gray-400 space-y-1">
+                                <li>• 38% reduction in stockouts</li>
+                                <li>• 25% decrease in carrying costs</li>
+                                <li>• 52% faster procurement cycles</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="optimization-area">
+                    <h4 class="font-semibold text-gray-900 mb-3 flex items-center">
+                        <i class="fas fa-user-shield text-teal-400 mr-3"></i>
+                        Security and Access Workflows
+                    </h4>
+                    <p class="text-gray-300 mb-4">
+                        Enhancing security protocols and access management processes while maintaining operational efficiency and user experience.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <h5 class="font-medium text-teal-300 mb-2">Current Challenges</h5>
+                            <ul class="text-sm text-gray-400 space-y-1">
+                                <li>• Time-consuming access procedures</li>
+                                <li>• Manual visitor management</li>
+                                <li>• Inconsistent security protocols</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h5 class="font-medium text-teal-300 mb-2">Optimizations</h5>
+                            <ul class="text-sm text-gray-400 space-y-1">
+                                <li>• Automated access control systems</li>
+                                <li>• Digital visitor registration</li>
+                                <li>• Integrated security monitoring</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h5 class="font-medium text-teal-300 mb-2">Expected Results</h5>
+                            <ul class="text-sm text-gray-400 space-y-1">
+                                <li>• 65% faster access processing</li>
+                                <li>• 89% improvement in compliance</li>
+                                <li>• 100% visitor tracking accuracy</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Metrics -->
+        <div class="mb-12 animate-fade-in-up delay-400">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">
+                <i class="fas fa-chart-line text-teal-400 mr-3"></i>
+                Workflow Performance Metrics
+            </h2>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="metric-card">
+                    <div class="text-3xl font-bold text-teal-400 mb-2">58%</div>
+                    <div class="text-sm font-semibold text-gray-900">Cycle Time Reduction</div>
+                    <div class="text-xs text-gray-400">Average process completion time</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="text-3xl font-bold text-teal-400 mb-2">73%</div>
+                    <div class="text-sm font-semibold text-gray-900">Resource Efficiency</div>
+                    <div class="text-xs text-gray-400">Optimal resource utilization</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="text-3xl font-bold text-teal-400 mb-2">84%</div>
+                    <div class="text-sm font-semibold text-gray-900">Bottleneck Elimination</div>
+                    <div class="text-xs text-gray-400">Process constraint removal</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="text-3xl font-bold text-teal-400 mb-2">2.8x</div>
+                    <div class="text-sm font-semibold text-gray-900">Throughput Increase</div>
+                    <div class="text-xs text-gray-400">Overall process capacity</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Automation Integration -->
+        <div class="methodology-card p-8 mb-12 animate-fade-in-up delay-500">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8">
+                <i class="fas fa-robot text-teal-400 mr-3"></i>
+                Automation Integration Opportunities
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h4 class="font-semibold text-gray-900 mb-4">Automation Candidates</h4>
+                    <div class="space-y-4">
+                        <div class="border-l-4 border-teal-500 bg-white bg-opacity-50 p-4 rounded-r-lg">
+                            <h5 class="font-medium text-teal-300 mb-2">Routine Data Entry</h5>
+                            <p class="text-sm text-gray-400">Automate inventory updates, maintenance logs, and reporting processes</p>
+                            <div class="text-xs text-teal-400 mt-2">Impact: 78% time savings, 95% accuracy improvement</div>
+                        </div>
+
+                        <div class="border-l-4 border-teal-500 bg-white bg-opacity-50 p-4 rounded-r-lg">
+                            <h5 class="font-medium text-teal-300 mb-2">Scheduling & Notifications</h5>
+                            <p class="text-sm text-gray-400">Automated maintenance scheduling and stakeholder notifications</p>
+                            <div class="text-xs text-teal-400 mt-2">Impact: 65% faster scheduling, 100% notification delivery</div>
+                        </div>
+
+                        <div class="border-l-4 border-teal-500 bg-white bg-opacity-50 p-4 rounded-r-lg">
+                            <h5 class="font-medium text-teal-300 mb-2">Quality Monitoring</h5>
+                            <p class="text-sm text-gray-400">Continuous monitoring of service levels and compliance metrics</p>
+                            <div class="text-xs text-teal-400 mt-2">Impact: Real-time insights, proactive issue resolution</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-gray-900 mb-4">Implementation Strategy</h4>
+                    <div class="space-y-4">
+                        <div class="bg-white p-4 rounded-lg">
+                            <h5 class="font-medium text-gray-900 mb-2 flex items-center">
+                                <i class="fas fa-list-ol text-teal-400 mr-2"></i>
+                                Phased Approach
+                            </h5>
+                            <ul class="text-sm text-gray-400 space-y-1">
+                                <li>• Start with high-impact, low-complexity processes</li>
+                                <li>• Gradually expand to more complex workflows</li>
+                                <li>• Maintain human oversight and control points</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-white p-4 rounded-lg">
+                            <h5 class="font-medium text-gray-900 mb-2 flex items-center">
+                                <i class="fas fa-users text-teal-400 mr-2"></i>
+                                Change Management
+                            </h5>
+                            <ul class="text-sm text-gray-400 space-y-1">
+                                <li>• Comprehensive staff training programs</li>
+                                <li>• Clear communication of benefits and changes</li>
+                                <li>• Support systems for adaptation period</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-white p-4 rounded-lg">
+                            <h5 class="font-medium text-gray-900 mb-2 flex items-center">
+                                <i class="fas fa-chart-bar text-teal-400 mr-2"></i>
+                                Success Measurement
+                            </h5>
+                            <ul class="text-sm text-gray-400 space-y-1">
+                                <li>• Regular performance monitoring and reporting</li>
+                                <li>• ROI tracking and optimization opportunities</li>
+                                <li>• Continuous improvement feedback loops</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Next Steps -->
+        <div class="text-center animate-fade-in-up delay-500">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Ready to Optimize Your Workflows?</h2>
+            <p class="text-lg text-gray-300 mb-8 max-w-3xl mx-auto">
+                Workflow Management transforms operational efficiency through systematic process optimization.
+                Begin with a thorough analysis of your current processes to identify the greatest opportunities for improvement.
+            </p>
+
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="/methodology/pillars/systematic-processes/quality-control" class="bg-teal-600 hover:bg-teal-700 text-gray-900 font-semibold py-3 px-8 rounded-lg transition duration-300 transform hover:scale-105">
+                    Next: Quality Control
+                </a>
+                <a href="/methodology/pillars/systematic-processes" class="border border-teal-500 text-teal-400 hover:bg-teal-900 hover:bg-opacity-30 font-semibold py-3 px-8 rounded-lg transition duration-300 transform hover:scale-105">
+                    Back to Systematic Processes
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-50 border-t border-teal-500 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Workflow Management</h3>
+                    <p class="text-gray-400">
+                        Core component of Systematic Processes - Optimizing operational sequences to maximize
+                        efficiency and eliminate waste across all facility management activities.
+                    </p>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Related Components</h3>
+                    <ul class="space-y-2">
+                        <li><a href="/methodology/pillars/systematic-processes/sop" class="text-gray-400 hover:text-teal-400 transition">Standard Operating Procedures</a></li>
+                        <li><a href="/methodology/pillars/systematic-processes/quality-control" class="text-gray-400 hover:text-teal-400 transition">Quality Control</a></li>
+                        <li><a href="/methodology/pillars/systematic-processes" class="text-gray-400 hover:text-teal-400 transition">Systematic Processes Overview</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Optimization Tools</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-teal-400 transition">Process Mapping Tools</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-teal-400 transition">Performance Analytics</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-teal-400 transition">Automation Assessment</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-teal-400 transition">Implementation Guides</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-500 text-sm">
+                <p>&copy; 2025 Derivco Facilities Management. All rights reserved. | The Sifiso Methodology - Workflow Management</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate elements on scroll
+            const animatedElements = document.querySelectorAll('.animate-fade-in-up');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = 1;
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            animatedElements.forEach(el => {
+                el.style.opacity = 0;
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(el);
+            });
+        });
+    </script>
+</body>
+</html>

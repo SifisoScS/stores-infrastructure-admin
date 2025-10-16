@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign-In/Sign-Out Register - Derivco Facilities</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            min-height: 100vh;
+        }
+        
+        /* Clean card design */
+        .clean-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .clean-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transform: translateY(-1px);
+        }
+        
+        /* Header styling */
+        .page-header {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+        }
+        
+        /* Statistics cards */
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            padding: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.75rem;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-label {
+            color: #64748b;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        /* Status badges */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.375rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .status-checked-out {
+            background-color: #fef3c7;
+            color: #92400e;
+            border: 1px solid #f59e0b;
+        }
+        
+        .status-returned {
+            background-color: #d1fae5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+        
+        .status-overdue {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
+        
+        /* Table styling */
+        .data-table {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .data-table th {
+            background-color: #f8fafc;
+            color: #374151;
+            font-weight: 600;
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: left;
+        }
+        
+        .data-table td {
+            color: #374151;
+            padding: 1rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        
+        .data-table tr:hover {
+            background-color: #f8fafc;
+        }
+        
+        /* Form styling */
+        .form-input {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            color: #374151;
+            transition: all 0.2s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .form-input::placeholder {
+            color: #9ca3af;
+        }
+        
+        /* Modal styling */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            margin: 5% auto;
+            padding: 2rem;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        /* Floating action buttons */
+        .fab-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+        
+        .fab {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #3b82f6;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+            border: none;
+        }
+        
+        .fab:hover {
+            background: #2563eb;
+            transform: scale(1.05);
+            box-shadow: 0 12px 30px rgba(59, 130, 246, 0.6);
+        }
+        
+        .fab-mini {
+            width: 48px;
+            height: 48px;
+            background: white;
+            color: #374151;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+        
+        .fab-mini:hover {
+            background: #f9fafb;
+            transform: translateY(0) scale(1.05);
+        }
+        
+        .fab-container.open .fab-mini {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Management Dashboard Cards */
+        .management-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .management-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .management-card.expanded {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-content {
+            display: none;
+        }
+        
+        .card-content.active {
+            display: block;
+        }
+        
+        .card-header {
+            padding: 1rem;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+        }
+        
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.75rem;
+        }
+        
+        .expand-icon {
+            font-size: 16px;
+            transition: transform 0.3s ease;
+        }
+        
+        .management-card.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+        
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 0.75rem;
+            margin-top: 0.75rem;
+        }
+        
+        .summary-stat {
+            text-align: center;
+        }
+        
+        .summary-stat .value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+        
+        .summary-stat .label {
+            font-size: 0.7rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        /* Dropdown styling */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: white;
+            min-width: 200px;
+            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .dropdown-content a {
+            color: #374151;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+        
+        .dropdown-content a:hover {
+            background-color: #f1f5f9;
+        }
+        
+        .dropdown-content a i {
+            margin-right: 8px;
+            width: 16px;
+            text-align: center;
+        }
+        
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        
+        .dropdown-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+        
+        .dropdown-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen bg-gray-50">
+        <!-- Header -->
+        <div class="page-header py-8">
+            <div class="max-w-7xl mx-auto px-6">
+                <!-- Breadcrumb -->
+                <nav class="flex items-center space-x-2 text-blue-100 mb-6">
+                    <button onclick="history.back()" class="hover:text-white transition-colors mr-4 flex items-center">
+                        <i class="fas fa-arrow-left mr-2"></i>Back
+                    </button>
+                    <div class="h-4 border-l border-blue-200 mr-4"></div>
+                    <a href="/" class="hover:text-white transition-colors">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                    <i class="fas fa-chevron-right text-blue-200"></i>
+                    <span class="font-semibold text-white">Sign-In/Out Register</span>
+                </nav>
+                
+                <!-- Title -->
+                <h1 class="text-4xl font-bold text-white mb-4">
+                    <i class="fas fa-clipboard-check mr-3"></i>
+                    Equipment Accountability Center
+                </h1>
+                <p class="text-xl text-blue-100 mb-6">Track, manage, and monitor all equipment check-outs and returns</p>
+                
+                <!-- Action buttons -->
+                <div class="flex flex-wrap gap-4">
+                    <button onclick="openSignOutModal()" class="bg-white text-blue-600 px-6 py-3 rounded-lg font-medium hover:bg-blue-50 transition-all flex items-center">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Check Out Item
+                    </button>
+                    <button onclick="openSignInModal()" class="bg-blue-700 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-800 transition-all flex items-center">
+                        <i class="fas fa-sign-in-alt mr-2"></i>Return Item
+                    </button>
+                    <a href="/facilities/compliance" class="bg-red-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-red-600 transition-all flex items-center">
+                        <i class="fas fa-exclamation-triangle mr-2"></i>View Compliance Issues
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-6 -mt-8">
+
+        <!-- Statistics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="stat-card">
+                <div class="stat-icon bg-blue-100">
+                    <i class="fas fa-clipboard-list text-blue-600"></i>
+                </div>
+                <div class="stat-value text-gray-900" id="totalTransactions">{{ dashboard_stats.total_transactions or 0 }}</div>
+                <div class="stat-label">Total Transactions</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon bg-amber-100">
+                    <i class="fas fa-arrow-circle-right text-amber-600"></i>
+                </div>
+                <div class="stat-value text-amber-600" id="currentlyOut">{{ dashboard_stats.outstanding_items or 0 }}</div>
+                <div class="stat-label">Currently Out</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon bg-red-100">
+                    <i class="fas fa-exclamation-triangle text-red-600"></i>
+                </div>
+                <div class="stat-value text-red-600" id="overdueItems">{{ dashboard_stats.overdue_items or 0 }}</div>
+                <div class="stat-label">Overdue Items</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon bg-green-100">
+                    <i class="fas fa-check-circle text-green-600"></i>
+                </div>
+                <div class="stat-value text-green-600" id="returnRate">{{ dashboard_stats.returned_today or 0 }}</div>
+                <div class="stat-label">Returned Recently</div>
+            </div>
+        </div>
+
+        <!-- Management Dashboard Cards Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
+            
+            <!-- Management Alerts Card -->
+            <div class="management-card" onclick="toggleCard('alerts-card')">
+                <div class="card-header">
+                    <div class="flex items-center flex-1">
+                        <div class="card-icon bg-red-100">
+                            <i class="fas fa-exclamation-triangle text-red-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-900">Management Alerts</h3>
+                            <p class="text-sm text-gray-600">{{ alerts_notifications|length }} alert{{ 's' if alerts_notifications|length != 1 else '' }} requiring attention</p>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-down expand-icon text-gray-400"></i>
+                </div>
+                <div class="summary-stats px-6 pb-4">
+                    <div class="summary-stat">
+                        <div class="value text-red-600">{{ alerts_notifications|length }}</div>
+                        <div class="label">Active Alerts</div>
+                    </div>
+                    <div class="summary-stat">
+                        <div class="value {% if alerts_notifications %}text-red-600{% else %}text-green-600{% endif %}">
+                            {% if alerts_notifications %}HIGH{% else %}LOW{% endif %}
+                        </div>
+                        <div class="label">Risk Level</div>
+                    </div>
+                </div>
+                <div class="card-content p-6" id="alerts-content">
+                    {% if alerts_notifications %}
+                        <div class="space-y-3">
+                            {% for alert in alerts_notifications %}
+                                <div class="flex items-start p-4 rounded-lg {% if alert.severity == 'HIGH' %}bg-red-50 border-l-4 border-red-500{% else %}bg-yellow-50 border-l-4 border-yellow-500{% endif %}">
+                                    <i class="fas fa-{% if alert.severity == 'HIGH' %}exclamation-circle text-red-500{% else %}exclamation-triangle text-yellow-500{% endif %} mt-1 mr-3"></i>
+                                    <div class="flex-1">
+                                        <div class="font-medium text-gray-900">{{ alert.message }}</div>
+                                        <div class="text-sm text-gray-600 mt-1">Action: {{ alert.action_required }}</div>
+                                    </div>
+                                    <span class="bg-{% if alert.severity == 'HIGH' %}red{% else %}yellow{% endif %}-100 text-{% if alert.severity == 'HIGH' %}red{% else %}yellow{% endif %}-800 px-2 py-1 rounded text-xs font-medium">
+                                        {{ alert.severity }}
+                                    </span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-8 text-gray-500">
+                            <i class="fas fa-check-circle text-green-500 text-3xl mb-3"></i>
+                            <p>No active alerts - all systems operating normally</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Work Order Compliance Card -->
+            <div class="management-card" onclick="toggleCard('wo-card')">
+                <div class="card-header">
+                    <div class="flex items-center flex-1">
+                        <div class="card-icon bg-blue-100">
+                            <i class="fas fa-clipboard-list text-blue-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-900">Work Order Compliance</h3>
+                            <p class="text-sm text-gray-600">{{ "%.1f"|format(work_order_compliance.compliance_rate) }}% compliance rate</p>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-down expand-icon text-gray-400"></i>
+                </div>
+                <div class="summary-stats px-6 pb-4">
+                    <div class="summary-stat">
+                        <div class="value {% if work_order_compliance.compliance_rate >= 70 %}text-green-600{% else %}text-red-600{% endif %}">{{ "%.1f"|format(work_order_compliance.compliance_rate) }}%</div>
+                        <div class="label">Compliance</div>
+                    </div>
+                    <div class="summary-stat">
+                        <div class="value text-red-600">{{ work_order_compliance.missing_wo }}</div>
+                        <div class="label">Missing WO</div>
+                    </div>
+                    <div class="summary-stat">
+                        <div class="value text-orange-600">R{{ "{:,}".format(work_order_compliance.estimated_untracked_value) }}</div>
+                        <div class="label">Untracked</div>
+                    </div>
+                </div>
+                <div class="card-content p-6" id="wo-content">
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span>Overall Compliance Rate</span>
+                            <span class="font-bold {% if work_order_compliance.compliance_rate >= 70 %}text-green-600{% else %}text-red-600{% endif %}">
+                                {{ "%.1f"|format(work_order_compliance.compliance_rate) }}%
+                            </span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span>Missing WO Numbers</span>
+                            <span class="font-bold text-red-600">{{ work_order_compliance.missing_wo }}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span>Estimated Untracked Value</span>
+                            <span class="font-bold text-orange-600">R{{ "{:,}".format(work_order_compliance.estimated_untracked_value) }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <h4 class="font-medium text-gray-900 mb-3">Impact of Poor WO Compliance</h4>
+                        <div class="bg-red-50 border-l-4 border-red-400 p-4 rounded">
+                            <div class="text-sm text-red-700">
+                                <p><strong>{{ work_order_compliance.missing_wo }} tasks performed without logged calls/tickets</strong></p>
+                                <p class="mt-2">Risks: No audit trail, budget tracking issues, compliance failures</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <h4 class="font-medium text-gray-900 mb-3">WO Number Patterns</h4>
+                        {% for pattern, count in work_order_compliance.wo_patterns.items() %}
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-sm">{{ pattern }}</span>
+                                <span class="text-sm font-medium">{{ count }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Financial Impact Card -->
+            <div class="management-card" onclick="toggleCard('financial-card')">
+                <div class="card-header">
+                    <div class="flex items-center flex-1">
+                        <div class="card-icon bg-green-100">
+                            <i class="fas fa-money-bill-wave text-green-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-900">Financial Impact</h3>
+                            <p class="text-sm text-gray-600">R{{ "{:,}".format(financial_impact.total_financial_risk|int) }} total risk</p>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-down expand-icon text-gray-400"></i>
+                </div>
+                <div class="summary-stats px-6 pb-4">
+                    <div class="summary-stat">
+                        <div class="value text-orange-600">R{{ "{:,}".format(financial_impact.outstanding_value|int) }}</div>
+                        <div class="label">Outstanding</div>
+                    </div>
+                    <div class="summary-stat">
+                        <div class="value text-red-600">R{{ "{:,}".format(financial_impact.replacement_costs|int) }}</div>
+                        <div class="label">Replacement Risk</div>
+                    </div>
+                </div>
+                <div class="card-content p-6" id="financial-content">
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span>Outstanding Items Value</span>
+                            <span class="font-bold text-orange-600">R{{ "{:,}".format(financial_impact.outstanding_value|int) }}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span>Replacement Costs Risk</span>
+                            <span class="font-bold text-red-600">R{{ "{:,}".format(financial_impact.replacement_costs|int) }}</span>
+                        </div>
+                        <div class="flex justify-between items-center border-t pt-2">
+                            <span class="font-medium">Total Financial Risk</span>
+                            <span class="font-bold text-red-700 text-lg">R{{ "{:,}".format(financial_impact.total_financial_risk|int) }}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span>Average Item Value</span>
+                            <span class="font-medium">R{{ "{:,.0f}".format(financial_impact.avg_item_value) }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <h4 class="font-medium text-gray-900 mb-3">High-Value Outstanding Items</h4>
+                        {% for item in financial_impact.outstanding_items %}
+                            {% if item.value > 300 %}
+                                <div class="flex justify-between items-center py-2 border-b">
+                                    <div>
+                                        <div class="font-medium">{{ item.item }}</div>
+                                        <div class="text-sm text-gray-600">{{ item.borrower }} • {{ item.days_out }} days out</div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="font-bold text-red-600">R{{ "{:,}".format(item.value|int) }}</div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stewardship Scorecard Card -->
+            <div class="management-card" onclick="toggleCard('stewardship-card')">
+                <div class="card-header">
+                    <div class="flex items-center flex-1">
+                        <div class="card-icon bg-purple-100">
+                            <i class="fas fa-award text-purple-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-900">Stewardship Scorecard</h3>
+                            <p class="text-sm text-gray-600">Individual accountability metrics</p>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-down expand-icon text-gray-400"></i>
+                </div>
+                <div class="summary-stats px-6 pb-4">
+                    <div class="summary-stat">
+                        <div class="value text-green-600">{{ stewardship_scorecard.values()|list|selectattr('stewardship_score', 'ge', 80)|list|length }}</div>
+                        <div class="label">High Performers</div>
+                    </div>
+                    <div class="summary-stat">
+                        <div class="value text-red-600">{{ stewardship_scorecard.values()|list|selectattr('stewardship_score', 'lt', 60)|list|length }}</div>
+                        <div class="label">Need Support</div>
+                    </div>
+                </div>
+                <div class="card-content p-6" id="stewardship-content">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b">
+                                    <th class="text-left py-3 px-4">Employee</th>
+                                    <th class="text-center py-3 px-4">Score</th>
+                                    <th class="text-center py-3 px-4">Outstanding</th>
+                                    <th class="text-center py-3 px-4">Return Rate</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for borrower, stats in stewardship_scorecard.items() %}
+                                    <tr class="border-b hover:bg-gray-50">
+                                        <td class="py-3 px-4 font-medium">{{ borrower }}</td>
+                                        <td class="py-3 px-4 text-center">
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
+                                                {% if stats.stewardship_score >= 80 %}bg-green-100 text-green-800
+                                                {% elif stats.stewardship_score >= 60 %}bg-yellow-100 text-yellow-800
+                                                {% else %}bg-red-100 text-red-800{% endif %}">
+                                                {{ stats.stewardship_score }}
+                                            </span>
+                                        </td>
+                                        <td class="py-3 px-4 text-center">
+                                            {% if stats.outstanding > 0 %}
+                                                <span class="text-red-600 font-medium">{{ stats.outstanding }}</span>
+                                            {% else %}
+                                                <span class="text-green-600">{{ stats.outstanding }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="py-3 px-4 text-center">{{ "%.1f"|format(stats.return_rate) }}%</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Usage Insights Card -->
+            <div class="management-card" onclick="toggleCard('insights-card')">
+                <div class="card-header">
+                    <div class="flex items-center flex-1">
+                        <div class="card-icon bg-indigo-100">
+                            <i class="fas fa-chart-line text-indigo-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-900">Usage Patterns</h3>
+                            <p class="text-sm text-gray-600">Peak: {{ management_insights.peak_day[0] }} at {{ management_insights.peak_hour[0] }}:00</p>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-down expand-icon text-gray-400"></i>
+                </div>
+                <div class="summary-stats px-6 pb-4">
+                    <div class="summary-stat">
+                        <div class="value text-blue-600">{{ "%.1f"|format(management_insights.usage_efficiency) }}%</div>
+                        <div class="label">Efficiency</div>
+                    </div>
+                    <div class="summary-stat">
+                        <div class="value text-purple-600">{{ management_insights.peak_day[1] }}</div>
+                        <div class="label">Peak Usage</div>
+                    </div>
+                </div>
+                <div class="card-content p-6" id="insights-content">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Peak Usage Times -->
+                        <div>
+                            <h4 class="font-medium text-gray-900 mb-3">Peak Usage</h4>
+                            <div class="text-sm space-y-2">
+                                <div class="flex justify-between">
+                                    <span>Peak Day:</span>
+                                    <span class="font-medium">{{ management_insights.peak_day[0] }} ({{ management_insights.peak_day[1] }})</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Peak Hour:</span>
+                                    <span class="font-medium">{{ management_insights.peak_hour[0] }}:00 ({{ management_insights.peak_hour[1] }})</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Usage Efficiency:</span>
+                                    <span class="font-medium">{{ "%.1f"|format(management_insights.usage_efficiency) }}%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Top Items -->
+                        <div>
+                            <h4 class="font-medium text-gray-900 mb-3">Most Popular Items</h4>
+                            <div class="text-sm space-y-1">
+                                {% for item, count in management_insights.most_popular_items[:5] %}
+                                    <div class="flex justify-between">
+                                        <span class="truncate mr-2">{{ item }}</span>
+                                        <span class="font-medium">{{ count }}</span>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Policy Compliance Card -->
+            <div class="management-card" onclick="toggleCard('policy-card')">
+                <div class="card-header">
+                    <div class="flex items-center flex-1">
+                        <div class="card-icon bg-yellow-100">
+                            <i class="fas fa-shield-alt text-yellow-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-900">Policy Compliance</h3>
+                            <p class="text-sm text-gray-600">{{ "%.1f"|format(policy_compliance.overall_compliance) }}% overall score</p>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-down expand-icon text-gray-400"></i>
+                </div>
+                <div class="summary-stats px-6 pb-4">
+                    <div class="summary-stat">
+                        <div class="value {% if policy_compliance.overall_compliance >= 80 %}text-green-600{% else %}text-red-600{% endif %}">{{ "%.1f"|format(policy_compliance.overall_compliance) }}%</div>
+                        <div class="label">Overall</div>
+                    </div>
+                    <div class="summary-stat">
+                        <div class="value text-red-600">{{ policy_compliance.violations|length }}</div>
+                        <div class="label">Violations</div>
+                    </div>
+                </div>
+                <div class="card-content p-6" id="policy-content">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                        <div class="text-center">
+                            <div class="text-xl font-bold {% if policy_compliance.compliance_metrics.proper_checkout >= 80 %}text-green-600{% else %}text-red-600{% endif %}">
+                                {{ "%.1f"|format(policy_compliance.compliance_metrics.proper_checkout) }}%
+                            </div>
+                            <div class="text-xs text-gray-600">Proper Checkout</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-xl font-bold {% if policy_compliance.compliance_metrics.wo_number_provided >= 70 %}text-green-600{% else %}text-red-600{% endif %}">
+                                {{ "%.1f"|format(policy_compliance.compliance_metrics.wo_number_provided) }}%
+                            </div>
+                            <div class="text-xs text-gray-600">WO Numbers</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-xl font-bold {% if policy_compliance.compliance_metrics.return_on_time >= 85 %}text-green-600{% else %}text-red-600{% endif %}">
+                                {{ "%.1f"|format(policy_compliance.compliance_metrics.return_on_time) }}%
+                            </div>
+                            <div class="text-xs text-gray-600">On-Time Returns</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-xl font-bold {% if policy_compliance.overall_compliance >= 80 %}text-green-600{% else %}text-red-600{% endif %}">
+                                {{ "%.1f"|format(policy_compliance.overall_compliance) }}%
+                            </div>
+                            <div class="text-xs text-gray-600">Overall Score</div>
+                        </div>
+                    </div>
+                    
+                    {% if policy_compliance.violations %}
+                        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded">
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-exclamation-triangle text-yellow-400"></i>
+                                </div>
+                                <div class="ml-3">
+                                    <h3 class="text-sm font-medium text-yellow-800">Policy Violations Detected</h3>
+                                    <div class="mt-2 text-sm text-yellow-700">
+                                        <p>{{ policy_compliance.violations|length }} transaction(s) with incomplete checkout information</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Recent Transactions Card -->
+        <div class="management-card" onclick="toggleCard('transactions-card')">
+            <div class="card-header">
+                <div class="flex items-center flex-1">
+                    <div class="card-icon bg-blue-100">
+                        <i class="fas fa-history text-blue-600"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-900">Recent Transactions</h3>
+                        <p class="text-sm text-gray-600">{{ recent_transactions|length }} August & September transactions</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button onclick="refreshData()" class="bg-gray-100 text-gray-700 px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-gray-200 transition-all" title="Refresh Data">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                    <i class="fas fa-chevron-down expand-icon text-gray-400"></i>
+                </div>
+            </div>
+            <div class="summary-stats px-6 pb-4">
+                <div class="summary-stat">
+                    <div class="value text-blue-600">{{ recent_transactions|length }}</div>
+                    <div class="label">Total Records</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="value text-orange-600">{{ recent_transactions|selectattr('status', 'equalto', 'Outstanding')|list|length }}</div>
+                    <div class="label">Outstanding</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="value text-green-600">{{ recent_transactions|selectattr('status', 'equalto', 'Returned')|list|length }}</div>
+                    <div class="label">Returned</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="value text-purple-600">{{ recent_transactions|selectattr('wo_req_no', 'defined')|selectattr('wo_req_no', 'ne', '')|selectattr('wo_req_no', 'ne', 'Not Provided')|list|length }}</div>
+                    <div class="label">With WO</div>
+                </div>
+            </div>
+            <div class="card-content p-6" id="transactions-content">
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="font-medium text-gray-900">Transaction Details</h4>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-sm text-gray-600">Showing {{ recent_transactions|length }} transactions</span>
+                        <button onclick="exportData()" class="bg-green-600 text-white px-3 py-1.5 rounded text-sm hover:bg-green-700 transition-all">
+                            <i class="fas fa-download mr-1"></i>Export
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Compact Transaction List -->
+                <div class="space-y-3 max-h-96 overflow-y-auto">
+                    {% for transaction in recent_transactions %}
+                        <div class="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                            <div class="flex justify-between items-start mb-2">
+                                <div class="flex-1">
+                                    <div class="flex items-center space-x-2 mb-1">
+                                        <span class="font-medium text-gray-900">{{ transaction.item_name }}</span>
+                                        {% if transaction.status == 'Outstanding' %}
+                                            <span class="status-badge status-checked-out text-xs">OUT</span>
+                                        {% elif transaction.status == 'Returned' %}
+                                            <span class="status-badge status-returned text-xs">RETURNED</span>
+                                        {% elif transaction.status == 'Used/Consumed' %}
+                                            <span class="status-badge status-returned text-xs">USED</span>
+                                        {% else %}
+                                            <span class="status-badge status-overdue text-xs">{{ transaction.status }}</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="text-sm text-gray-600 mb-1">
+                                        <strong>{{ transaction.borrower_name }}</strong> • {{ transaction.department_area }}
+                                    </div>
+                                    <div class="text-xs text-gray-500">
+                                        Out: {{ transaction.datetime_out }} • 
+                                        Expected: {{ transaction.expected_return }} • 
+                                        WO: {% if transaction.wo_req_no and transaction.wo_req_no != 'Not Provided' %}{{ transaction.wo_req_no }}{% else %}<span class="text-red-500">Missing</span>{% endif %}
+                                    </div>
+                                </div>
+                                <div class="flex space-x-1 ml-4">
+                                    <button onclick="viewTransaction('{{ transaction.id }}')" class="text-blue-600 hover:text-blue-800 transition-colors p-1" title="View Details">
+                                        <i class="fas fa-eye text-sm"></i>
+                                    </button>
+                                    {% if transaction.status == 'Outstanding' %}
+                                        <button onclick="returnItem('{{ transaction.id }}')" class="text-green-600 hover:text-green-800 transition-colors p-1" title="Return Item">
+                                            <i class="fas fa-sign-in-alt text-sm"></i>
+                                        </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% if transaction.notes and transaction.notes != '' %}
+                                <div class="text-xs text-gray-500 bg-gray-50 rounded px-2 py-1 mt-2">
+                                    <i class="fas fa-sticky-note mr-1"></i>{{ transaction.notes }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Full Table Toggle -->
+                <div class="mt-6 pt-4 border-t">
+                    <a href="/signout/compact" class="block w-full bg-blue-50 text-blue-700 py-3 px-4 rounded-lg font-medium hover:bg-blue-100 transition-all text-center">
+                        <i class="fas fa-list mr-2"></i>View Compact Format
+                    </a>
+                </div>
+                
+                <!-- Full Table (Hidden by default) -->
+                <div id="fullTableView" class="mt-6 hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full data-table">
+                            <thead>
+                                <tr>
+                                    <th>Item Name</th>
+                                    <th>Borrower Name</th>
+                                    <th>WO/REQ No.</th>
+                                    <th>Project Type</th>
+                                    <th>Department / Area</th>
+                                    <th>Date/Time Out</th>
+                                    <th>Expected Return</th>
+                                    <th>Date/Time Returned</th>
+                                    <th>Notes</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for transaction in recent_transactions %}
+                                <tr>
+                                    <td class="font-medium">{{ transaction.item_name }}</td>
+                                    <td>{{ transaction.borrower_name }}</td>
+                                    <td class="text-sm">
+                                        {% if transaction.wo_req_no and transaction.wo_req_no != 'Not Provided' %}
+                                            {{ transaction.wo_req_no }}
+                                        {% else %}
+                                            <span class="text-red-500 text-xs">Missing</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ transaction.project_type }}</td>
+                                    <td>{{ transaction.department_area }}</td>
+                                    <td class="text-sm">{{ transaction.datetime_out }}</td>
+                                    <td class="text-sm">{{ transaction.expected_return }}</td>
+                                    <td class="text-sm">
+                                        {% if transaction.datetime_returned and transaction.datetime_returned != '' %}
+                                            {{ transaction.datetime_returned }}
+                                        {% else %}
+                                            <span class="text-gray-400">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-sm">{{ transaction.notes }}</td>
+                                    <td>
+                                        {% if transaction.status == 'Outstanding' %}
+                                            <span class="status-badge status-checked-out text-xs">OUT</span>
+                                        {% elif transaction.status == 'Returned' %}
+                                            <span class="status-badge status-returned text-xs">RETURNED</span>
+                                        {% elif transaction.status == 'Used/Consumed' %}
+                                            <span class="status-badge status-returned text-xs">USED</span>
+                                        {% else %}
+                                            <span class="status-badge status-overdue text-xs">{{ transaction.status }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="flex space-x-1">
+                                            <button onclick="viewTransaction('{{ transaction.id }}')" class="text-blue-600 hover:text-blue-800 transition-colors" title="View Details">
+                                                <i class="fas fa-eye text-sm"></i>
+                                            </button>
+                                            {% if transaction.status == 'Outstanding' %}
+                                                <button onclick="returnItem('{{ transaction.id }}')" class="text-green-600 hover:text-green-800 transition-colors" title="Return Item">
+                                                    <i class="fas fa-sign-in-alt text-sm"></i>
+                                                </button>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Floating Action Buttons -->
+        <div class="fab-container" id="fabContainer">
+            <div class="fab fab-mini" onclick="openSignInModal()" title="Return Item">
+                <i class="fas fa-sign-in-alt text-xl"></i>
+            </div>
+            <div class="fab fab-mini" onclick="openSignOutModal()" title="Check Out Item">
+                <i class="fas fa-sign-out-alt text-xl"></i>
+            </div>
+            <div class="fab" onclick="toggleFabMenu()" id="mainFab">
+                <i class="fas fa-plus text-xl" id="fabIcon"></i>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <!-- Sign Out Modal -->
+    <div id="signOutModal" class="modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-900">Check Out Equipment</h2>
+                <button onclick="closeModal('signOutModal')" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form id="signOutForm" class="space-y-4">
+                <!-- Form fields will be populated here -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-slate-800 text-sm font-medium mb-2">Item to Check Out</label>
+                        <select id="itemSelect" class="form-input w-full" required>
+                            <option value="">Select an item...</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-slate-800 text-sm font-medium mb-2">Quantity</label>
+                        <input type="number" id="quantity" class="form-input w-full" value="1" min="1" required>
+                    </div>
+                    <div>
+                        <label class="block text-slate-800 text-sm font-medium mb-2">Employee Name</label>
+                        <input type="text" id="employeeName" class="form-input w-full" required>
+                    </div>
+                    <div>
+                        <label class="block text-slate-800 text-sm font-medium mb-2">Employee ID</label>
+                        <input type="text" id="employeeID" class="form-input w-full" required>
+                    </div>
+                    <div>
+                        <label class="block text-slate-800 text-sm font-medium mb-2">Department</label>
+                        <select id="department" class="form-input w-full" required>
+                            <option value="">Select department...</option>
+                            <option value="Facilities">Facilities</option>
+                            <option value="IT">IT</option>
+                            <option value="Maintenance">Maintenance</option>
+                            <option value="Security">Security</option>
+                            <option value="Operations">Operations</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-slate-800 text-sm font-medium mb-2">Contact</label>
+                        <input type="email" id="contact" class="form-input w-full" required>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-slate-800 text-sm font-medium mb-2">Work Order/Request Number</label>
+                    <input type="text" id="workOrder" class="form-input w-full" placeholder="Optional">
+                </div>
+                <div>
+                    <label class="block text-slate-800 text-sm font-medium mb-2">Project Name</label>
+                    <input type="text" id="projectName" class="form-input w-full" placeholder="Optional">
+                </div>
+                <div>
+                    <label class="block text-slate-800 text-sm font-medium mb-2">Purpose</label>
+                    <textarea id="purpose" class="form-input w-full h-24" placeholder="Describe the purpose..." required></textarea>
+                </div>
+                <div>
+                    <label class="block text-slate-800 text-sm font-medium mb-2">Expected Return (Days)</label>
+                    <input type="number" id="expectedDays" class="form-input w-full" value="7" min="1" required>
+                </div>
+                <div class="flex justify-end space-x-4 pt-4">
+                    <button type="button" onclick="closeModal('signOutModal')" class="glass-dark px-6 py-3 rounded-xl text-slate-800 font-medium hover:bg-white hover:bg-opacity-20 transition-all">
+                        Cancel
+                    </button>
+                    <button type="submit" class="bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-3 rounded-xl text-slate-800 font-medium hover:from-blue-600 hover:to-purple-700 transition-all">
+                        Check Out Item
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Sign In Modal -->
+    <div id="signInModal" class="modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-slate-800">Return Equipment</h2>
+                <button onclick="closeModal('signInModal')" class="text-slate-800 hover:text-gray-300">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form id="signInForm" class="space-y-4">
+                <div>
+                    <label class="block text-slate-800 text-sm font-medium mb-2">Transaction ID or Scan QR</label>
+                    <input type="text" id="returnTransactionID" class="form-input w-full" placeholder="Enter transaction ID..." required>
+                </div>
+                <div>
+                    <label class="block text-slate-800 text-sm font-medium mb-2">Item Condition</label>
+                    <select id="returnCondition" class="form-input w-full" required>
+                        <option value="Good">Good - No damage</option>
+                        <option value="Fair">Fair - Minor wear</option>
+                        <option value="Poor">Poor - Needs repair</option>
+                        <option value="Damaged">Damaged - Unusable</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-slate-800 text-sm font-medium mb-2">Return Notes</label>
+                    <textarea id="returnNotes" class="form-input w-full h-24" placeholder="Any issues or notes about the return..."></textarea>
+                </div>
+                <div>
+                    <label class="block text-slate-800 text-sm font-medium mb-2">Photos (Optional)</label>
+                    <input type="file" id="returnPhotos" class="form-input w-full" accept="image/*" multiple>
+                </div>
+                <div class="flex justify-end space-x-4 pt-4">
+                    <button type="button" onclick="closeModal('signInModal')" class="glass-dark px-6 py-3 rounded-xl text-slate-800 font-medium hover:bg-white hover:bg-opacity-20 transition-all">
+                        Cancel
+                    </button>
+                    <button type="submit" class="bg-gradient-to-r from-green-500 to-teal-600 px-6 py-3 rounded-xl text-slate-800 font-medium hover:from-green-600 hover:to-teal-700 transition-all">
+                        Return Item
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', function() {
+        loadItems();
+        loadTransactions();
+        setupEventListeners();
+    });
+
+    function loadItems() {
+        // Fetch available items from inventory
+        fetch('/api/inventory/items')
+            .then(response => response.json())
+            .then(data => {
+                const itemSelect = document.getElementById('itemSelect');
+                itemSelect.innerHTML = '<option value="">Select an item...</option>';
+                
+                data.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = JSON.stringify(item);
+                    option.textContent = `${item.name} (${item.category}) - ${item.available} available`;
+                    itemSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error loading items:', error));
+    }
+
+    function loadTransactions() {
+        // Load recent transactions
+        fetch('/api/signout/transactions')
+            .then(response => response.json())
+            .then(data => {
+                // Update stats
+                updateStats(data.stats);
+                // Update table
+                updateTransactionsTable(data.transactions);
+            })
+            .catch(error => console.error('Error loading transactions:', error));
+    }
+
+    function updateStats(stats) {
+        document.getElementById('totalTransactions').textContent = stats.total_transactions || 0;
+        document.getElementById('currentlyOut').textContent = stats.active_checkouts || 0;
+        document.getElementById('overdueItems').textContent = stats.overdue_items || 0;
+        document.getElementById('returnRate').textContent = (stats.return_rate || 0).toFixed(1) + '%';
+    }
+
+    function openSignOutModal() {
+        document.getElementById('signOutModal').style.display = 'flex';
+    }
+
+    function openSignInModal() {
+        document.getElementById('signInModal').style.display = 'flex';
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
+
+    function toggleFabMenu() {
+        const container = document.getElementById('fabContainer');
+        const icon = document.getElementById('fabIcon');
+        
+        container.classList.toggle('open');
+        if (container.classList.contains('open')) {
+            icon.className = 'fas fa-times text-slate-800 text-xl';
+        } else {
+            icon.className = 'fas fa-plus text-slate-800 text-xl';
+        }
+    }
+
+    function toggleCard(cardId) {
+        const card = document.querySelector(`[onclick="toggleCard('${cardId}')"]`);
+        const content = document.getElementById(`${cardId.replace('-card', '-content')}`);
+        
+        if (card && content) {
+            card.classList.toggle('expanded');
+            content.classList.toggle('active');
+        }
+    }
+    
+    function toggleFullTable() {
+        const fullTable = document.getElementById('fullTableView');
+        const button = event.target;
+        
+        if (fullTable.classList.contains('hidden')) {
+            fullTable.classList.remove('hidden');
+            button.innerHTML = '<i class="fas fa-list mr-2"></i>View Compact Format';
+        } else {
+            fullTable.classList.add('hidden');
+            button.innerHTML = '<i class="fas fa-table mr-2"></i>View Full Table Format';
+        }
+    }
+
+    function setupEventListeners() {
+        // Sign out form
+        document.getElementById('signOutForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            submitSignOut();
+        });
+
+        // Sign in form
+        document.getElementById('signInForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            submitSignIn();
+        });
+
+        // Close modals when clicking outside
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('modal')) {
+                e.target.style.display = 'none';
+            }
+        });
+    }
+
+    function submitSignOut() {
+        const formData = {
+            item: JSON.parse(document.getElementById('itemSelect').value),
+            quantity: document.getElementById('quantity').value,
+            employee: {
+                name: document.getElementById('employeeName').value,
+                employee_id: document.getElementById('employeeID').value,
+                department: document.getElementById('department').value,
+                contact: document.getElementById('contact').value
+            },
+            work_order: document.getElementById('workOrder').value,
+            project_name: document.getElementById('projectName').value,
+            purpose: document.getElementById('purpose').value,
+            expected_days: document.getElementById('expectedDays').value
+        };
+
+        fetch('/api/signout/checkout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Item checked out successfully!', 'success');
+                closeModal('signOutModal');
+                loadTransactions();
+                document.getElementById('signOutForm').reset();
+            } else {
+                showToast('Error: ' + data.error, 'error');
+            }
+        })
+        .catch(error => {
+            showToast('Error checking out item', 'error');
+            console.error(error);
+        });
+    }
+
+    function submitSignIn() {
+        const formData = {
+            transaction_id: document.getElementById('returnTransactionID').value,
+            condition: document.getElementById('returnCondition').value,
+            notes: document.getElementById('returnNotes').value,
+            photos: [] // Handle photos separately
+        };
+
+        fetch('/api/signout/return', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Item returned successfully!', 'success');
+                closeModal('signInModal');
+                loadTransactions();
+                document.getElementById('signInForm').reset();
+            } else {
+                showToast('Error: ' + data.error, 'error');
+            }
+        })
+        .catch(error => {
+            showToast('Error returning item', 'error');
+            console.error(error);
+        });
+    }
+
+    function showToast(message, type) {
+        // Simple toast notification
+        const toast = document.createElement('div');
+        toast.className = `fixed top-4 right-4 z-50 px-6 py-4 rounded-xl text-slate-800 font-medium ${
+            type === 'success' ? 'bg-green-500' : 'bg-red-500'
+        }`;
+        toast.textContent = message;
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+            toast.remove();
+        }, 3000);
+    }
+    </script>
+
+    <!-- Footer -->
+    <footer style="background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%); color: white; text-align: center; padding: 2rem 1rem; margin-top: 2rem;">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <div style="margin-bottom: 1rem;">
+                <h4 style="margin-bottom: 0.5rem; color: white; font-size: 1.1rem;">Designed by Sifiso Cyprian Shezi</h4>
+                <p style="color: #bdc3c7; margin: 0;">Facilities Assistant Level 1 — Derivco Durban | Transforming facility management through innovation</p>
+            </div>
+            <div style="border-top: 1px solid #4a5568; padding-top: 1rem;">
+                <p style="color: #9ca3af; font-size: 0.875rem; margin: 0;">&copy; 2025 Derivco Facilities Management System. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

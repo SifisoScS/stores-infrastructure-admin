@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stewardship Charter - Strategic Facilities Intelligence</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-blue: #003366;
+            --secondary-teal: #008080;
+            --charter-gold: #f59e0b;
+            --charter-amber: #d97706;
+            --text-gray: #4a5568;
+            --bg-primary: #f8fafc;
+            --bg-card: #ffffff;
+            --border-color: #334155;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: #1a202c;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--charter-amber) 0%, var(--primary-blue) 100%);
+            padding: 2rem 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="charter" x="0" y="0" width="25" height="25" patternUnits="userSpaceOnUse"><rect x="10" y="10" width="5" height="5" fill="%23ffffff" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23charter)"/></svg>');
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .nav-back {
+            margin-bottom: 1rem;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            color: #1a202c;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .back-button i {
+            margin-right: 0.5rem;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .header-icon {
+            font-size: 3rem;
+            margin-right: 1rem;
+        }
+
+        .header-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+
+        .header-description {
+            font-size: 1rem;
+            opacity: 0.8;
+            max-width: 800px;
+        }
+
+        /* Charter Quote */
+        .charter-quote {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-left: 4px solid var(--charter-gold);
+            border-radius: 8px;
+            margin: 2rem auto;
+            max-width: 800px;
+            font-style: italic;
+            font-size: 1.1rem;
+        }
+
+        .charter-quote footer {
+            margin-top: 1rem;
+            font-style: normal;
+            font-weight: 600;
+            opacity: 0.9;
+        }
+
+        /* Content Sections */
+        .content-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 1rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            color: var(--charter-gold);
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title i {
+            margin-right: 0.75rem;
+            font-size: 1.5rem;
+        }
+
+        /* Principles Grid */
+        .principles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .principle-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            border-top: 4px solid var(--charter-gold);
+        }
+
+        .principle-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.2);
+        }
+
+        .principle-number {
+            width: 40px;
+            height: 40px;
+            background: var(--charter-gold);
+            color: var(--bg-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .principle-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 1rem;
+        }
+
+        .principle-content {
+            color: var(--text-gray);
+            margin-bottom: 1rem;
+        }
+
+        .principle-actions {
+            list-style: none;
+        }
+
+        .principle-actions li {
+            padding: 0.3rem 0;
+            color: var(--text-gray);
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .principle-actions li::before {
+            content: '📋';
+            position: absolute;
+            left: 0;
+        }
+
+        /* Accountability Framework */
+        .framework-section {
+            background: var(--bg-card);
+            padding: 3rem 1rem;
+        }
+
+        .framework-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .framework-card {
+            background: var(--bg-primary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--charter-gold);
+            text-align: center;
+        }
+
+        .framework-icon {
+            font-size: 2rem;
+            color: var(--charter-gold);
+            margin-bottom: 1rem;
+        }
+
+        .framework-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #1a202c;
+        }
+
+        .framework-description {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+
+        /* Legacy Metrics */
+        .legacy-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .metric-card {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--charter-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+            color: var(--text-gray);
+            font-weight: 500;
+        }
+
+        .metric-trend {
+            font-size: 0.8rem;
+            color: #10b981;
+            margin-top: 0.5rem;
+        }
+
+        /* Action Section */
+        .action-section {
+            background: var(--bg-card);
+            padding: 3rem 1rem;
+            text-align: center;
+        }
+
+        .action-button {
+            display: inline-flex;
+            align-items: center;
+            background: linear-gradient(135deg, var(--charter-gold) 0%, var(--charter-amber) 100%);
+            color: var(--bg-primary);
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin: 0 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(245, 158, 11, 0.3);
+        }
+
+        .action-button i {
+            margin-right: 0.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-title {
+                font-size: 2rem;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .header-icon {
+                margin-bottom: 0.5rem;
+            }
+
+            .principles-grid,
+            .framework-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-button {
+                margin: 0.5rem;
+                width: calc(100% - 1rem);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="nav-back">
+                <a href="/" class="back-button">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Home
+                </a>
+            </div>
+
+            <h1 class="header-title">
+                <span class="header-icon">📋</span>
+                Stewardship Charter
+            </h1>
+
+            <p class="header-subtitle">Accountability & Legacy Leadership Framework</p>
+            <p class="header-description">
+                A comprehensive framework for accountability and legacy leadership in facility management,
+                establishing clear principles, responsibilities, and measurable outcomes for sustainable stewardship.
+            </p>
+
+            <blockquote class="charter-quote">
+                "Stewardship in facility management ensures sustainable spaces, aligning resources with purpose."
+                <footer>— <strong>Sifiso Shezi</strong>, Facilities Assistant Level 1</footer>
+            </blockquote>
+        </div>
+    </header>
+
+    <!-- Core Principles Section -->
+    <section class="content-section">
+        <h2 class="section-title">
+            <i class="fas fa-compass"></i>
+            Core Stewardship Principles
+        </h2>
+
+        <div class="principles-grid">
+            <div class="principle-card">
+                <div class="principle-number">1</div>
+                <h3 class="principle-title">Responsibility & Ownership</h3>
+                <div class="principle-content">
+                    Taking full accountability for all facility management decisions, actions, and outcomes with transparent reporting and continuous improvement.
+                </div>
+                <ul class="principle-actions">
+                    <li>Personal accountability for decisions</li>
+                    <li>Transparent reporting mechanisms</li>
+                    <li>Continuous improvement mindset</li>
+                    <li>Proactive problem resolution</li>
+                </ul>
+            </div>
+
+            <div class="principle-card">
+                <div class="principle-number">2</div>
+                <h3 class="principle-title">Sustainability Focus</h3>
+                <div class="principle-content">
+                    Prioritizing long-term sustainability over short-term gains, ensuring resources are managed responsibly for future generations.
+                </div>
+                <ul class="principle-actions">
+                    <li>Environmental impact assessment</li>
+                    <li>Resource conservation strategies</li>
+                    <li>Waste reduction programs</li>
+                    <li>Energy efficiency initiatives</li>
+                </ul>
+            </div>
+
+            <div class="principle-card">
+                <div class="principle-number">3</div>
+                <h3 class="principle-title">Stakeholder Engagement</h3>
+                <div class="principle-content">
+                    Active collaboration with all stakeholders to understand needs, communicate effectively, and build lasting partnerships.
+                </div>
+                <ul class="principle-actions">
+                    <li>Regular stakeholder meetings</li>
+                    <li>Feedback collection systems</li>
+                    <li>Collaborative decision making</li>
+                    <li>Partnership development</li>
+                </ul>
+            </div>
+
+            <div class="principle-card">
+                <div class="principle-number">4</div>
+                <h3 class="principle-title">Innovation & Excellence</h3>
+                <div class="principle-content">
+                    Pursuing innovative solutions and maintaining the highest standards of excellence in all facility management practices.
+                </div>
+                <ul class="principle-actions">
+                    <li>Technology adoption</li>
+                    <li>Best practice implementation</li>
+                    <li>Quality assurance programs</li>
+                    <li>Performance optimization</li>
+                </ul>
+            </div>
+
+            <div class="principle-card">
+                <div class="principle-number">5</div>
+                <h3 class="principle-title">Knowledge Sharing</h3>
+                <div class="principle-content">
+                    Creating and maintaining systems for knowledge transfer, ensuring continuity and building organizational capability.
+                </div>
+                <ul class="principle-actions">
+                    <li>Documentation systems</li>
+                    <li>Training programs</li>
+                    <li>Mentorship initiatives</li>
+                    <li>Legacy planning</li>
+                </ul>
+            </div>
+
+            <div class="principle-card">
+                <div class="principle-number">6</div>
+                <h3 class="principle-title">Ethical Leadership</h3>
+                <div class="principle-content">
+                    Demonstrating integrity, fairness, and ethical behavior in all interactions and decisions, setting the standard for others.
+                </div>
+                <ul class="principle-actions">
+                    <li>Ethical decision framework</li>
+                    <li>Fair treatment policies</li>
+                    <li>Transparency standards</li>
+                    <li>Integrity measures</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Accountability Framework -->
+    <section class="framework-section">
+        <div class="content-section">
+            <h2 class="section-title">
+                <i class="fas fa-balance-scale"></i>
+                Accountability Framework
+            </h2>
+        </div>
+
+        <div class="framework-grid">
+            <div class="framework-card">
+                <div class="framework-icon">📊</div>
+                <h4 class="framework-title">Performance Tracking</h4>
+                <p class="framework-description">Comprehensive KPI monitoring and regular performance reviews with clear metrics and targets.</p>
+            </div>
+
+            <div class="framework-card">
+                <div class="framework-icon">🎯</div>
+                <h4 class="framework-title">Goal Setting</h4>
+                <p class="framework-description">SMART objectives aligned with organizational strategy and measurable outcomes.</p>
+            </div>
+
+            <div class="framework-card">
+                <div class="framework-icon">📝</div>
+                <h4 class="framework-title">Regular Reporting</h4>
+                <p class="framework-description">Structured reporting cycles with transparent communication of progress and challenges.</p>
+            </div>
+
+            <div class="framework-card">
+                <div class="framework-icon">🔄</div>
+                <h4 class="framework-title">Continuous Improvement</h4>
+                <p class="framework-description">Systematic approach to identifying opportunities and implementing improvements.</p>
+            </div>
+
+            <div class="framework-card">
+                <div class="framework-icon">👥</div>
+                <h4 class="framework-title">Peer Review</h4>
+                <p class="framework-description">Regular peer assessments and collaborative evaluation of performance and practices.</p>
+            </div>
+
+            <div class="framework-card">
+                <div class="framework-icon">🏆</div>
+                <h4 class="framework-title">Recognition System</h4>
+                <p class="framework-description">Acknowledgment and reward systems for exceptional stewardship and leadership.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Legacy Metrics -->
+    <section class="content-section">
+        <h2 class="section-title">
+            <i class="fas fa-chart-line"></i>
+            Legacy Impact Metrics
+        </h2>
+
+        <div class="legacy-metrics">
+            <div class="metric-card">
+                <div class="metric-value">94%</div>
+                <div class="metric-label">Stakeholder Satisfaction</div>
+                <div class="metric-trend">↗ +12% from last quarter</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-value">87</div>
+                <div class="metric-label">Improvement Initiatives</div>
+                <div class="metric-trend">↗ +23 new this month</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-value">156</div>
+                <div class="metric-label">Knowledge Articles</div>
+                <div class="metric-trend">↗ Growing repository</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-value">92%</div>
+                <div class="metric-label">Compliance Rate</div>
+                <div class="metric-trend">↗ +8% improvement</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-value">43</div>
+                <div class="metric-label">Team Members Trained</div>
+                <div class="metric-trend">↗ +15 this quarter</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Action Section -->
+    <section class="action-section">
+        <h2 class="section-title">
+            <i class="fas fa-handshake"></i>
+            Commit to Stewardship
+        </h2>
+        <p style="margin-bottom: 2rem; color: var(--text-gray); max-width: 600px; margin-left: auto; margin-right: auto;">
+            Join the stewardship charter and commit to accountability, excellence, and legacy leadership in facility management.
+        </p>
+
+        <div>
+            <a href="#" class="action-button">
+                <i class="fas fa-pen-fancy"></i>
+                Sign Charter
+            </a>
+
+            <a href="#" class="action-button" style="background: var(--bg-primary); border: 2px solid var(--charter-gold); color: var(--charter-gold);">
+                <i class="fas fa-download"></i>
+                Download Framework
+            </a>
+        </div>
+    </section>
+</body>
+</html>

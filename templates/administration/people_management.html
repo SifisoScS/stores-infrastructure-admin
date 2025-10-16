@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PEOPLE Management - Real-Time Occupancy & HR Analytics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --derivco-blue: rgb(0, 66, 137);
+            --derivco-cyan: rgb(0, 191, 255);
+            --derivco-blue-light: rgba(0, 66, 137, 0.1);
+            --derivco-cyan-light: rgba(0, 191, 255, 0.1);
+            --primary-blue: #003366;
+            --secondary-teal: #008080;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            min-height: 100vh;
+            color: #1a202c;
+        }
+
+        /* Header styling */
+        .page-header {
+            background: linear-gradient(135deg, var(--derivco-blue) 0%, var(--derivco-cyan) 100%);
+            color: white;
+            padding: 2rem 0;
+        }
+
+        /* Card design */
+        .clean-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0, 66, 137, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .clean-card:hover {
+            box-shadow: 0 8px 24px rgba(0, 66, 137, 0.12);
+            transform: translateY(-2px);
+        }
+
+        /* Stat cards */
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 66, 137, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            box-shadow: 0 8px 24px rgba(0, 66, 137, 0.12);
+            transform: translateY(-2px);
+        }
+
+        /* Back button */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Live indicators */
+        .live-indicator {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+            padding: 0.25rem 0.75rem;
+            border-radius: 16px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .live-indicator::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Status badges */
+        .status-in { background: rgba(34, 197, 94, 0.1); color: #22c55e; }
+        .status-out { background: rgba(156, 163, 175, 0.1); color: #6b7280; }
+        .status-late { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+        .status-visitor { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 16px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Section headers */
+        .section-header {
+            border-bottom: 2px solid var(--derivco-blue);
+            padding-bottom: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--derivco-blue);
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title i {
+            margin-right: 0.75rem;
+            font-size: 1.25rem;
+        }
+
+        /* Action buttons */
+        .action-btn {
+            background: linear-gradient(135deg, var(--derivco-blue) 0%, var(--derivco-cyan) 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 66, 137, 0.3);
+        }
+
+        .action-btn i {
+            margin-right: 0.5rem;
+        }
+
+        /* Person cards */
+        .person-card {
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            padding: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .person-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 66, 137, 0.08);
+        }
+
+        /* Time display */
+        .time-display {
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            color: var(--derivco-blue);
+        }
+
+        /* Chart containers */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="page-header">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <a href="/administration" class="back-btn">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Back to Administration Portal
+            </a>
+
+            <div class="text-center">
+                <h1 class="text-4xl font-bold mb-2">👥 PEOPLE Management</h1>
+                <p class="text-xl opacity-90">Employees, Contractors, Executives, Visitors - Real-Time HR Analytics</p>
+                <p class="text-lg opacity-80 mt-2">Live occupancy tracking and workforce intelligence</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Real-Time Overview Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
+            <div class="stat-card text-center">
+                <div class="text-4xl font-bold text-green-600 mb-2" id="currentlyInBuilding">342</div>
+                <div class="text-gray-600">Currently In Building</div>
+                <div class="live-indicator mt-2">
+                    LIVE NOW
+                </div>
+            </div>
+            <div class="stat-card text-center">
+                <div class="text-3xl font-bold text-blue-600 mb-2" id="arrivedBefore830">298</div>
+                <div class="text-gray-600">Arrived Before 08:30</div>
+                <div class="text-sm text-green-600 mt-1">
+                    <i class="fas fa-clock mr-1"></i>On Time: 87%
+                </div>
+            </div>
+            <div class="stat-card text-center">
+                <div class="text-3xl font-bold text-orange-600 mb-2" id="visitorsToday">28</div>
+                <div class="text-gray-600">Visitors Today</div>
+                <div class="text-sm text-blue-600 mt-1">
+                    <i class="fas fa-user-friends mr-1"></i>Active: 12
+                </div>
+            </div>
+            <div class="stat-card text-center">
+                <div class="text-3xl font-bold text-purple-600 mb-2" id="contractorsActive">15</div>
+                <div class="text-gray-600">Contractors On-Site</div>
+                <div class="text-sm text-green-600 mt-1">
+                    <i class="fas fa-hard-hat mr-1"></i>Projects: 5
+                </div>
+            </div>
+            <div class="stat-card text-center">
+                <div class="text-3xl font-bold text-red-600 mb-2" id="absentToday">44</div>
+                <div class="text-gray-600">Absent Today</div>
+                <div class="text-sm text-gray-600 mt-1">
+                    <i class="fas fa-calendar-times mr-1"></i>11% Rate
+                </div>
+            </div>
+        </div>
+
+        <!-- Live Entry/Exit Monitor -->
+        <div class="clean-card p-6 mb-8">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-door-open"></i>
+                    Live Entry/Exit Monitor
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Recent Entries -->
+                <div class="clean-card p-4">
+                    <h3 class="font-semibold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-sign-in-alt text-green-600 mr-2"></i>
+                        Recent Entries (Last 15 minutes)
+                    </h3>
+                    <div class="space-y-3 max-h-64 overflow-y-auto" id="recentEntries">
+                        <div class="person-card flex justify-between items-center">
+                            <div>
+                                <div class="font-medium">Sifiso Shezi</div>
+                                <div class="text-sm text-gray-600">Facilities Assistant Level 1 - Badge: F1001</div>
+                            </div>
+                            <div class="text-right">
+                                <span class="status-badge status-in">ENTERED</span>
+                                <div class="text-xs text-gray-500 time-display mt-1">14:32:15</div>
+                            </div>
+                        </div>
+                        <div class="person-card flex justify-between items-center">
+                            <div>
+                                <div class="font-medium">Michael Chen</div>
+                                <div class="text-sm text-gray-600">Visitor - Meeting with IT</div>
+                            </div>
+                            <div class="text-right">
+                                <span class="status-badge status-visitor">VISITOR</span>
+                                <div class="text-xs text-gray-500 time-display mt-1">14:28:42</div>
+                            </div>
+                        </div>
+                        <div class="person-card flex justify-between items-center">
+                            <div>
+                                <div class="font-medium">John Mthembu</div>
+                                <div class="text-sm text-gray-600">Facilities Team - Badge: F1002</div>
+                            </div>
+                            <div class="text-right">
+                                <span class="status-badge status-in">ENTERED</span>
+                                <div class="text-xs text-gray-500 time-display mt-1">14:25:38</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Exits -->
+                <div class="clean-card p-4">
+                    <h3 class="font-semibold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-sign-out-alt text-orange-600 mr-2"></i>
+                        Recent Exits (Last 15 minutes)
+                    </h3>
+                    <div class="space-y-3 max-h-64 overflow-y-auto" id="recentExits">
+                        <div class="person-card flex justify-between items-center">
+                            <div>
+                                <div class="font-medium">Xolani Ngcobo</div>
+                                <div class="text-sm text-gray-600">Facilities Team - Badge: F1003</div>
+                            </div>
+                            <div class="text-right">
+                                <span class="status-badge status-out">EXITED</span>
+                                <div class="text-xs text-gray-500 time-display mt-1">14:30:22</div>
+                            </div>
+                        </div>
+                        <div class="person-card flex justify-between items-center">
+                            <div>
+                                <div class="font-medium">Robert Taylor</div>
+                                <div class="text-sm text-gray-600">LivClean Contractor</div>
+                            </div>
+                            <div class="text-right">
+                                <span class="status-badge status-out">EXITED</span>
+                                <div class="text-xs text-gray-500 time-display mt-1">14:27:15</div>
+                            </div>
+                        </div>
+                        <div class="person-card flex justify-between items-center">
+                            <div>
+                                <div class="font-medium">Siyabonga Dlamini</div>
+                                <div class="text-sm text-gray-600">Facilities Team - Badge: F1004</div>
+                            </div>
+                            <div class="text-right">
+                                <span class="status-badge status-out">EXITED</span>
+                                <div class="text-xs text-gray-500 time-display mt-1">14:24:07</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Department Breakdown & Analytics -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Department Occupancy -->
+            <div class="clean-card p-6">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-building"></i>
+                        Department Occupancy
+                    </h2>
+                </div>
+                <div class="chart-container">
+                    <canvas id="departmentChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Attendance Trends -->
+            <div class="clean-card p-6">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-chart-line"></i>
+                        Today's Attendance Pattern
+                    </h2>
+                </div>
+                <div class="chart-container">
+                    <canvas id="attendanceChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Department Statistics -->
+        <div class="clean-card p-6 mb-8">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-users-cog"></i>
+                    Department Statistics
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Engineering Department -->
+                <div class="clean-card p-4 border-l-4 border-blue-500">
+                    <h3 class="font-semibold text-gray-800 mb-3 flex items-center">
+                        <i class="fas fa-code text-blue-500 mr-2"></i>
+                        Engineering
+                    </h3>
+                    <div class="space-y-2">
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">Total Staff</span>
+                            <span class="font-medium">142</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">Present</span>
+                            <span class="font-medium text-green-600">128</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">Attendance</span>
+                            <span class="font-medium">90.1%</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">On Time</span>
+                            <span class="font-medium text-green-600">118</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Operations Department -->
+                <div class="clean-card p-4 border-l-4 border-green-500">
+                    <h3 class="font-semibold text-gray-800 mb-3 flex items-center">
+                        <i class="fas fa-cogs text-green-500 mr-2"></i>
+                        Operations
+                    </h3>
+                    <div class="space-y-2">
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">Total Staff</span>
+                            <span class="font-medium">85</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">Present</span>
+                            <span class="font-medium text-green-600">78</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">Attendance</span>
+                            <span class="font-medium">91.8%</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">On Time</span>
+                            <span class="font-medium text-green-600">72</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sales & Marketing -->
+                <div class="clean-card p-4 border-l-4 border-purple-500">
+                    <h3 class="font-semibold text-gray-800 mb-3 flex items-center">
+                        <i class="fas fa-chart-line text-purple-500 mr-2"></i>
+                        Sales & Marketing
+                    </h3>
+                    <div class="space-y-2">
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">Total Staff</span>
+                            <span class="font-medium">63</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">Present</span>
+                            <span class="font-medium text-green-600">56</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">Attendance</span>
+                            <span class="font-medium">88.9%</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">On Time</span>
+                            <span class="font-medium text-green-600">52</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Administration -->
+                <div class="clean-card p-4 border-l-4 border-orange-500">
+                    <h3 class="font-semibold text-gray-800 mb-3 flex items-center">
+                        <i class="fas fa-user-tie text-orange-500 mr-2"></i>
+                        Administration
+                    </h3>
+                    <div class="space-y-2">
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">Total Staff</span>
+                            <span class="font-medium">45</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">Present</span>
+                            <span class="font-medium text-green-600">42</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">Attendance</span>
+                            <span class="font-medium">93.3%</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">On Time</span>
+                            <span class="font-medium text-green-600">39</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Late Arrivals & Visitor Management -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Late Arrivals Alert -->
+            <div class="clean-card p-6 border-l-4 border-red-500">
+                <h3 class="font-semibold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-exclamation-triangle text-red-500 mr-2"></i>
+                    Late Arrivals (After 08:30)
+                </h3>
+                <div class="space-y-3 max-h-64 overflow-y-auto">
+                    <div class="person-card flex justify-between items-center">
+                        <div>
+                            <div class="font-medium">Brindley Harrington</div>
+                            <div class="text-sm text-gray-600">Supervisor - Badge: F1010</div>
+                        </div>
+                        <div class="text-right">
+                            <span class="status-badge status-late">LATE</span>
+                            <div class="text-xs text-gray-500 time-display mt-1">Arrived: 09:15</div>
+                        </div>
+                    </div>
+                    <div class="person-card flex justify-between items-center">
+                        <div>
+                            <div class="font-medium">Nduduzo Gasa</div>
+                            <div class="text-sm text-gray-600">Facilities Team - Badge: F1006</div>
+                        </div>
+                        <div class="text-right">
+                            <span class="status-badge status-late">LATE</span>
+                            <div class="text-xs text-gray-500 time-display mt-1">Arrived: 08:45</div>
+                        </div>
+                    </div>
+                    <div class="person-card flex justify-between items-center">
+                        <div>
+                            <div class="font-medium">Sipho Ngcobo</div>
+                            <div class="text-sm text-gray-600">Facilities Team - Badge: F1007</div>
+                        </div>
+                        <div class="text-right">
+                            <span class="status-badge status-late">LATE</span>
+                            <div class="text-xs text-gray-500 time-display mt-1">Arrived: 08:52</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Visitors -->
+            <div class="clean-card p-6 border-l-4 border-blue-500">
+                <h3 class="font-semibold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-user-friends text-blue-500 mr-2"></i>
+                    Active Visitors
+                </h3>
+                <div class="space-y-3 max-h-64 overflow-y-auto">
+                    <div class="person-card flex justify-between items-center">
+                        <div>
+                            <div class="font-medium">Michael Chen</div>
+                            <div class="text-sm text-gray-600">Client Meeting - IT Department</div>
+                        </div>
+                        <div class="text-right">
+                            <span class="status-badge status-visitor">ACTIVE</span>
+                            <div class="text-xs text-gray-500 time-display mt-1">Since: 14:28</div>
+                        </div>
+                    </div>
+                    <div class="person-card flex justify-between items-center">
+                        <div>
+                            <div class="font-medium">Jennifer Lopez</div>
+                            <div class="text-sm text-gray-600">Vendor Meeting - Procurement</div>
+                        </div>
+                        <div class="text-right">
+                            <span class="status-badge status-visitor">ACTIVE</span>
+                            <div class="text-xs text-gray-500 time-display mt-1">Since: 13:45</div>
+                        </div>
+                    </div>
+                    <div class="person-card flex justify-between items-center">
+                        <div>
+                            <div class="font-medium">Mark Thompson</div>
+                            <div class="text-sm text-gray-600">Interview - HR Department</div>
+                        </div>
+                        <div class="text-right">
+                            <span class="status-badge status-visitor">ACTIVE</span>
+                            <div class="text-xs text-gray-500 time-display mt-1">Since: 14:00</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions Panel -->
+        <div class="clean-card p-6">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-bolt"></i>
+                    Quick Actions
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <button class="action-btn">
+                    <i class="fas fa-download"></i>
+                    Export Report
+                </button>
+                <button class="action-btn bg-green-600">
+                    <i class="fas fa-user-plus"></i>
+                    Add Visitor
+                </button>
+                <button class="action-btn bg-purple-600">
+                    <i class="fas fa-chart-bar"></i>
+                    Analytics Dashboard
+                </button>
+                <button class="action-btn bg-orange-600">
+                    <i class="fas fa-bell"></i>
+                    Set Alerts
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Real-time data simulation
+        function updateRealTimeData() {
+            // Simulate real-time updates
+            const currentTime = new Date().toLocaleTimeString();
+
+            // Update stats with random variations
+            const currentInBuilding = document.getElementById('currentlyInBuilding');
+            const baseCount = 342;
+            const variation = Math.floor(Math.random() * 10) - 5;
+            currentInBuilding.textContent = Math.max(320, baseCount + variation);
+
+            // Add new entries/exits periodically
+            if (Math.random() < 0.3) {
+                addNewEntry();
+            }
+            if (Math.random() < 0.2) {
+                addNewExit();
+            }
+        }
+
+        function addNewEntry() {
+            const names = ['Sipho Mahlaba', 'Brindley Harrington', 'Erasmus Ngwane', 'John Mthembu', 'Xolani Ngcobo'];
+            const departments = ['Facilities Team', 'Facilities Team', 'Facilities Team', 'Facilities Team', 'Facilities Team'];
+
+            const recentEntries = document.getElementById('recentEntries');
+            const newEntry = document.createElement('div');
+            newEntry.className = 'person-card flex justify-between items-center';
+            newEntry.innerHTML = `
+                <div>
+                    <div class="font-medium">${names[Math.floor(Math.random() * names.length)]}</div>
+                    <div class="text-sm text-gray-600">Facilities Team - Badge: F${Math.floor(Math.random() * 9) + 1001}</div>
+                </div>
+                <div class="text-right">
+                    <span class="status-badge status-in">ENTERED</span>
+                    <div class="text-xs text-gray-500 time-display mt-1">${new Date().toLocaleTimeString()}</div>
+                </div>
+            `;
+            recentEntries.insertBefore(newEntry, recentEntries.firstChild);
+
+            // Keep only last 5 entries
+            if (recentEntries.children.length > 5) {
+                recentEntries.removeChild(recentEntries.lastChild);
+            }
+        }
+
+        function addNewExit() {
+            const names = ['Sifiso Shezi', 'Siyabonga Dlamini', 'Elton Mzila', 'Nduduzo Gasa', 'Sipho Ngcobo'];
+            const departments = ['Facilities Team', 'Facilities Team', 'Facilities Team', 'Facilities Team', 'Facilities Team'];
+
+            const recentExits = document.getElementById('recentExits');
+            const newExit = document.createElement('div');
+            newExit.className = 'person-card flex justify-between items-center';
+            newExit.innerHTML = `
+                <div>
+                    <div class="font-medium">${names[Math.floor(Math.random() * names.length)]}</div>
+                    <div class="text-sm text-gray-600">Facilities Team - Badge: F${Math.floor(Math.random() * 9) + 1001}</div>
+                </div>
+                <div class="text-right">
+                    <span class="status-badge status-out">EXITED</span>
+                    <div class="text-xs text-gray-500 time-display mt-1">${new Date().toLocaleTimeString()}</div>
+                </div>
+            `;
+            recentExits.insertBefore(newExit, recentExits.firstChild);
+
+            // Keep only last 5 exits
+            if (recentExits.children.length > 5) {
+                recentExits.removeChild(recentExits.lastChild);
+            }
+        }
+
+        // Initialize charts
+        function initializeCharts() {
+            // Department Occupancy Chart
+            const deptCtx = document.getElementById('departmentChart').getContext('2d');
+            new Chart(deptCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Engineering', 'Operations', 'Sales & Marketing', 'Administration', 'Other'],
+                    datasets: [{
+                        data: [128, 78, 56, 42, 38],
+                        backgroundColor: [
+                            '#3b82f6',
+                            '#10b981',
+                            '#8b5cf6',
+                            '#f59e0b',
+                            '#6b7280'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // Attendance Pattern Chart
+            const attendCtx = document.getElementById('attendanceChart').getContext('2d');
+            new Chart(attendCtx, {
+                type: 'line',
+                data: {
+                    labels: ['07:00', '07:30', '08:00', '08:30', '09:00', '09:30', '10:00'],
+                    datasets: [{
+                        label: 'Entries',
+                        data: [5, 45, 123, 98, 42, 18, 8],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCharts();
+
+            // Update real-time data every 10 seconds
+            setInterval(updateRealTimeData, 10000);
+        });
+
+        console.log('PEOPLE Management - Real-Time Occupancy & HR Analytics initialized');
+    </script>
+</body>
+</html>

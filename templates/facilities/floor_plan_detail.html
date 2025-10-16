@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ floor_plan.building_name }} - {{ floor_plan.floor_number }} | Derivco Facilities</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .floor-plan-container {
+            position: relative;
+            overflow: hidden;
+            cursor: grab;
+        }
+        .floor-plan-container:active {
+            cursor: grabbing;
+        }
+        .floor-plan-image {
+            transition: transform 0.3s ease;
+            max-width: none;
+        }
+        .space-marker {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: rgba(59, 130, 246, 0.8);
+            border: 2px solid white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .space-marker:hover {
+            transform: scale(1.2);
+            z-index: 10;
+        }
+        .space-marker.occupied {
+            background: rgba(34, 197, 94, 0.8);
+        }
+        .space-marker.selected {
+            background: rgba(239, 68, 68, 0.8);
+            transform: scale(1.3);
+        }
+        .pan-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 20;
+        }
+        .zoom-controls {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            z-index: 20;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-4">
+                    <a href="/floor-plan" class="flex items-center space-x-2 text-indigo-600 hover:text-indigo-800">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Back to Floor Plans</span>
+                    </a>
+                    <div class="h-6 border-l border-gray-300"></div>
+                    <div>
+                        <h1 class="text-xl font-semibold text-gray-900">{{ floor_plan.building_name }}</h1>
+                        <p class="text-sm text-gray-500">{{ floor_plan.floor_number }}</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button id="addSpaceBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-plus mr-2"></i>Add Space
+                    </button>
+                    <button id="assignPeopleBtn" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                        <i class="fas fa-users mr-2"></i>Assign People
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div class="w-80 bg-white border-r border-gray-200 overflow-y-auto">
+            <!-- Floor Plan Info -->
+            <div class="p-6 border-b border-gray-200">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4">Floor Plan Details</h2>
+
+                <div class="space-y-3">
+                    <div>
+                        <label class="text-sm font-medium text-gray-500">Original File</label>
+                        <p class="text-sm text-gray-900">{{ floor_plan.original_filename }}</p>
+                    </div>
+                    <div>
+                        <label class="text-sm font-medium text-gray-500">Format</label>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            {{ floor_plan.format_type.upper() }}
+                        </span>
+                    </div>
+                    <div>
+                        <label class="text-sm font-medium text-gray-500">File Size</label>
+                        <p class="text-sm text-gray-900">{{ (floor_plan.file_size / 1024 / 1024) | round(1) }}MB</p>
+                    </div>
+                    {% if floor_plan.metadata and floor_plan.metadata.dimensions %}
+                    <div>
+                        <label class="text-sm font-medium text-gray-500">Dimensions</label>
+                        <p class="text-sm text-gray-900">{{ floor_plan.metadata.dimensions[0] }} × {{ floor_plan.metadata.dimensions[1] }}px</p>
+                    </div>
+                    {% endif %}
+                    <div>
+                        <label class="text-sm font-medium text-gray-500">Uploaded</label>
+                        <p class="text-sm text-gray-900">{{ floor_plan.upload_time[:10] }}</p>
+                    </div>
+                </div>
+
+                {% if floor_plan.description %}
+                <div class="mt-4">
+                    <label class="text-sm font-medium text-gray-500">Description</label>
+                    <p class="text-sm text-gray-900 mt-1">{{ floor_plan.description }}</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Spaces List -->
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">Spaces</h3>
+                    <span id="spaceCount" class="text-sm text-gray-500">{{ floor_plan.spaces | length }} spaces</span>
+                </div>
+
+                <div id="spacesList" class="space-y-2">
+                    {% for space in floor_plan.spaces %}
+                    <div class="space-item p-3 bg-gray-50 rounded-lg hover:bg-gray-100 cursor-pointer" data-space-id="{{ space.id }}">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="font-medium text-gray-900">{{ space.name or 'Space ' + loop.index|string }}</p>
+                                <p class="text-sm text-gray-500">{{ space.type or 'Unknown type' }}</p>
+                            </div>
+                            {% if floor_plan.people_assignments and floor_plan.people_assignments[space.id] %}
+                            <div class="flex items-center">
+                                <i class="fas fa-user text-green-600 text-xs"></i>
+                                <span class="text-xs text-green-600 ml-1">Assigned</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-8">
+                        <i class="fas fa-map-marked-alt text-3xl text-gray-300 mb-2"></i>
+                        <p class="text-gray-500">No spaces defined yet</p>
+                        <button onclick="document.getElementById('addSpaceBtn').click()" class="text-blue-600 text-sm hover:text-blue-800 mt-2">
+                            Add your first space
+                        </button>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="p-6 border-t border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+                <div class="space-y-2">
+                    <button class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                        <i class="fas fa-download mr-2"></i>Export Floor Plan
+                    </button>
+                    <button class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                        <i class="fas fa-print mr-2"></i>Print Floor Plan
+                    </button>
+                    <button class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                        <i class="fas fa-share mr-2"></i>Share Floor Plan
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Floor Plan Viewer -->
+        <div class="flex-1 relative bg-white">
+            <!-- Controls -->
+            <div class="pan-controls">
+                <div class="bg-white rounded-lg shadow-lg p-2 flex flex-col space-y-1">
+                    <button id="resetViewBtn" class="p-2 hover:bg-gray-100 rounded" title="Reset View">
+                        <i class="fas fa-home"></i>
+                    </button>
+                    <button id="fullscreenBtn" class="p-2 hover:bg-gray-100 rounded" title="Fullscreen">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="zoom-controls">
+                <div class="bg-white rounded-lg shadow-lg p-2 flex flex-col space-y-1">
+                    <button id="zoomInBtn" class="p-2 hover:bg-gray-100 rounded" title="Zoom In">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <button id="zoomOutBtn" class="p-2 hover:bg-gray-100 rounded" title="Zoom Out">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Floor Plan Container -->
+            <div id="floorPlanContainer" class="floor-plan-container w-full h-full flex items-center justify-center">
+                {% if floor_plan.processed_filename.endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp')) %}
+                <img id="floorPlanImage"
+                     src="/floor-plan-files/processed/{{ floor_plan.processed_filename }}"
+                     alt="{{ floor_plan.original_filename }}"
+                     class="floor-plan-image max-h-full">
+                {% elif floor_plan.processed_filename.endswith('.pdf') %}
+                <div class="text-center">
+                    <i class="fas fa-file-pdf text-6xl text-red-400 mb-4"></i>
+                    <p class="text-gray-600 mb-4">PDF floor plans require conversion for interactive viewing</p>
+                    <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                        Convert to Image
+                    </button>
+                </div>
+                {% else %}
+                <div class="text-center">
+                    <i class="fas fa-file-alt text-6xl text-gray-400 mb-4"></i>
+                    <p class="text-gray-600 mb-4">{{ floor_plan.format_type.upper() }} files require processing for interactive viewing</p>
+                    <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                        Process File
+                    </button>
+                </div>
+                {% endif %}
+
+                <!-- Space Markers -->
+                {% for space in floor_plan.spaces %}
+                <div class="space-marker"
+                     data-space-id="{{ space.id }}"
+                     style="left: {{ space.x or 50 }}%; top: {{ space.y or 50 }}%;"
+                     title="{{ space.name or 'Space ' + loop.index|string }}">
+                    {{ loop.index }}
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Instructions -->
+            <div class="absolute bottom-4 left-4 bg-black bg-opacity-75 text-white px-4 py-2 rounded text-sm">
+                <i class="fas fa-mouse-pointer mr-2"></i>
+                Click and drag to pan • Mouse wheel to zoom • Click spaces to select
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Space Modal -->
+    <div id="addSpaceModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg max-w-md w-full">
+                <div class="flex items-center justify-between p-6 border-b">
+                    <h3 class="text-lg font-semibold">Add New Space</h3>
+                    <button id="closeAddSpaceModal" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <form id="addSpaceForm" class="p-6">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Space Name</label>
+                            <input type="text" name="spaceName" placeholder="e.g., Conference Room A"
+                                   class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Space Type</label>
+                            <select name="spaceType" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">Select type...</option>
+                                <option value="office">Office</option>
+                                <option value="conference">Conference Room</option>
+                                <option value="meeting">Meeting Room</option>
+                                <option value="storage">Storage</option>
+                                <option value="break">Break Room</option>
+                                <option value="bathroom">Bathroom</option>
+                                <option value="lobby">Lobby</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Capacity</label>
+                            <input type="number" name="capacity" placeholder="Maximum occupancy"
+                                   class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end space-x-3 mt-6">
+                        <button type="button" id="cancelAddSpace" class="px-4 py-2 text-gray-600 hover:text-gray-800">
+                            Cancel
+                        </button>
+                        <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
+                            Add Space
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- People Assignment Modal -->
+    <div id="assignPeopleModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg max-w-2xl w-full">
+                <div class="flex items-center justify-between p-6 border-b">
+                    <h3 class="text-lg font-semibold">Assign People to Spaces</h3>
+                    <button id="closeAssignPeopleModal" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <div class="p-6">
+                    <div class="grid grid-cols-2 gap-6">
+                        <!-- Available People -->
+                        <div>
+                            <h4 class="font-medium text-gray-900 mb-3">Available People</h4>
+                            <div class="border border-gray-200 rounded-lg p-3 h-64 overflow-y-auto">
+                                <div class="people-list space-y-2">
+                                    <!-- Sample people data -->
+                                    <div class="person-item p-2 bg-gray-50 rounded cursor-pointer hover:bg-gray-100" data-person-id="1">
+                                        <div class="flex items-center">
+                                            <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-bold mr-3">
+                                                DO
+                                            </div>
+                                            <div>
+                                                <p class="font-medium text-sm">Danny Ocean</p>
+                                                <p class="text-xs text-gray-500">Contractor • Security</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="person-item p-2 bg-gray-50 rounded cursor-pointer hover:bg-gray-100" data-person-id="2">
+                                        <div class="flex items-center">
+                                            <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white text-sm font-bold mr-3">
+                                                JS
+                                            </div>
+                                            <div>
+                                                <p class="font-medium text-sm">John Smith</p>
+                                                <p class="text-xs text-gray-500">Internal • Facilities</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="person-item p-2 bg-gray-50 rounded cursor-pointer hover:bg-gray-100" data-person-id="3">
+                                        <div class="flex items-center">
+                                            <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white text-sm font-bold mr-3">
+                                                MJ
+                                            </div>
+                                            <div>
+                                                <p class="font-medium text-sm">Mary Johnson</p>
+                                                <p class="text-xs text-gray-500">Internal • HR</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Space Selection -->
+                        <div>
+                            <h4 class="font-medium text-gray-900 mb-3">Select Space</h4>
+                            <div class="border border-gray-200 rounded-lg p-3 h-64 overflow-y-auto">
+                                <div id="spaceSelectionList" class="space-y-2">
+                                    <!-- Spaces will be populated here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 p-4 bg-blue-50 rounded-lg">
+                        <p class="text-sm text-blue-800">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            Drag people to spaces or click to select both person and space, then assign.
+                        </p>
+                    </div>
+
+                    <div class="flex justify-end space-x-3 mt-6">
+                        <button type="button" id="cancelAssignPeople" class="px-4 py-2 text-gray-600 hover:text-gray-800">
+                            Cancel
+                        </button>
+                        <button type="button" id="assignSelectedBtn" class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 disabled:opacity-50">
+                            Assign Selected
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Floor plan data
+        const floorPlanId = '{{ floor_plan.id }}';
+        let currentSpaces = {{ floor_plan.spaces | tojson }};
+        let selectedPerson = null;
+        let selectedSpace = null;
+
+        // Pan and zoom functionality
+        let scale = 1;
+        let startX = 0;
+        let startY = 0;
+        let translateX = 0;
+        let translateY = 0;
+        let isDragging = false;
+
+        const container = document.getElementById('floorPlanContainer');
+        const image = document.getElementById('floorPlanImage');
+
+        if (image) {
+            // Mouse events for panning
+            container.addEventListener('mousedown', startDrag);
+            container.addEventListener('mousemove', drag);
+            container.addEventListener('mouseup', endDrag);
+            container.addEventListener('mouseleave', endDrag);
+
+            // Zoom with mouse wheel
+            container.addEventListener('wheel', zoom);
+
+            // Touch events for mobile
+            container.addEventListener('touchstart', handleTouch);
+            container.addEventListener('touchmove', handleTouch);
+            container.addEventListener('touchend', handleTouch);
+        }
+
+        function startDrag(e) {
+            if (e.target.classList.contains('space-marker')) return;
+            isDragging = true;
+            startX = e.clientX - translateX;
+            startY = e.clientY - translateY;
+            container.style.cursor = 'grabbing';
+        }
+
+        function drag(e) {
+            if (!isDragging) return;
+            e.preventDefault();
+            translateX = e.clientX - startX;
+            translateY = e.clientY - startY;
+            updateTransform();
+        }
+
+        function endDrag() {
+            isDragging = false;
+            container.style.cursor = 'grab';
+        }
+
+        function zoom(e) {
+            e.preventDefault();
+            const delta = e.deltaY > 0 ? 0.9 : 1.1;
+            scale *= delta;
+            scale = Math.max(0.1, Math.min(5, scale));
+            updateTransform();
+        }
+
+        function updateTransform() {
+            if (image) {
+                image.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+            }
+        }
+
+        // Control buttons
+        document.getElementById('zoomInBtn')?.addEventListener('click', () => {
+            scale *= 1.2;
+            scale = Math.min(5, scale);
+            updateTransform();
+        });
+
+        document.getElementById('zoomOutBtn')?.addEventListener('click', () => {
+            scale *= 0.8;
+            scale = Math.max(0.1, scale);
+            updateTransform();
+        });
+
+        document.getElementById('resetViewBtn')?.addEventListener('click', () => {
+            scale = 1;
+            translateX = 0;
+            translateY = 0;
+            updateTransform();
+        });
+
+        // Modal controls
+        const modals = [
+            { btn: 'addSpaceBtn', modal: 'addSpaceModal', close: 'closeAddSpaceModal', cancel: 'cancelAddSpace' },
+            { btn: 'assignPeopleBtn', modal: 'assignPeopleModal', close: 'closeAssignPeopleModal', cancel: 'cancelAssignPeople' }
+        ];
+
+        modals.forEach(({ btn, modal, close, cancel }) => {
+            document.getElementById(btn)?.addEventListener('click', () => {
+                document.getElementById(modal).classList.remove('hidden');
+            });
+
+            [close, cancel].forEach(id => {
+                document.getElementById(id)?.addEventListener('click', () => {
+                    document.getElementById(modal).classList.add('hidden');
+                });
+            });
+        });
+
+        // Add space functionality
+        document.getElementById('addSpaceForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+
+            const newSpace = {
+                id: Date.now().toString(),
+                name: formData.get('spaceName'),
+                type: formData.get('spaceType'),
+                capacity: formData.get('capacity'),
+                x: 50 + Math.random() * 40, // Random position for demo
+                y: 50 + Math.random() * 40
+            };
+
+            try {
+                const response = await fetch(`/floor-plan/${floorPlanId}/spaces`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ spaces: [...currentSpaces, newSpace] })
+                });
+
+                if (response.ok) {
+                    currentSpaces.push(newSpace);
+                    addSpaceMarker(newSpace);
+                    updateSpacesList();
+                    document.getElementById('addSpaceModal').classList.add('hidden');
+                    e.target.reset();
+                }
+            } catch (error) {
+                console.error('Error adding space:', error);
+            }
+        });
+
+        // Add space marker to floor plan
+        function addSpaceMarker(space) {
+            const marker = document.createElement('div');
+            marker.className = 'space-marker';
+            marker.dataset.spaceId = space.id;
+            marker.style.left = space.x + '%';
+            marker.style.top = space.y + '%';
+            marker.title = space.name;
+            marker.textContent = currentSpaces.length;
+
+            marker.addEventListener('click', () => {
+                // Toggle selection
+                document.querySelectorAll('.space-marker').forEach(m => m.classList.remove('selected'));
+                marker.classList.add('selected');
+                selectedSpace = space.id;
+            });
+
+            container.appendChild(marker);
+        }
+
+        // Update spaces list in sidebar
+        function updateSpacesList() {
+            const spacesList = document.getElementById('spacesList');
+            const spaceCount = document.getElementById('spaceCount');
+
+            spaceCount.textContent = `${currentSpaces.length} spaces`;
+
+            if (currentSpaces.length === 0) {
+                spacesList.innerHTML = `
+                    <div class="text-center py-8">
+                        <i class="fas fa-map-marked-alt text-3xl text-gray-300 mb-2"></i>
+                        <p class="text-gray-500">No spaces defined yet</p>
+                        <button onclick="document.getElementById('addSpaceBtn').click()" class="text-blue-600 text-sm hover:text-blue-800 mt-2">
+                            Add your first space
+                        </button>
+                    </div>
+                `;
+            } else {
+                spacesList.innerHTML = currentSpaces.map((space, index) => `
+                    <div class="space-item p-3 bg-gray-50 rounded-lg hover:bg-gray-100 cursor-pointer" data-space-id="${space.id}">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="font-medium text-gray-900">${space.name || 'Space ' + (index + 1)}</p>
+                                <p class="text-sm text-gray-500">${space.type || 'Unknown type'}</p>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Initialize existing space markers
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.space-marker').forEach(marker => {
+                marker.addEventListener('click', () => {
+                    document.querySelectorAll('.space-marker').forEach(m => m.classList.remove('selected'));
+                    marker.classList.add('selected');
+                    selectedSpace = marker.dataset.spaceId;
+                });
+            });
+        });
+
+        // People assignment functionality
+        document.querySelectorAll('.person-item').forEach(item => {
+            item.addEventListener('click', () => {
+                document.querySelectorAll('.person-item').forEach(p => p.classList.remove('bg-blue-100'));
+                item.classList.add('bg-blue-100');
+                selectedPerson = item.dataset.personId;
+            });
+        });
+
+        document.getElementById('assignSelectedBtn')?.addEventListener('click', async () => {
+            if (!selectedPerson || !selectedSpace) {
+                alert('Please select both a person and a space');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/floor-plan/${floorPlanId}/assign`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        space_id: selectedSpace,
+                        person_data: {
+                            id: selectedPerson,
+                            name: document.querySelector(`[data-person-id="${selectedPerson}"] .font-medium`).textContent
+                        }
+                    })
+                });
+
+                if (response.ok) {
+                    // Update space marker to show assignment
+                    const spaceMarker = document.querySelector(`[data-space-id="${selectedSpace}"]`);
+                    if (spaceMarker) {
+                        spaceMarker.classList.add('occupied');
+                    }
+
+                    document.getElementById('assignPeopleModal').classList.add('hidden');
+                    selectedPerson = null;
+                    selectedSpace = null;
+                }
+            } catch (error) {
+                console.error('Error assigning person:', error);
+            }
+        });
+    </script>
+</body>
+</html>

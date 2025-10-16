@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Storeroom Visuals</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --derivco-blue: rgb(0, 66, 137);
+            --derivco-cyan: rgb(0, 191, 255);
+            --derivco-blue-light: rgba(0, 66, 137, 0.1);
+            --derivco-cyan-light: rgba(0, 191, 255, 0.1);
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            min-height: 100vh;
+        }
+        
+        /* Header styling */
+        .page-header {
+            background: linear-gradient(135deg, var(--derivco-blue) 0%, var(--derivco-cyan) 100%);
+            color: #1a202c;
+        }
+        
+        /* Card design */
+        .clean-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0, 66, 137, 0.08);
+            transition: all 0.3s ease;
+        }
+        
+        .clean-card:hover {
+            box-shadow: 0 8px 24px rgba(0, 66, 137, 0.12);
+            transform: translateY(-2px);
+        }
+        
+        /* Stat cards */
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 66, 137, 0.08);
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            box-shadow: 0 8px 16px rgba(0, 66, 137, 0.12);
+            transform: translateY(-1px);
+        }
+        
+        /* Status indicators */
+        .status-active { background: #10b981; }
+        .status-learning { background: #f59e0b; }
+        .status-development { background: #3b82f6; }
+        
+        /* Pulse animation */
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        /* Custom buttons */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--derivco-blue) 0%, var(--derivco-cyan) 100%);
+            color: #1a202c;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 66, 137, 0.3);
+        }
+        
+        /* KPI progress bars */
+        .kpi-progress {
+            height: 8px;
+            border-radius: 4px;
+            background: #e5e7eb;
+            overflow: hidden;
+        }
+        
+        .kpi-progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            background: linear-gradient(90deg, var(--derivco-blue) 0%, var(--derivco-cyan) 100%);
+        }
+        
+        /* Tab navigation */
+        .tab-button {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .tab-button.active {
+            background: var(--derivco-blue-light);
+            color: var(--derivco-blue);
+        }
+        
+        /* Heatmap cells */
+        .heatmap-cell {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        /* Risk indicators */
+        .risk-low { background: #dcfce7; color: #166534; }
+        .risk-medium { background: #fef3c7; color: #92400e; }
+        .risk-high { background: #fee2e2; color: #991b1b; }
+        
+        /* Glass morphism effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Camera feed styling */
+        .camera-feed {
+            position: relative;
+            background: #1a252f;
+            border-radius: 8px;
+            overflow: hidden;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .scan-line {
+            position: absolute;
+            height: 2px;
+            width: 100%;
+            background: rgba(0, 191, 255, 0.5);
+            top: 0;
+            animation: scan 3s linear infinite;
+        }
+        
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+        
+        /* Shelf visualization */
+        .shelf-visual {
+            height: 100px;
+            background: white;
+            border-radius: 6px;
+            position: relative;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+        
+        .shelf-level {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--success);
+            transition: height 0.5s ease;
+        }
+        
+        .fill-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, transparent 0%, rgba(255,255,255,0.3) 100%);
+        }
+        
+        /* Floor plan styling */
+        .floor-plan {
+            position: relative;
+            background: #f8f9fa;
+            border-radius: 8px;
+            height: 300px;
+            overflow: hidden;
+        }
+        
+        .asset-marker {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+        }
+        
+        .asset-tooltip {
+            position: absolute;
+            background: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            font-size: 12px;
+            z-index: 10;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .asset-marker:hover + .asset-tooltip {
+            opacity: 1;
+        }
+        
+        /* Tab content styling */
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Upload area styling */
+        .upload-area {
+            border: 2px dashed #cbd5e0;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-area:hover {
+            border-color: var(--derivco-blue);
+            background-color: var(--derivco-blue-light);
+        }
+        
+        /* Building camera view */
+        .building-view {
+            position: relative;
+            background: #2d3748;
+            border-radius: 8px;
+            height: 400px;
+            overflow: hidden;
+        }
+        
+        .floor-selector {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            z-index: 20;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 0.5rem;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="text-xl font-semibold text-gray-900">Derivco Facilities</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md">Home</a>
+                    <a href="/inventory" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md">Inventory</a>
+                    <a href="/signout/register" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md">Sign-Out</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold mb-2">Live Storeroom Visuals</h1>
+                    <p class="text-lg opacity-90">Real-time monitoring and inventory management system</p>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <div class="glass px-4 py-2 rounded-lg">
+                        <div class="text-sm">Last updated: <span id="current-time">Just now</span></div>
+                    </div>
+                    <div class="bg-white bg-opacity-20 px-4 py-2 rounded-lg flex items-center">
+                        <span class="w-2 h-2 bg-red-500 rounded-full mr-2 animate-pulse"></span>
+                        <div class="text-sm">LIVE SYSTEM</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Storeroom Selector -->
+            <div class="flex space-x-4 mt-8">
+                <button id="fp1-btn" class="px-6 py-3 rounded-lg font-medium text-white bg-white bg-opacity-20 backdrop-blur-sm border border-white border-opacity-30">
+                    <i class="fas fa-warehouse mr-2"></i> FP1: Tools & Materials
+                </button>
+                <button id="fp2-btn" class="px-6 py-3 rounded-lg font-medium text-white bg-white bg-opacity-10 backdrop-blur-sm border border-white border-opacity-20">
+                    <i class="fas fa-couch mr-2"></i> FP2: Assets & Furniture
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Tab Navigation -->
+        <div class="flex space-x-2 mb-8 border-b border-gray-200">
+            <button class="tab-button active" data-tab="live-feeds">Live Feeds</button>
+            <button class="tab-button" data-tab="floor-plans">Floor Plans</button>
+            <button class="tab-button" data-tab="inventory">Inventory</button>
+            <button class="tab-button" data-tab="analytics">Analytics</button>
+            <button class="tab-button" data-tab="settings">Settings</button>
+        </div>
+
+        <!-- Live Feeds Content -->
+        <div id="live-feeds-content" class="tab-content active">
+            <!-- Key Metrics -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="stat-card">
+                    <div class="flex items-center">
+                        <div class="rounded-xl w-12 h-12 flex items-center justify-center mr-4" style="background: var(--derivco-blue-light); color: var(--derivco-blue);">
+                            <i class="fas fa-video text-lg"></i>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-gray-900">6</div>
+                            <div class="text-sm text-gray-600">Active Cameras</div>
+                        </div>
+                    </div>
+                    <div class="text-xs mt-2 text-green-600">
+                        <i class="fas fa-check-circle mr-1"></i> All operational
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="flex items-center">
+                        <div class="rounded-xl w-12 h-12 flex items-center justify-center mr-4" style="background: var(--derivco-cyan-light); color: var(--derivco-cyan);">
+                            <i class="fas fa-eye text-lg"></i>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-gray-900" id="live-viewers">5</div>
+                            <div class="text-sm text-gray-600">Live Viewers</div>
+                        </div>
+                    </div>
+                    <div class="text-xs mt-2 text-blue-600">
+                        <i class="fas fa-users mr-1"></i> 3 in FP1, 2 in FP2
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="flex items-center">
+                        <div class="rounded-xl w-12 h-12 flex items-center justify-center mr-4" style="background: var(--derivco-blue-light); color: var(--derivco-blue);">
+                            <i class="fas fa-boxes text-lg"></i>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-gray-900">1,247</div>
+                            <div class="text-sm text-gray-600">Total Items</div>
+                        </div>
+                    </div>
+                    <div class="text-xs mt-2 text-gray-600">
+                        842 in FP1, 405 in FP2
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="flex items-center">
+                        <div class="rounded-xl w-12 h-12 flex items-center justify-center mr-4 pulse-animation" style="background: var(--derivco-cyan-light); color: var(--derivco-cyan);">
+                            <i class="fas fa-bolt text-lg"></i>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-green-600">Active</div>
+                            <div class="text-sm text-gray-600">System Status</div>
+                        </div>
+                    </div>
+                    <div class="text-xs mt-2 text-green-600">
+                        <i class="fas fa-shield-alt mr-1"></i> Secure
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Dashboard Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+                <!-- Live Camera Feeds -->
+                <div class="clean-card p-6 lg:col-span-2">
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="flex items-center">
+                            <div class="rounded-lg w-10 h-10 flex items-center justify-center mr-3" style="background: var(--derivco-blue-light); color: var(--derivco-blue);">
+                                <i class="fas fa-video text-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-900">Live Camera Feeds</h3>
+                                <p class="text-sm text-gray-600">Real-time monitoring of FP1 Storeroom</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button class="px-3 py-1 rounded-md text-sm font-medium" style="background: var(--derivco-blue-light); color: var(--derivco-blue);">
+                                <i class="fas fa-expand mr-1"></i> Fullscreen
+                            </button>
+                            <button class="px-3 py-1 rounded-md text-sm font-medium bg-gray-100 text-gray-700">
+                                <i class="fas fa-cog mr-1"></i> Settings
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div class="camera-feed">
+                            <div class="scan-line"></div>
+                            <div class="absolute top-4 left-4 text-white text-sm font-medium bg-black bg-opacity-50 px-2 py-1 rounded">
+                                CAM 1: Main Entrance
+                            </div>
+                            <div class="absolute bottom-4 left-4 text-white text-xs bg-black bg-opacity-50 px-2 py-1 rounded">
+                                <i class="fas fa-circle text-red-500 mr-1"></i> LIVE
+                            </div>
+                        </div>
+                        <div class="camera-feed">
+                            <div class="scan-line"></div>
+                            <div class="absolute top-4 left-4 text-white text-sm font-medium bg-black bg-opacity-50 px-2 py-1 rounded">
+                                CAM 2: Tool Racks
+                            </div>
+                            <div class="absolute bottom-4 left-4 text-white text-xs bg-black bg-opacity-50 px-2 py-1 rounded">
+                                <i class="fas fa-circle text-red-500 mr-1"></i> LIVE
+                            </div>
+                        </div>
+                        <div class="camera-feed">
+                            <div class="scan-line"></div>
+                            <div class="absolute top-4 left-4 text-white text-sm font-medium bg-black bg-opacity-50 px-2 py-1 rounded">
+                                CAM 3: Storage Aisle
+                            </div>
+                            <div class="absolute bottom-4 left-4 text-white text-xs bg-black bg-opacity-50 px-2 py-1 rounded">
+                                <i class="fas fa-circle text-red-500 mr-1"></i> LIVE
+                            </div>
+                        </div>
+                        <div class="camera-feed">
+                            <div class="scan-line"></div>
+                            <div class="absolute top-4 left-4 text-white text-sm font-medium bg-black bg-opacity-50 px-2 py-1 rounded">
+                                CAM 4: Exit Point
+                            </div>
+                            <div class="absolute bottom-4 left-4 text-white text-xs bg-black bg-opacity-50 px-2 py-1 rounded">
+                                <i class="fas fa-circle text-red-500 mr-1"></i> LIVE
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-between items-center">
+                        <div class="text-sm text-gray-600">
+                            <i class="fas fa-info-circle mr-1"></i> 4 of 6 cameras shown
+                        </div>
+                        <button class="text-sm font-medium" style="color: var(--derivco-blue);">
+                            View All Cameras <i class="fas fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Storeroom Status -->
+                <div class="clean-card p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="flex items-center">
+                            <div class="rounded-lg w-10 h-10 flex items-center justify-center mr-3" style="background: var(--derivco-cyan-light); color: var(--derivco-cyan);">
+                                <i class="fas fa-warehouse text-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-900">Storeroom Status</h3>
+                                <p class="text-sm text-gray-600">FP1 Tools & Materials Inventory</p>
+                            </div>
+                        </div>
+                        <button class="text-sm font-medium" style="color: var(--derivco-cyan);">Details</button>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-gray-600">Total Capacity</span>
+                                <span class="font-medium">78%</span>
+                            </div>
+                            <div class="kpi-progress">
+                                <div class="kpi-progress-fill" style="width: 78%"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-gray-600">Tool Availability</span>
+                                <span class="font-medium">92%</span>
+                            </div>
+                            <div class="kpi-progress">
+                                <div class="kpi-progress-fill" style="width: 92%"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-gray-600">Safety Compliance</span>
+                                <span class="font-medium">100%</span>
+                            </div>
+                            <div class="kpi-progress">
+                                <div class="kpi-progress-fill" style="width: 100%"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-gray-600">Checkouts Today</span>
+                                <span class="font-medium">24</span>
+                            </div>
+                            <div class="kpi-progress">
+                                <div class="kpi-progress-fill" style="width: 60%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 pt-4 border-t border-gray-100">
+                        <h4 class="font-semibold text-gray-900 mb-3">Quick Actions</h4>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button class="text-xs py-2 px-3 rounded-md text-center" style="background: var(--derivco-blue-light); color: var(--derivco-blue);">
+                                <i class="fas fa-clipboard-list mr-1"></i> Inventory Report
+                            </button>
+                            <button class="text-xs py-2 px-3 rounded-md text-center" style="background: var(--derivco-cyan-light); color: var(--derivco-cyan);">
+                                <i class="fas fa-bell mr-1"></i> Set Alert
+                            </button>
+                            <button class="text-xs py-2 px-3 rounded-md text-center bg-gray-100 text-gray-700">
+                                <i class="fas fa-history mr-1"></i> View Logs
+                            </button>
+                            <button class="text-xs py-2 px-3 rounded-md text-center bg-gray-100 text-gray-700">
+                                <i class="fas fa-qrcode mr-1"></i> Scan Items
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Floor Plan Visualization -->
+                <div class="clean-card p-6 lg:col-span-2">
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="flex items-center">
+                            <div class="rounded-lg w-10 h-10 flex items-center justify-center mr-3" style="background: var(--derivco-blue-light); color: var(--derivco-blue);">
+                                <i class="fas fa-map text-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-900">Floor Plan Visualization</h3>
+                                <p class="text-sm text-gray-600">FP1 Storeroom - Asset Locations</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button class="text-sm font-medium px-3 py-1 rounded-md bg-gray-100">
+                                <i class="fas fa-search mr-1"></i> Zoom
+                            </button>
+                            <button class="text-sm font-medium px-3 py-1 rounded-md bg-gray-100">
+                                <i class="fas fa-layer-group mr-1"></i> Layers
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="floor-plan">
+                        <!-- Simplified floor plan with asset markers -->
+                        <div class="absolute inset-0 p-4">
+                            <div class="w-full h-full border-2 border-gray-300 rounded-lg relative bg-white">
+                                <!-- Shelving units -->
+                                <div class="absolute w-1/3 h-20 bg-gray-200 border border-gray-300" style="top: 20%; left: 10%;"></div>
+                                <div class="absolute w-1/3 h-20 bg-gray-200 border border-gray-300" style="top: 20%; left: 55%;"></div>
+                                <div class="absolute w-1/3 h-20 bg-gray-200 border border-gray-300" style="top: 50%; left: 10%;"></div>
+                                <div class="absolute w-1/3 h-20 bg-gray-200 border border-gray-300" style="top: 50%; left: 55%;"></div>
+                                
+                                <!-- Asset markers -->
+                                <div class="asset-marker bg-blue-500" style="top: 25%; left: 20%;">
+                                    <div class="asset-tooltip">Power Tools - Aisle 1</div>
+                                </div>
+                                <div class="asset-marker bg-blue-500" style="top: 25%; left: 65%;">
+                                    <div class="asset-tooltip">Hand Tools - Aisle 2</div>
+                                </div>
+                                <div class="asset-marker bg-green-500" style="top: 55%; left: 20%;">
+                                    <div class="asset-tooltip">Safety Equipment - Aisle 3</div>
+                                </div>
+                                <div class="asset-marker bg-green-500" style="top: 55%; left: 65%;">
+                                    <div class="asset-tooltip">Electrical Supplies - Aisle 4</div>
+                                </div>
+                                <div class="asset-marker bg-yellow-500" style="top: 75%; left: 35%;">
+                                    <div class="asset-tooltip">Checkout Station</div>
+                                </div>
+                                <div class="asset-marker bg-red-500" style="top: 10%; left: 35%;">
+                                    <div class="asset-tooltip">Entrance</div>
+                                </div>
+                                <div class="asset-marker bg-red-500" style="top: 85%; left: 80%;">
+                                    <div class="asset-tooltip">Emergency Exit</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="absolute bottom-4 left-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="flex items-center">
+                                    <div class="w-3 h-3 bg-blue-500 rounded-full mr-1"></div>
+                                    <span class="text-xs">Tools</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <div class="w-3 h-3 bg-green-500 rounded-full mr-1"></div>
+                                    <span class="text-xs">Equipment</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <div class="w-3 h-3 bg-yellow-500 rounded-full mr-1"></div>
+                                    <span class="text-xs">Stations</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <div class="w-3 h-3 bg-red-500 rounded-full mr-1"></div>
+                                    <span class="text-xs">Access Points</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shelf Status & Inventory -->
+                <div class="clean-card p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="flex items-center">
+                            <div class="rounded-lg w-10 h-10 flex items-center justify-center mr-3" style="background: var(--derivco-cyan-light); color: var(--derivco-cyan);">
+                                <i class="fas fa-boxes text-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-900">Shelf Status</h3>
+                                <p class="text-sm text-gray-600">Inventory levels by category</p>
+                            </div>
+                        </div>
+                        <button class="text-sm font-medium" style="color: var(--derivco-cyan);">View All</button>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="p-3 rounded-lg border border-gray-200">
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="font-medium text-gray-900">Power Tools</h4>
+                                <span class="text-sm font-medium" style="color: var(--derivco-blue);">78%</span>
+                            </div>
+                            <div class="kpi-progress">
+                                <div class="kpi-progress-fill" style="width: 78%"></div>
+                            </div>
+                            <div class="text-xs text-gray-500 mt-1">Aisle 1, Shelf A-C</div>
+                        </div>
+                        
+                        <div class="p-3 rounded-lg border border-gray-200">
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="font-medium text-gray-900">Hand Tools</h4>
+                                <span class="text-sm font-medium" style="color: var(--derivco-blue);">65%</span>
+                            </div>
+                            <div class="kpi-progress">
+                                <div class="kpi-progress-fill" style="width: 65%"></div>
+                            </div>
+                            <div class="text-xs text-gray-500 mt-1">Aisle 2, Shelf A-D</div>
+                        </div>
+                        
+                        <div class="p-3 rounded-lg border border-gray-200">
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="font-medium text-gray-900">Safety Equipment</h4>
+                                <span class="text-sm font-medium text-green-600">92%</span>
+                            </div>
+                            <div class="kpi-progress">
+                                <div class="kpi-progress-fill bg-green-500" style="width: 92%"></div>
+                            </div>
+                            <div class="text-xs text-gray-500 mt-1">Aisle 3, Shelf A-B</div>
+                        </div>
+                        
+                        <div class="p-3 rounded-lg border border-gray-200">
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="font-medium text-gray-900">Electrical Supplies</h4>
+                                <span class="text-sm font-medium text-yellow-600">45%</span>
+                            </div>
+                            <div class="kpi-progress">
+                                <div class="kpi-progress-fill bg-yellow-500" style="width: 45%"></div>
+                            </div>
+                            <div class="text-xs text-gray-500 mt-1">Aisle 4, Shelf A-C</div>
+                        </div>
+                        
+                        <div class="p-3 rounded-lg border border-gray-200">
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="font-medium text-gray-900">Plumbing Materials</h4>
+                                <span class="text-sm font-medium text-red-600">22%</span>
+                            </div>
+                            <div class="kpi-progress">
+                                <div class="kpi-progress-fill bg-red-500" style="width: 22%"></div>
+                            </div>
+                            <div class="text-xs text-gray-500 mt-1">Aisle 5, Shelf A-B</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity & Alerts -->
+                <div class="clean-card p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="flex items-center">
+                            <div class="rounded-lg w-10 h-10 flex items-center justify-center mr-3" style="background: var(--derivco-blue-light); color: var(--derivco-blue);">
+                                <i class="fas fa-bell text-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-900">Recent Activity</h3>
+                                <p class="text-sm text-gray-600">Alerts and notifications</p>
+                            </div>
+                        </div>
+                        <button class="text-sm font-medium" style="color: var(--derivco-blue);">View All</button>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="p-3 rounded-lg bg-blue-50 border border-blue-200">
+                            <div class="flex items-start">
+                                <div class="rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 bg-blue-500 text-white">
+                                    <i class="fas fa-box text-xs"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-gray-900">Item Checked Out</h4>
+                                    <p class="text-sm text-gray-600">2x Drill Sets from Aisle 1</p>
+                                    <span class="text-xs" style="color: var(--derivco-blue);">2 minutes ago</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="p-3 rounded-lg bg-yellow-50 border border-yellow-200">
+                            <div class="flex items-start">
+                                <div class="rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 bg-yellow-500 text-white">
+                                    <i class="fas fa-exclamation-triangle text-xs"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-gray-900">Low Stock Alert</h4>
+                                    <p class="text-sm text-gray-600">PVC Pipes below minimum level</p>
+                                    <span class="text-xs text-yellow-700">15 minutes ago</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="p-3 rounded-lg bg-green-50 border border-green-200">
+                            <div class="flex items-start">
+                                <div class="rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 bg-green-500 text-white">
+                                    <i class="fas fa-shipping-fast text-xs"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-gray-900">New Delivery</h4>
+                                    <p class="text-sm text-gray-600">Electrical supplies received</p>
+                                    <span class="text-xs text-green-700">1 hour ago</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="p-3 rounded-lg bg-gray-50 border border-gray-200">
+                            <div class="flex items-start">
+                                <div class="rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 bg-gray-500 text-white">
+                                    <i class="fas fa-tasks text-xs"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-gray-900">Inventory Audit</h4>
+                                    <p class="text-sm text-gray-600">Scheduled for tomorrow</p>
+                                    <span class="text-xs text-gray-700">2 hours ago</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="p-3 rounded-lg bg-red-50 border border-red-200">
+                            <div class="flex items-start">
+                                <div class="rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 bg-red-500 text-white">
+                                    <i class="fas fa-video text-xs"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-gray-900">Camera Offline</h4>
+                                    <p class="text-sm text-gray-600">CAM 5 in FP2 needs attention</p>
+                                    <span class="text-xs text-red-700">3 hours ago</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Camera Importance Section -->
+            <div class="clean-card p-6 mb-8">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center">
+                        <div class="rounded-lg w-10 h-10 flex items-center justify-center mr-3" style="background: var(--derivco-cyan-light); color: var(--derivco-cyan);">
+                            <i class="fas fa-shield-alt text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900">Camera System Importance</h3>
+                            <p class="text-sm text-gray-600">How our surveillance system enhances security and operations</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="p-4 rounded-lg" style="background: var(--derivco-blue-light);">
+                        <div class="w-10 h-10 rounded-lg flex items-center justify-center mb-3" style="background: var(--derivco-blue); color: #1a202c;">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <h4 class="font-semibold text-gray-900 mb-2">Theft Prevention</h4>
+                        <p class="text-sm text-gray-600">24/7 monitoring reduces inventory shrinkage by up to 70%</p>
+                    </div>
+                    
+                    <div class="p-4 rounded-lg" style="background: var(--derivco-cyan-light);">
+                        <div class="w-10 h-10 rounded-lg flex items-center justify-center mb-3" style="background: var(--derivco-cyan); color: #1a202c;">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <h4 class="font-semibold text-gray-900 mb-2">Remote Auditing</h4>
+                        <p class="text-sm text-gray-600">Perform inventory checks without physical presence</p>
+                    </div>
+                    
+                    <div class="p-4 rounded-lg bg-gray-100">
+                        <div class="w-10 h-10 rounded-lg flex items-center justify-center mb-3 bg-gray-600 text-white">
+                            <i class="fas fa-history"></i>
+                        </div>
+                        <h4 class="font-semibold text-gray-900 mb-2">Activity Tracking</h4>
+                        <p class="text-sm text-gray-600">Monitor usage patterns to optimize storeroom layout</p>
+                    </div>
+                    
+                    <div class="p-4 rounded-lg bg-gray-100">
+                        <div class="w-10 h-10 rounded-lg flex items-center justify-center mb-3 bg-gray-600 text-white">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <h4 class="font-semibold text-gray-900 mb-2">Safety Compliance</h4>
+                        <p class="text-sm text-gray-600">Ensure proper safety protocols are followed at all times</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Floor Plans Content -->
+        <div id="floor-plans-content" class="tab-content">
+            <div class="clean-card p-6 mb-8">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center">
+                        <div class="rounded-lg w-10 h-10 flex items-center justify-center mr-3" style="background: var(--derivco-blue-light); color: var(--derivco-blue);">
+                            <i class="fas fa-map-marked-alt text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900">Building Floor Plans</h3>
+                            <p class="text-sm text-gray-600">Upload and manage building floor plans</p>
+                        </div>
+                    </div>
+                    <button class="btn-primary px-4 py-2 rounded-lg">
+                        <i class="fas fa-plus mr-2"></i> New Floor Plan
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                    <div class="upload-area">
+                        <i class="fas fa-cloud-upload-alt text-4xl mb-4" style="color: var(--derivco-blue);"></i>
+                        <h4 class="font-semibold text-gray-900 mb-2">Upload Floor Plan</h4>
+                        <p class="text-sm text-gray-600 mb-4">Drag & drop or click to upload PDF, JPG, or PNG files</p>
+                        <button class="px-4 py-2 rounded-lg text-sm font-medium" style="background: var(--derivco-blue-light); color: var(--derivco-blue);">
+                            <i class="fas fa-upload mr-2"></i> Select Files
+                        </button>
+                    </div>
+
+                    <div class="clean-card p-4">
+                        <div class="h-40 bg-gray-200 rounded-lg mb-3 flex items-center justify-center">
+                            <i class="fas fa-building text-3xl text-gray-500"></i>
+                        </div>
+                        <h4 class="font-semibold text-gray-900 mb-1">FP1 - Ground Floor</h4>
+                        <p class="text-xs text-gray-600 mb-3">Uploaded: Jan 15, 2025</p>
+                        <div class="flex justify-between">
+                            <button class="text-xs px-2 py-1 rounded bg-gray-100 text-gray-700">
+                                <i class="fas fa-eye mr-1"></i> View
+                            </button>
+                            <button class="text-xs px-2 py-1 rounded bg-gray-100 text-gray-700">
+                                <i class="fas fa-download mr-1"></i> Download
+                            </button>
+                            <button class="text-xs px-2 py-1 rounded bg-gray-100 text-gray-700">
+                                <i class="fas fa-share-alt mr-1"></i> Share
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="clean-card p-4">
+                        <div class="h-40 bg-gray-200 rounded-lg mb-3 flex items-center justify-center">
+                            <i class="fas fa-building text-3xl text-gray-500"></i>
+                        </div>
+                        <h4 class="font-semibold text-gray-900 mb-1">FP2 - First Floor</h4>
+                        <p class="text-xs text-gray-600 mb-3">Uploaded: Dec 22, 2024</p>
+                        <div class="flex justify-between">
+                            <button class="text-xs px-2 py-1 rounded bg-gray-100 text-gray-700">
+                                <i class="fas fa-eye mr-1"></i> View
+                            </button>
+                            <button class="text-xs px-2 py-1 rounded bg-gray-100 text-gray-700">
+                                <i class="fas fa-download mr-1"></i> Download
+                            </button>
+                            <button class="text-xs px-2 py-1 rounded bg-gray-100 text-gray-700">
+                                <i class="fas fa-share-alt mr-1"></i> Share
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="clean-card p-6">
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">Interactive Floor Plan</h3>
+                    <div class="floor-plan" style="height: 500px;">
+                        <div class="absolute inset-0 p-4">
+                            <div class="w-full h-full border-2 border-gray-300 rounded-lg relative bg-white">
+                                <!-- Building outline -->
+                                <div class="absolute inset-4 border-2 border-gray-400 rounded"></div>
+                                
+                                <!-- Rooms -->
+                                <div class="absolute w-1/4 h-1/3 bg-blue-100 border border-blue-300" style="top: 10%; left: 10%;">
+                                    <div class="text-xs absolute bottom-1 left-1">Reception</div>
+                                </div>
+                                <div class="absolute w-1/4 h-1/3 bg-green-100 border border-green-300" style="top: 10%; left: 40%;">
+                                    <div class="text-xs absolute bottom-1 left-1">Conference</div>
+                                </div>
+                                <div class="absolute w-1/4 h-1/3 bg-yellow-100 border border-yellow-300" style="top: 10%; left: 70%;">
+                                    <div class="text-xs absolute bottom-1 left-1">Kitchen</div>
+                                </div>
+                                <div class="absolute w-1/3 h-1/3 bg-purple-100 border border-purple-300" style="top: 55%; left: 10%;">
+                                    <div class="text-xs absolute bottom-1 left-1">Office A</div>
+                                </div>
+                                <div class="absolute w-1/3 h-1/3 bg-red-100 border border-red-300" style="top: 55%; left: 50%;">
+                                    <div class="text-xs absolute bottom-1 left-1">Office B</div>
+                                </div>
+                                
+                                <!-- Assets -->
+                                <div class="asset-marker bg-blue-500" style="top: 25%; left: 18%;">
+                                    <div class="asset-tooltip">Reception Desk</div>
+                                </div>
+                                <div class="asset-marker bg-green-500" style="top: 25%; left: 50%;">
+                                    <div class="asset-tooltip">Conference Table</div>
+                                </div>
+                                <div class="asset-marker bg-yellow-500" style="top: 25%; left: 82%;">
+                                    <div class="asset-tooltip">Refrigerator</div>
+                                </div>
+                                <div class="asset-marker bg-purple-500" style="top: 70%; left: 22%;">
+                                    <div class="asset-tooltip">Workstation 1</div>
+                                </div>
+                                <div class="asset-marker bg-red-500" style="top: 70%; left: 65%;">
+                                    <div class="asset-tooltip">Workstation 2</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="floor-selector">
+                            <span class="text-sm font-medium">Floor: </span>
+                            <select class="text-sm border rounded px-2 py-1">
+                                <option>Ground Floor</option>
+                                <option>First Floor</option>
+                                <option>Second Floor</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Inventory Content -->
+        <div id="inventory-content" class="tab-content">
+            <div class="clean-card p-6 mb-8">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center">
+                        <div class="rounded-lg w-10 h-10 flex items-center justify-center mr-3" style="background: var(--derivco-blue-light); color: var(--derivco-blue);">
+                            <i class="fas fa-box-open text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900">Inventory Management</h3>
+                            <p class="text-sm text-gray-600">Manage and track all facility assets</p>
+                        </div>
+                    </div>
+                    <button class="btn-primary px-4 py-2 rounded-lg">
+                        <i class="fas fa-plus mr-2"></i> New Item
+                    </button>
+                </div>
+
+                <div class="mb-6">
+                    <div class="flex flex-wrap gap-4 mb-4">
+                        <div class="flex-1 min-w-[200px]">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Search Inventory</label>
+                            <div class="relative">
+                                <input type="text" placeholder="Search items..." class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                                <i class="fas fa-search absolute right-3 top-3 text-gray-400"></i>
+                            </div>
+                        </div>
+                        <div class="min-w-[150px]">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                            <select class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                                <option>All Categories</option>
+                                <option>Tools & Equipment</option>
+                                <option>Furniture</option>
+                                <option>Electronics</option>
+                                <option>Supplies</option>
+                            </select>
+                        </div>
+                        <div class="min-w-[150px]">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                            <select class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                                <option>All Status</option>
+                                <option>Available</option>
+                                <option>In Use</option>
+                                <option>Maintenance</option>
+                                <option>Retired</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Updated</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 h-10 w-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                            <i class="fas fa-wrench text-blue-600"></i>
+                                        </div>
+                                        <div class="ml-4">
+                                            <div class="text-sm font-medium text-gray-900">Cordless Drill Set</div>
+                                            <div class="text-sm text-gray-500">#INV-7852</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Tools & Equipment</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">FP1, Aisle 3, Shelf B</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Available</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2025-01-20</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <a href="#" class="text-blue-600 hover:text-blue-900 mr-3">Edit</a>
+                                    <a href="#" class="text-red-600 hover:text-red-900">Delete</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 h-10 w-10 bg-green-100 rounded-lg flex items-center justify-center">
+                                            <i class="fas fa-couch text-green-600"></i>
+                                        </div>
+                                        <div class="ml-4">
+                                            <div class="text-sm font-medium text-gray-900">Ergonomic Office Chair</div>
+                                            <div class="text-sm text-gray-500">#INV-6391</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Furniture</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">FP2, Section 2, Row 5</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">In Use</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2025-01-18</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <a href="#" class="text-blue-600 hover:text-blue-900 mr-3">Edit</a>
+                                    <a href="#" class="text-red-600 hover:text-red-900">Delete</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 h-10 w-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                                            <i class="fas fa-tv text-purple-600"></i>
+                                        </div>
+                                        <div class="ml-4">
+                                            <div class="text-sm font-medium text-gray-900">55" Conference Display</div>
+                                            <div class="text-sm text-gray-500">#INV-2247</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Electronics</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">FP1, Aisle 1, Shelf C</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Maintenance</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2025-01-15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <a href="#" class="text-blue-600 hover:text-blue-900 mr-3">Edit</a>
+                                    <a href="#" class="text-red-600 hover:text-red-900">Delete</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Content -->
+        <div id="analytics-content" class="tab-content">
+            <div class="clean-card p-6 mb-8">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center">
+                        <div class="rounded-lg w-10 h-10 flex items-center justify-center mr-3" style="background: var(--derivco-blue-light); color: var(--derivco-blue);">
+                            <i class="fas fa-chart-line text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900">Inventory Analytics</h3>
+                            <p class="text-sm text-gray-600">Data insights and performance metrics</p>
+                        </div>
+                    </div>
+                    <div class="flex space-x-2">
+                        <select class="text-sm border border-gray-300 rounded-lg px-3 py-2">
+                            <option>Last 7 Days</option>
+                            <option>Last 30 Days</option>
+                            <option>Last 90 Days</option>
+                            <option>Last Year</option>
+                        </select>
+                        <button class="text-sm font-medium px-3 py-2 rounded-lg bg-gray-100 text-gray-700">
+                            <i class="fas fa-download mr-1"></i> Export
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                    <div class="stat-card">
+                        <div class="flex items-center">
+                            <div class="rounded-xl w-12 h-12 flex items-center justify-center mr-4" style="background: var(--derivco-blue-light); color: var(--derivco-blue);">
+                                <i class="fas fa-boxes text-lg"></i>
+                            </div>
+                            <div>
+                                <div class="text-2xl font-bold text-gray-900">1,247</div>
+                                <div class="text-sm text-gray-600">Total Items</div>
+                            </div>
+                        </div>
+                        <div class="text-xs mt-2 text-green-600">
+                            <i class="fas fa-arrow-up mr-1"></i> 5.2% from last month
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="flex items-center">
+                            <div class="rounded-xl w-12 h-12 flex items-center justify-center mr-4" style="background: var(--derivco-cyan-light); color: var(--derivco-cyan);">
+                                <i class="fas fa-shopping-cart text-lg"></i>
+                            </div>
+                            <div>
+                                <div class="text-2xl font-bold text-gray-900">327</div>
+                                <div class="text-sm text-gray-600">Monthly Checkouts</div>
+                            </div>
+                        </div>
+                        <div class="text-xs mt-2 text-green-600">
+                            <i class="fas fa-arrow-up mr-1"></i> 12.7% from last month
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="flex items-center">
+                            <div class="rounded-xl w-12 h-12 flex items-center justify-center mr-4" style="background: var(--derivco-blue-light); color: var(--derivco-blue);">
+                                <i class="fas fa-tools text-lg"></i>
+                            </div>
+                            <div>
+                                <div class="text-2xl font-bold text-gray-900">23</div>
+                                <div class="text-sm text-gray-600">Maintenance Required</div>
+                            </div>
+                        </div>
+                        <div class="text-xs mt-2 text-red-600">
+                            <i class="fas fa-arrow-up mr-1"></i> 3.4% from last month
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="flex items-center">
+                            <div class="rounded-xl w-12 h-12 flex items-center justify-center mr-4" style="background: var(--derivco-cyan-light); color: var(--derivco-cyan);">
+                                <i class="fas fa-money-bill-wave text-lg"></i>
+                            </div>
+                            <div>
+                                <div class="text-2xl font-bold text-gray-900">R42,380</div>
+                                <div class="text-sm text-gray-600">Monthly Savings</div>
+                            </div>
+                        </div>
+                        <div class="text-xs mt-2 text-green-600">
+                            <i class="fas fa-arrow-up mr-1"></i> 8.1% from last month
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <div class="clean-card p-4">
+                        <h4 class="font-semibold text-gray-900 mb-4">Checkout Trends</h4>
+                        <div class="h-64 bg-gray-100 rounded-lg flex items-center justify-center">
+                            <p class="text-gray-500">Checkout trend chart visualization</p>
+                        </div>
+                    </div>
+                    <div class="clean-card p-4">
+                        <h4 class="font-semibold text-gray-900 mb-4">Category Distribution</h4>
+                        <div class="h-64 bg-gray-100 rounded-lg flex items-center justify-center">
+                            <p class="text-gray-500">Category distribution chart visualization</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="clean-card p-6">
+                    <h4 class="font-semibold text-gray-900 mb-4">Utilization Forecast</h4>
+                    <div class="h-72 bg-gray-100 rounded-lg flex items-center justify-center">
+                        <p class="text-gray-500">Utilization forecast chart visualization</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Content -->
+        <div id="settings-content" class="tab-content">
+            <div class="clean-card p-6 mb-8">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center">
+                        <div class="rounded-lg w-10 h-10 flex items-center justify-center mr-3" style="background: var(--derivco-blue-light); color: var(--derivco-blue);">
+                            <i class="fas fa-cog text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900">System Settings</h3>
+                            <p class="text-sm text-gray-600">Configure your inventory management system</p>
+                        </div>
+                    </div>
+                    <button class="btn-primary px-4 py-2 rounded-lg">
+                        <i class="fas fa-save mr-2"></i> Save Changes
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                    <div class="lg:col-span-2">
+                        <div class="space-y-6">
+                            <div>
+                                <h4 class="font-semibold text-gray-900 mb-3">General Settings</h4>
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">System Name</label>
+                                        <input type="text" value="Derivco Facilities Management" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Time Zone</label>
+                                        <select class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                                            <option>(GMT+2) South Africa Standard Time</option>
+                                            <option>(GMT+1) West Africa Time</option>
+                                            <option>(GMT) Greenwich Mean Time</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Date Format</label>
+                                        <select class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                                            <option>DD/MM/YYYY</option>
+                                            <option>MM/DD/YYYY</option>
+                                            <option>YYYY-MM-DD</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h4 class="font-semibold text-gray-900 mb-3">Notification Settings</h4>
+                                <div class="space-y-3">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <div class="font-medium text-gray-900">Email Notifications</div>
+                                            <div class="text-sm text-gray-600">Receive alerts via email</div>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" class="sr-only peer" checked>
+                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                        </label>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <div class="font-medium text-gray-900">SMS Notifications</div>
+                                            <div class="text-sm text-gray-600">Receive alerts via SMS</div>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" class="sr-only peer">
+                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                        </label>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <div class="font-medium text-gray-900">Low Stock Alerts</div>
+                                            <div class="text-sm text-gray-600">Get notified when stock is low</div>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" class="sr-only peer" checked>
+                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="font-semibold text-gray-900 mb-3">System Information</h4>
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <div class="space-y-3">
+                                <div>
+                                    <div class="text-sm font-medium text-gray-500">Version</div>
+                                    <div class="text-lg font-semibold text-gray-900">v2.4.1</div>
+                                </div>
+                                <div>
+                                    <div class="text-sm font-medium text-gray-500">Last Updated</div>
+                                    <div class="text-lg font-semibold text-gray-900">2025-01-15</div>
+                                </div>
+                                <div>
+                                    <div class="text-sm font-medium text-gray-500">Storage Used</div>
+                                    <div class="text-lg font-semibold text-gray-900">3.2 GB of 10 GB</div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2.5 mt-1">
+                                        <div class="bg-blue-600 h-2.5 rounded-full" style="width: 32%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="text-sm font-medium text-gray-500">Active Users</div>
+                                    <div class="text-lg font-semibold text-gray-900">14</div>
+                                </div>
+                            </div>
+                            <button class="w-full mt-4 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium">
+                                <i class="fas fa-sync-alt mr-2"></i> Check for Updates
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border-t border-gray-200 pt-6">
+                    <h4 class="font-semibold text-gray-900 mb-4">Danger Zone</h4>
+                    <div class="flex flex-wrap gap-4">
+                        <button class="px-4 py-2 bg-red-100 text-red-700 rounded-lg font-medium">
+                            <i class="fas fa-trash-alt mr-2"></i> Delete Account
+                        </button>
+                        <button class="px-4 py-2 bg-yellow-100 text-yellow-700 rounded-lg font-medium">
+                            <i class="fas fa-ban mr-2"></i> Deactivate System
+                        </button>
+                        <button class="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg font-medium">
+                            <i class="fas fa-file-export mr-2"></i> Export All Data
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white text-white py-8 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <div class="mb-4">
+                    <h4 class="text-lg font-semibold mb-2">Designed by Sifiso Cyprian Shezi</h4>
+                    <p class="text-gray-400">Facilities Assistant Level 1 — Derivco Durban | Transforming facility management through innovation</p>
+                </div>
+                <div class="border-t border-gray-700 pt-4">
+                    <p class="text-sm text-gray-500">&copy; 2025 Derivco Facilities Management System. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    // Update current time
+    function updateCurrentTime() {
+        const now = new Date();
+        const options = { 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric',
+            hour: '2-digit', 
+            minute: '2-digit'
+        };
+        document.getElementById('current-time').textContent = now.toLocaleDateString('en-US', options);
+    }
+    
+    updateCurrentTime();
+    setInterval(updateCurrentTime, 60000);
+    
+    // Simulate live viewer count changes
+    function updateViewerCount() {
+        const viewerElement = document.getElementById('live-viewers');
+        let viewers = parseInt(viewerElement.textContent);
+        viewers += Math.floor(Math.random() * 3) - 1;
+        viewers = Math.max(3, Math.min(viewers, 8));
+        viewerElement.textContent = viewers;
+    }
+    
+    setInterval(updateViewerCount, 10000);
+    
+    // Tab navigation functionality
+    function initializeTabs() {
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        tabButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const tabName = this.getAttribute('data-tab');
+                
+                // Remove active class from all buttons and contents
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+                
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                // Show corresponding content
+                const targetContent = document.getElementById(tabName + '-content');
+                if (targetContent) {
+                    targetContent.classList.add('active');
+                }
+            });
+        });
+    }
+    
+    // Storeroom selector functionality
+    document.getElementById('fp1-btn').addEventListener('click', function() {
+        document.querySelectorAll('.page-header button').forEach(btn => {
+            btn.style.background = 'rgba(255, 255, 255, 0.1)';
+            btn.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+        });
+        this.style.background = 'rgba(255, 255, 255, 0.2)';
+        this.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+        
+        // Update camera feeds and content for FP1
+        document.querySelector('[class*="text-xl"]').textContent = 'FP1: Tools & Materials Inventory';
+        document.querySelector('.clean-card p-6 .text-sm').textContent = 'Real-time monitoring of FP1 Storeroom';
+        
+        // Show notification
+        showNotification('Switched to FP1: Tools & Materials view');
+    });
+    
+    document.getElementById('fp2-btn').addEventListener('click', function() {
+        document.querySelectorAll('.page-header button').forEach(btn => {
+            btn.style.background = 'rgba(255, 255, 255, 0.1)';
+            btn.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+        });
+        this.style.background = 'rgba(255, 255, 255, 0.2)';
+        this.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+        
+        // Update camera feeds and content for FP2
+        document.querySelector('[class*="text-xl"]').textContent = 'FP2: Assets & Furniture Inventory';
+        document.querySelector('.clean-card p-6 .text-sm').textContent = 'Real-time monitoring of FP2 Storeroom';
+        
+        // Show notification
+        showNotification('Switched to FP2: Assets & Furniture view');
+    });
+    
+    // Notification function
+    function showNotification(message) {
+        const notification = document.createElement('div');
+        notification.className = 'fixed top-4 right-4 bg-blue-600 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+        notification.innerHTML = `<i class="fas fa-info-circle mr-2"></i>${message}`;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    }
+    
+    // Initialize tabs
+    initializeTabs();
+    </script>
+</body>
+</html>

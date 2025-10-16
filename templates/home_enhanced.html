@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Derivco Facilities Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Premium Enterprise Theme */
+        :root {
+            --derivco-blue: #004289;
+            --derivco-cyan: #00bfff;
+            --derivco-teal: #00d4aa;
+            --derivco-light: #f8fafc;
+            --derivco-gray: #64748b;
+            --text-primary: #1a202c;
+            --text-secondary: #4a5568;
+            --success: #059669;
+            --warning: #d97706;
+            --border-light: #e2e8f0;
+            --shadow-light: rgba(0, 66, 137, 0.08);
+            --shadow-hover: rgba(0, 66, 137, 0.15);
+            --gradient-primary: linear-gradient(135deg, #004289 0%, #00bfff 100%);
+            --gradient-secondary: linear-gradient(135deg, #00bfff 0%, #00d4aa 100%);
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: var(--derivco-light);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Premium Navigation */
+        .nav-back {
+            position: fixed;
+            top: 1.5rem;
+            right: 2rem;
+            z-index: 100;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            background: white;
+            color: var(--derivco-blue);
+            padding: 0.85rem 1.5rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-light);
+            box-shadow: 0 6px 20px rgba(0, 66, 137, 0.12);
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+
+        .back-button:hover {
+            background: var(--derivco-blue);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 66, 137, 0.2);
+        }
+
+        .back-button i {
+            margin-right: 0.5rem;
+        }
+
+        /* Premium Hero Section */
+        .hero-overlay {
+            position: relative;
+            background: linear-gradient(135deg, #004289 0%, #0066cc 50%, #00bfff 100%);
+            margin-bottom: 2rem;
+            border-radius: 0 0 24px 24px;
+            box-shadow: 0 10px 30px rgba(0, 66, 137, 0.15);
+            overflow: hidden;
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.15;
+            filter: brightness(0.8);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            padding: 4rem 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1.1;
+            color: white;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+            letter-spacing: -0.5px;
+        }
+
+        .hero-subtitle {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-top: 0.5rem;
+            color: rgba(255, 255, 255, 0.9);
+            opacity: 0.95;
+            letter-spacing: 0.5px;
+        }
+
+        .hero-quote {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            border-left: 4px solid white;
+            padding: 1.75rem;
+            border-radius: 16px;
+            margin-top: 2.5rem;
+            font-style: italic;
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 2.5rem auto 0;
+            color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero-quote footer {
+            margin-top: 1.2rem;
+            font-style: normal;
+            font-size: 0.95rem;
+            opacity: 0.9;
+            font-weight: 600;
+        }
+
+        /* Animated Stats */
+        .quick-stats {
+            max-width: 1200px;
+            margin: -4rem auto 3rem;
+            padding: 0 1.5rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .stat-item {
+            background: white;
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            transition: all 0.4s ease;
+            box-shadow: 0 6px 20px var(--shadow-light);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .stat-item:hover::before {
+            transform: scaleX(1);
+        }
+
+        .stat-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px var(--shadow-hover);
+        }
+
+        .stat-number {
+            font-size: 2.75rem;
+            font-weight: 800;
+            color: var(--derivco-blue);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        /* Premium Services Grid */
+        .services-grid {
+            max-width: 1200px;
+            margin: 0 auto 4rem;
+            padding: 0 1.5rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            font-weight: 800;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-header h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--gradient-primary);
+            border-radius: 2px;
+        }
+
+        .section-header p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .services-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .service-card {
+            background: white;
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            padding: 1.75rem;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 6px 20px var(--shadow-light);
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .service-card.primary::before {
+            background: var(--derivco-blue);
+        }
+
+        .service-card.secondary::before {
+            background: var(--derivco-cyan);
+        }
+
+        .service-card.tertiary::before {
+            background: var(--success);
+        }
+
+        .service-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .service-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px var(--shadow-hover);
+        }
+
+        .service-card.primary {
+            border-top: 4px solid var(--derivco-blue);
+        }
+
+        .service-card.secondary {
+            border-top: 4px solid var(--derivco-cyan);
+        }
+
+        .service-card.tertiary {
+            border-top: 4px solid var(--success);
+        }
+
+        .service-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--gradient-primary);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            color: white;
+            font-size: 1.6rem;
+            transition: all 0.3s ease;
+        }
+
+        .service-card:hover .service-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .service-content h3 {
+            font-size: 1.4rem;
+            margin-bottom: 0.85rem;
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        .service-content p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .service-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1.2rem;
+        }
+
+        .feature-tag {
+            background: var(--derivco-light);
+            color: var(--derivco-blue);
+            padding: 0.45rem 0.9rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: 1px solid var(--border-light);
+            transition: all 0.3s ease;
+        }
+
+        .service-card:hover .feature-tag {
+            background: var(--derivco-blue);
+            color: white;
+        }
+
+        .service-arrow {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            color: var(--derivco-cyan);
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .service-card:hover .service-arrow {
+            transform: translateX(6px);
+            color: var(--derivco-blue);
+        }
+
+        /* Executive Card - Special Styling */
+        .service-card.executive {
+            grid-column: span 2;
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+        }
+
+        .service-card.executive::before {
+            display: none;
+        }
+
+        .service-card.executive .service-icon {
+            background: rgba(255, 255, 255, 0.2);
+            width: 80px;
+            height: 80px;
+            font-size: 2rem;
+        }
+
+        .service-card.executive .service-content h3,
+        .service-card.executive .service-content p {
+            color: white;
+        }
+
+        .service-card.executive .feature-tag {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .service-card.executive:hover .feature-tag {
+            background: white;
+            color: var(--derivco-blue);
+        }
+
+        .service-card.executive .service-arrow {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .service-card.executive:hover .service-arrow {
+            color: white;
+        }
+
+        /* Premium Compliance Alert */
+        .compliance-alert {
+            max-width: 1200px;
+            margin: 0 auto 4rem;
+            padding: 0 1.5rem;
+        }
+
+        .alert-container {
+            background: white;
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            padding: 1.75rem;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 6px 20px var(--shadow-light);
+            border-top: 4px solid #ef4444;
+        }
+
+        .alert-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: #ef4444;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .alert-container:hover::before {
+            transform: scaleX(1);
+        }
+
+        .alert-container:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px var(--shadow-hover);
+        }
+
+        .alert-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            color: white;
+            font-size: 1.6rem;
+            transition: all 0.3s ease;
+        }
+
+        .alert-container:hover .alert-icon {
+            transform: scale(1.1);
+        }
+
+        .alert-content {
+            flex: 1;
+        }
+
+        .alert-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.85rem;
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        .alert-content p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .alert-metrics {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 1.2rem;
+        }
+
+        .alert-metrics .metric {
+            background: var(--derivco-light);
+            color: var(--derivco-blue);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: 1px solid var(--border-light);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .alert-container:hover .metric {
+            background: var(--derivco-blue);
+            color: white;
+        }
+
+        .alert-metrics .metric-value {
+            font-weight: 700;
+        }
+
+        .alert-metrics .metric-value.critical {
+            color: #ef4444;
+        }
+
+        .alert-container:hover .metric-value.critical {
+            color: white;
+        }
+
+        .alert-metrics .metric-label {
+            font-size: 0.75rem;
+            display: block;
+            margin-top: 0.2rem;
+        }
+
+        .alert-action {
+            margin-top: 1.5rem;
+        }
+
+        .alert-action .btn {
+            background: #FFD700;
+            color: #000;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            border: none;
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+        }
+
+        .alert-action .btn:hover {
+            background: #e6b800;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(255, 215, 0, 0.4);
+        }
+
+        .alert-action .btn i {
+            margin-right: 0.5rem;
+        }
+
+        .alert-arrow {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            color: var(--derivco-cyan);
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .alert-container:hover .alert-arrow {
+            transform: translateX(6px);
+            color: var(--derivco-blue);
+        }
+
+        /* Premium Footer */
+        footer {
+            background: linear-gradient(135deg, var(--derivco-blue) 0%, var(--derivco-cyan) 100%);
+            text-align: center;
+            padding: 3rem 2rem;
+            margin-top: 3rem;
+            color: white;
+            font-size: 0.95rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, white 0%, rgba(255,255,255,0.5) 50%, white 100%);
+        }
+
+        footer p {
+            margin: 0.75rem 0;
+            line-height: 1.6;
+        }
+
+        footer p:first-child {
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        footer p:last-child {
+            opacity: 0.8;
+            font-size: 0.9rem;
+            margin-top: 1.5rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .hero-title {
+                font-size: 3rem;
+            }
+            
+            .service-card.executive {
+                grid-column: span 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .services-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .service-card[style*="grid-column: span 2"] {
+                grid-column: span 1;
+            }
+            
+            .alert-container {
+                text-align: left;
+            }
+
+            .alert-icon {
+                margin-bottom: 1rem;
+            }
+
+            .service-features {
+                flex-wrap: wrap;
+            }
+
+            .alert-action {
+                margin-top: 1rem;
+            }
+
+            .alert-arrow {
+                display: none;
+            }
+
+            .nav-back {
+                top: 1rem;
+                right: 1rem;
+            }
+
+            .back-button {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.9rem;
+            }
+
+            .quick-stats {
+                margin-top: -2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+            
+            .section-header h2 {
+                font-size: 2rem;
+            }
+            
+            .stat-item {
+                padding: 1.5rem 1rem;
+            }
+            
+            .stat-number {
+                font-size: 2.25rem;
+            }
+        }
+
+        /* Animation for page load */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .delay-1 {
+            animation-delay: 0.1s;
+        }
+
+        .delay-2 {
+            animation-delay: 0.2s;
+        }
+
+        .delay-3 {
+            animation-delay: 0.3s;
+        }
+
+        .delay-4 {
+            animation-delay: 0.4s;
+        }
+
+        .delay-5 {
+            animation-delay: 0.5s;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Back Button -->
+    <div class="nav-back">
+        <a href="javascript:void(0)" class="back-button" id="backButton">
+            <i class="fas fa-arrow-left"></i> Back
+        </a>
+    </div>
+
+    <!-- Premium Header with Hero Image -->
+    <header class="hero-overlay">
+        <img alt="Modern office environment" class="hero-bg" src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80"/>
+        <div class="hero-content fade-in">
+            <h1 class="hero-title">
+                DERIVCO FACILITIES
+                <span class="hero-subtitle">MANAGEMENT SYSTEM</span>
+            </h1>
+            <blockquote class="hero-quote">
+                <i class="fas fa-quote-left"></i>
+                "Stewardship in facility management ensures sustainable spaces, aligning resources with purpose."
+                <footer>— <strong>Sifiso Shezi</strong>, Facilities Assistant Level 1</footer>
+            </blockquote>
+        </div>
+    </header>
+
+    <!-- Animated Stats -->
+    <section class="quick-stats">
+        <div class="stats-container">
+            <div class="stat-item fade-in delay-1">
+                <div class="stat-number" data-target="2500">0</div>
+                <div class="stat-label">Assets Managed</div>
+            </div>
+            <div class="stat-item fade-in delay-2">
+                <div class="stat-number" data-target="98">0</div>
+                <div class="stat-label">% Uptime</div>
+            </div>
+            <div class="stat-item fade-in delay-3">
+                <div class="stat-number" data-target="24">0</div>
+                <div class="stat-label">7/24 Monitoring</div>
+            </div>
+            <div class="stat-item fade-in delay-4">
+                <div class="stat-number" data-target="15">0</div>
+                <div class="stat-label">Departments Served</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Premium Services Grid -->
+    <section class="services-grid">
+        <div class="section-header">
+            <h2 class="fade-in">Comprehensive Facility Solutions</h2>
+            <p class="fade-in delay-1">Integrated platform for modern facility management</p>
+        </div>
+
+        <div class="services-container">
+            <!-- Executive Administration Portal - Industry First -->
+            <div class="service-card executive fade-in" onclick="location.href='/administration'">
+                <div class="service-icon">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <div class="service-content">
+                    <h3>🏢 Facilities Administration Portal</h3>
+                    <p><strong>Industry First:</strong> Comprehensive executive command center for facilities managers and heads of departments with Power BI-style analytics and strategic oversight</p>
+                    <div class="service-features">
+                        <span class="feature-tag">Executive KPIs</span>
+                        <span class="feature-tag">Strategic Planning</span>
+                        <span class="feature-tag">Power BI Integration</span>
+                        <span class="feature-tag">Risk Management</span>
+                    </div>
+                </div>
+                <div class="service-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </div>
+
+            <!-- Primary Services -->
+            <div class="service-card primary fade-in delay-1" onclick="location.href='/smart-insights'">
+                <div class="service-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <div class="service-content">
+                    <h3>Smart Insights</h3>
+                    <p>AI-powered analytics and IoT monitoring for predictive facility management</p>
+                    <div class="service-features">
+                        <span class="feature-tag">AI Analytics</span>
+                        <span class="feature-tag">IoT Integration</span>
+                    </div>
+                </div>
+                <div class="service-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </div>
+
+            <div class="service-card primary fade-in delay-2" onclick="location.href='/inventory'">
+                <div class="service-icon">
+                    <i class="fas fa-boxes"></i>
+                </div>
+                <div class="service-content">
+                    <h3>Inventory System</h3>
+                    <p>Advanced stock management with real-time tracking and automated alerts</p>
+                    <div class="service-features">
+                        <span class="feature-tag">Real-time</span>
+                        <span class="feature-tag">Automated</span>
+                    </div>
+                </div>
+                <div class="service-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </div>
+
+            <!-- Secondary Services -->
+            <div class="service-card secondary fade-in delay-3" onclick="location.href='/signout/register'">
+                <div class="service-icon">
+                    <i class="fas fa-sign-in-alt"></i>
+                </div>
+                <div class="service-content">
+                    <h3>Equipment Tracking</h3>
+                    <p>Digital sign-out register with compliance monitoring</p>
+                </div>
+            </div>
+
+            <div class="service-card secondary fade-in delay-4" onclick="location.href='/achievements/department'">
+                <div class="service-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="service-content">
+                    <h3>Performance KPIs</h3>
+                    <p>Department analytics and achievement tracking</p>
+                </div>
+            </div>
+
+            <div class="service-card secondary fade-in delay-5" onclick="location.href='/medical'">
+                <div class="service-icon">
+                    <i class="fas fa-medkit"></i>
+                </div>
+                <div class="service-content">
+                    <h3>Medical Services</h3>
+                    <p>Health & safety compliance and incident management</p>
+                </div>
+            </div>
+
+            <!-- Additional Services -->
+            <div class="service-card tertiary fade-in delay-1" onclick="location.href='/methodology'">
+                <div class="service-icon">
+                    <i class="fas fa-user-cog"></i>
+                </div>
+                <div class="service-content">
+                    <h3>Sifiso Methodology</h3>
+                    <p>Best practices and proven frameworks</p>
+                </div>
+            </div>
+
+            <div class="service-card tertiary fade-in delay-2" onclick="location.href='/concierge'">
+                <div class="service-icon">
+                    <i class="fas fa-concierge-bell"></i>
+                </div>
+                <div class="service-content">
+                    <h3>Concierge Services</h3>
+                    <p>Comprehensive support and assistance</p>
+                </div>
+            </div>
+
+            <div class="service-card tertiary fade-in delay-3" onclick="location.href='/facilities/info'">
+                <div class="service-icon">
+                    <i class="fas fa-newspaper"></i>
+                </div>
+                <div class="service-content">
+                    <h3>News & Training</h3>
+                    <p>Latest updates and professional development</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Premium Compliance Alert -->
+    <section class="compliance-alert">
+        <div class="alert-container fade-in delay-4" onclick="location.href='/facilities/compliance'">
+            <div class="alert-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="alert-content">
+                <h3>Facilities Compliance Analysis</h3>
+                <p>Critical operational risks detected - immediate management attention required</p>
+                <div class="service-features">
+                    <span class="feature-tag">88% Work Without WO/REQ</span>
+                    <span class="feature-tag">37% Tools Not Returned</span>
+                    <span class="feature-tag" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border-color: #ef4444;">CRITICAL Risk Level</span>
+                </div>
+                <div class="alert-action">
+                    <a href="/facilities/compliance" class="btn" onclick="event.stopPropagation()">
+                        <i class="fas fa-chart-bar"></i>
+                        View Analysis
+                    </a>
+                </div>
+            </div>
+            <div class="alert-arrow">
+                <i class="fas fa-arrow-right"></i>
+            </div>
+        </div>
+    </section>
+
+    <footer class="fade-in delay-5">
+        <p>Designed by Sifiso Cyprian Shezi</p>
+        <p>Facilities Assistant Level 1 — Derivco Durban | Transforming facility management through innovation</p>
+        <p>&copy; 2025 Derivco Facilities Management System. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animated counters
+            const counters = document.querySelectorAll('.stat-number');
+            const speed = 200;
+    
+            counters.forEach(counter => {
+                const animate = () => {
+                    const value = +counter.getAttribute('data-target');
+                    const data = +counter.innerText;
+                    const time = value / speed;
+    
+                    if (data < value) {
+                        counter.innerText = Math.ceil(data + time);
+                        setTimeout(animate, 1);
+                    } else {
+                        counter.innerText = value;
+                    }
+                };
+    
+                // Intersection Observer for animation trigger
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            animate();
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                });
+    
+                observer.observe(counter);
+            });
+    
+            // Service card interactions
+            const serviceCards = document.querySelectorAll('.service-card, .alert-container');
+            serviceCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-8px)';
+                });
+    
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+
+            // Back button functionality
+            document.getElementById('backButton').addEventListener('click', function() {
+                // Use browser's history to go back
+                if (window.history.length > 1) {
+                    window.history.back();
+                } else {
+                    // If no history, redirect to a default page
+                    window.location.href = '/';
+                }
+            });
+
+            // Add fade-in animation to elements as they come into view
+            const fadeElements = document.querySelectorAll('.fade-in');
+            const fadeObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = 1;
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            });
+
+            fadeElements.forEach(el => {
+                el.style.opacity = 0;
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                fadeObserver.observe(el);
+            });
+        });
+    </script>
+</body>
+</html>

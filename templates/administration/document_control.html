@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Control - Estate Management Office</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --derivco-blue: rgb(0, 66, 137);
+            --derivco-cyan: rgb(0, 191, 255);
+            --derivco-blue-light: rgba(0, 66, 137, 0.1);
+            --derivco-cyan-light: rgba(0, 191, 255, 0.1);
+            --primary-blue: #003366;
+            --secondary-teal: #008080;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            min-height: 100vh;
+            color: #1a202c;
+        }
+
+        /* Header styling */
+        .page-header {
+            background: linear-gradient(135deg, var(--derivco-blue) 0%, var(--derivco-cyan) 100%);
+            color: white;
+            padding: 2rem 0;
+        }
+
+        /* Card design */
+        .clean-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0, 66, 137, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .clean-card:hover {
+            box-shadow: 0 8px 24px rgba(0, 66, 137, 0.12);
+            transform: translateY(-2px);
+        }
+
+        /* Stat cards */
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 66, 137, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            box-shadow: 0 8px 24px rgba(0, 66, 137, 0.12);
+            transform: translateY(-2px);
+        }
+
+        /* Back button */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Status badges */
+        .status-current { background: rgba(34, 197, 94, 0.1); color: #22c55e; }
+        .status-review { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+        .status-expired { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+        .status-draft { background: rgba(156, 163, 175, 0.1); color: #6b7280; }
+        .status-approved { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 16px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Priority indicators */
+        .priority-high { border-left: 4px solid #ef4444; }
+        .priority-medium { border-left: 4px solid #f59e0b; }
+        .priority-low { border-left: 4px solid #10b981; }
+        .priority-urgent { border-left: 4px solid #dc2626; }
+
+        /* Section headers */
+        .section-header {
+            border-bottom: 2px solid var(--derivco-blue);
+            padding-bottom: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--derivco-blue);
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title i {
+            margin-right: 0.75rem;
+            font-size: 1.25rem;
+        }
+
+        /* Action buttons */
+        .action-btn {
+            background: linear-gradient(135deg, var(--derivco-blue) 0%, var(--derivco-cyan) 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 66, 137, 0.3);
+        }
+
+        .action-btn i {
+            margin-right: 0.5rem;
+        }
+
+        /* Document cards */
+        .document-card {
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .document-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 66, 137, 0.08);
+            transform: translateX(5px);
+        }
+
+        /* SharePoint integration */
+        .sharepoint-sync {
+            background: linear-gradient(135deg, #0078d4 0%, #106ebe 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Live indicators */
+        .live-indicator {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+            padding: 0.25rem 0.75rem;
+            border-radius: 16px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .live-indicator::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Chart containers */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+
+        /* Compliance indicators */
+        .compliance-meter {
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+
+        .compliance-fill {
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        /* Office hours indicator */
+        .office-hours {
+            background: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+            border: 1px solid #22c55e;
+            padding: 0.25rem 0.75rem;
+            border-radius: 16px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="page-header">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <a href="/administration" class="back-btn">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Back to Administration Portal
+            </a>
+
+            <div class="text-center">
+                <h1 class="text-4xl font-bold mb-2">📋 Document Control</h1>
+                <p class="text-xl opacity-90">Estate Management Office - Aidan Harris, Estate Manager</p>
+                <p class="text-lg opacity-80 mt-2">SharePoint integration, policy management, compliance records & document workflows</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Estate Manager Dashboard -->
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
+            <div class="stat-card text-center">
+                <div class="text-4xl font-bold text-blue-600 mb-2" id="activeDocuments">1,247</div>
+                <div class="text-gray-600">Active Documents</div>
+                <div class="live-indicator mt-2">
+                    SHAREPOINT SYNC
+                </div>
+            </div>
+            <div class="stat-card text-center">
+                <div class="text-3xl font-bold text-green-600 mb-2" id="complianceRate">94.2</div>
+                <div class="text-gray-600">% Compliance</div>
+                <div class="text-sm text-green-600 mt-1">
+                    <i class="fas fa-check mr-1"></i>Audit Ready
+                </div>
+            </div>
+            <div class="stat-card text-center">
+                <div class="text-3xl font-bold text-orange-600 mb-2" id="pendingReviews">18</div>
+                <div class="text-gray-600">Pending Reviews</div>
+                <div class="text-sm text-orange-600 mt-1">
+                    <i class="fas fa-clock mr-1"></i>This Week
+                </div>
+            </div>
+            <div class="stat-card text-center">
+                <div class="text-3xl font-bold text-purple-600 mb-2" id="policiesActive">156</div>
+                <div class="text-gray-600">Active Policies</div>
+                <div class="text-sm text-purple-600 mt-1">
+                    <i class="fas fa-shield-alt mr-1"></i>Current
+                </div>
+            </div>
+            <div class="stat-card text-center">
+                <div class="text-3xl font-bold text-teal-600 mb-2" id="contractsManaged">42</div>
+                <div class="text-gray-600">Contracts Managed</div>
+                <div class="office-hours mt-1">
+                    DURBAN OFFICE
+                </div>
+            </div>
+        </div>
+
+        <!-- SharePoint Integration Dashboard -->
+        <div class="clean-card p-6 mb-8">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-cloud"></i>
+                    SharePoint Document Management
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Recent Document Activity -->
+                <div class="clean-card p-4">
+                    <h3 class="font-semibold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-file-alt text-blue-600 mr-2"></i>
+                        Recent Document Activity
+                        <div class="sharepoint-sync ml-auto">
+                            <i class="fab fa-microsoft mr-1"></i>Live Sync
+                        </div>
+                    </h3>
+                    <div class="space-y-3 max-h-64 overflow-y-auto">
+                        <div class="document-card priority-high">
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <div class="font-medium">Health & Safety Policy 2025</div>
+                                    <div class="text-sm text-gray-600">Modified by: Neren Kisten → Aidan Harris</div>
+                                </div>
+                                <span class="status-badge status-review">REVIEW</span>
+                            </div>
+                            <div class="flex justify-between items-center text-sm">
+                                <span class="text-gray-600">Version 3.2 - Major updates</span>
+                                <span class="text-orange-600 font-medium">Due: Today 17:00</span>
+                            </div>
+                        </div>
+
+                        <div class="document-card priority-medium">
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <div class="font-medium">Facilities Management SOP</div>
+                                    <div class="text-sm text-gray-600">Created by: Aidan Harris</div>
+                                </div>
+                                <span class="status-badge status-approved">APPROVED</span>
+                            </div>
+                            <div class="flex justify-between items-center text-sm">
+                                <span class="text-gray-600">Standard Operating Procedures v2.1</span>
+                                <span class="text-green-600 font-medium">Published: Yesterday</span>
+                            </div>
+                        </div>
+
+                        <div class="document-card priority-medium">
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <div class="font-medium">Contractor Access Protocols</div>
+                                    <div class="text-sm text-gray-600">Updated by: Brindley Harrington</div>
+                                </div>
+                                <span class="status-badge status-current">CURRENT</span>
+                            </div>
+                            <div class="flex justify-between items-center text-sm">
+                                <span class="text-gray-600">Security clearance procedures</span>
+                                <span class="text-blue-600 font-medium">Last sync: 2 mins ago</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Policy & Compliance Status -->
+                <div class="clean-card p-4">
+                    <h3 class="font-semibold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-shield-alt text-green-600 mr-2"></i>
+                        Policy & Compliance Status
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="p-3 border border-gray-200 rounded">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-medium">Health & Safety Compliance</span>
+                                <span class="text-green-600 font-bold">97%</span>
+                            </div>
+                            <div class="compliance-meter">
+                                <div class="compliance-fill bg-green-500" style="width: 97%"></div>
+                            </div>
+                            <div class="text-xs text-gray-600">Next audit: March 2025</div>
+                        </div>
+
+                        <div class="p-3 border border-gray-200 rounded">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-medium">Environmental Standards</span>
+                                <span class="text-blue-600 font-bold">92%</span>
+                            </div>
+                            <div class="compliance-meter">
+                                <div class="compliance-fill bg-blue-500" style="width: 92%"></div>
+                            </div>
+                            <div class="text-xs text-gray-600">ISO 14001 certification current</div>
+                        </div>
+
+                        <div class="p-3 border border-gray-200 rounded">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-medium">Security Protocols</span>
+                                <span class="text-purple-600 font-bold">89%</span>
+                            </div>
+                            <div class="compliance-meter">
+                                <div class="compliance-fill bg-purple-500" style="width: 89%"></div>
+                            </div>
+                            <div class="text-xs text-gray-600">3 protocols pending review</div>
+                        </div>
+
+                        <div class="p-3 border border-gray-200 rounded">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-medium">Quality Management</span>
+                                <span class="text-orange-600 font-bold">95%</span>
+                            </div>
+                            <div class="compliance-meter">
+                                <div class="compliance-fill bg-orange-500" style="width: 95%"></div>
+                            </div>
+                            <div class="text-xs text-gray-600">ISO 9001 compliant</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contract & Vendor Documentation -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Active Contracts Dashboard -->
+            <div class="clean-card p-6">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-handshake"></i>
+                        Active Contracts Dashboard
+                    </h2>
+                </div>
+                <div class="chart-container">
+                    <canvas id="contractsChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Document Workflow Analytics -->
+            <div class="clean-card p-6">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-chart-line"></i>
+                        Document Workflow Analytics
+                    </h2>
+                </div>
+                <div class="chart-container">
+                    <canvas id="workflowChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estate Management Workflows -->
+        <div class="clean-card p-6 mb-8">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-sitemap"></i>
+                    Estate Management Workflows
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Policy Management -->
+                <div class="clean-card p-4">
+                    <h3 class="font-semibold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-clipboard-list text-blue-600 mr-2"></i>
+                        Policy Management
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="border-l-4 border-blue-500 pl-3 py-2">
+                            <div class="font-medium text-sm">Workplace Safety Policy</div>
+                            <div class="text-xs text-gray-600">Annual review scheduled</div>
+                            <div class="text-xs text-blue-600 mt-1">📅 Next Review: Feb 15</div>
+                        </div>
+                        <div class="border-l-4 border-green-500 pl-3 py-2">
+                            <div class="font-medium text-sm">Environmental Policy</div>
+                            <div class="text-xs text-gray-600">Recently updated & approved</div>
+                            <div class="text-xs text-green-600 mt-1">✓ Current Version: v3.1</div>
+                        </div>
+                        <div class="border-l-4 border-orange-500 pl-3 py-2">
+                            <div class="font-medium text-sm">Contractor Management Policy</div>
+                            <div class="text-xs text-gray-600">Under revision by Neren Kisten</div>
+                            <div class="text-xs text-orange-600 mt-1">⏳ Review Due: Tomorrow</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Compliance Tracking -->
+                <div class="clean-card p-4">
+                    <h3 class="font-semibold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-check-circle text-green-600 mr-2"></i>
+                        Compliance Tracking
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center p-2 rounded border">
+                            <span class="text-sm">ISO 9001 Quality</span>
+                            <span class="status-badge status-current">CURRENT</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 rounded border">
+                            <span class="text-sm">ISO 14001 Environmental</span>
+                            <span class="status-badge status-current">CURRENT</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 rounded border">
+                            <span class="text-sm">OHSAS 18001 Safety</span>
+                            <span class="status-badge status-review">RENEWAL DUE</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 rounded border">
+                            <span class="text-sm">Fire Safety Certificate</span>
+                            <span class="status-badge status-approved">APPROVED</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Document Approvals -->
+                <div class="clean-card p-4">
+                    <h3 class="font-semibold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-signature text-purple-600 mr-2"></i>
+                        Document Approvals
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="p-2 rounded border">
+                            <div class="font-medium text-sm">Emergency Response Plan</div>
+                            <div class="text-xs text-gray-600 mb-2">From: Neren Kisten → Aidan Harris</div>
+                            <div class="flex justify-between items-center">
+                                <span class="status-badge status-review">PENDING</span>
+                                <span class="text-xs text-orange-600">2 days</span>
+                            </div>
+                        </div>
+
+                        <div class="p-2 rounded border">
+                            <div class="font-medium text-sm">Vendor Assessment Form</div>
+                            <div class="text-xs text-gray-600 mb-2">From: Brindley Harrington → Aidan Harris</div>
+                            <div class="flex justify-between items-center">
+                                <span class="status-badge status-approved">APPROVED</span>
+                                <span class="text-xs text-green-600">Today</span>
+                            </div>
+                        </div>
+
+                        <div class="p-2 rounded border">
+                            <div class="font-medium text-sm">Budget Allocation Request</div>
+                            <div class="text-xs text-gray-600 mb-2">To: Adriaan Verduyn (Isle of Man)</div>
+                            <div class="flex justify-between items-center">
+                                <span class="status-badge status-review">SUBMITTED</span>
+                                <span class="text-xs text-blue-600">GMT 14:32</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Document Repository & Templates -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Document Templates Library -->
+            <div class="clean-card p-6">
+                <h3 class="font-semibold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-copy text-blue-600 mr-2"></i>
+                    Document Templates Library
+                </h3>
+                <div class="space-y-3">
+                    <div class="document-card flex justify-between items-center">
+                        <div>
+                            <div class="font-medium text-sm">Risk Assessment Template</div>
+                            <div class="text-xs text-gray-600">Health & Safety - Standard Form</div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xs text-blue-600">v2.1</span>
+                            <i class="fas fa-download text-gray-400 hover:text-blue-600 cursor-pointer"></i>
+                        </div>
+                    </div>
+
+                    <div class="document-card flex justify-between items-center">
+                        <div>
+                            <div class="font-medium text-sm">Incident Report Form</div>
+                            <div class="text-xs text-gray-600">Safety & Compliance Template</div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xs text-green-600">v1.8</span>
+                            <i class="fas fa-download text-gray-400 hover:text-blue-600 cursor-pointer"></i>
+                        </div>
+                    </div>
+
+                    <div class="document-card flex justify-between items-center">
+                        <div>
+                            <div class="font-medium text-sm">Contractor Evaluation</div>
+                            <div class="text-xs text-gray-600">Vendor Management Template</div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xs text-purple-600">v3.0</span>
+                            <i class="fas fa-download text-gray-400 hover:text-blue-600 cursor-pointer"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Training & Certification Records -->
+            <div class="clean-card p-6">
+                <h3 class="font-semibold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-graduation-cap text-green-600 mr-2"></i>
+                    Training & Certification Records
+                </h3>
+                <div class="space-y-3">
+                    <div class="p-3 border border-gray-200 rounded">
+                        <div class="font-medium text-sm mb-1">Facilities Team Certifications</div>
+                        <div class="text-xs text-gray-600 mb-2">Health & Safety Training Status</div>
+                        <div class="flex justify-between text-xs">
+                            <span>Current: 8/10 team members</span>
+                            <span class="text-orange-600">2 renewals due</span>
+                        </div>
+                    </div>
+
+                    <div class="p-3 border border-gray-200 rounded">
+                        <div class="font-medium text-sm mb-1">Management Training</div>
+                        <div class="text-xs text-gray-600 mb-2">Leadership Development Program</div>
+                        <div class="flex justify-between text-xs">
+                            <span>Completion Rate: 75%</span>
+                            <span class="text-blue-600">In Progress</span>
+                        </div>
+                    </div>
+
+                    <div class="p-3 border border-gray-200 rounded">
+                        <div class="font-medium text-sm mb-1">Contractor Certifications</div>
+                        <div class="text-xs text-gray-600 mb-2">External service provider compliance</div>
+                        <div class="flex justify-between text-xs">
+                            <span>Valid: 41/42 contractors</span>
+                            <span class="text-green-600">98% Compliant</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Daily SharePoint Workflows -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Today's SharePoint Tasks -->
+            <div class="clean-card p-6">
+                <h3 class="font-semibold text-gray-800 mb-4 flex items-center">
+                    <i class="fab fa-microsoft text-blue-600 mr-2"></i>
+                    Today's SharePoint Tasks
+                </h3>
+                <div class="space-y-3">
+                    <div class="p-3 bg-blue-50 rounded border-l-4 border-blue-500">
+                        <div class="flex justify-between items-center mb-2">
+                            <div>
+                                <div class="font-medium text-sm">Policy Approval Workflow</div>
+                                <div class="text-xs text-gray-600">3 documents pending executive approval</div>
+                            </div>
+                            <button class="text-blue-600 hover:bg-blue-100 px-2 py-1 rounded text-xs" onclick="openPolicyWorkflow()">
+                                Review
+                            </button>
+                        </div>
+                        <div class="text-xs text-blue-600">
+                            • Health & Safety Policy v3.2 → Adriaan Verduyn
+                            • Environmental Compliance Update → Adriaan Verduyn
+                            • Contractor Access Protocol → Pending
+                        </div>
+                    </div>
+
+                    <div class="p-3 bg-green-50 rounded border-l-4 border-green-500">
+                        <div class="flex justify-between items-center mb-2">
+                            <div>
+                                <div class="font-medium text-sm">Document Version Control</div>
+                                <div class="text-xs text-gray-600">Auto-sync with Durban team updates</div>
+                            </div>
+                            <button class="text-green-600 hover:bg-green-100 px-2 py-1 rounded text-xs" onclick="syncDocuments()">
+                                Sync Now
+                            </button>
+                        </div>
+                        <div class="text-xs text-green-600">
+                            Last sync: 2 minutes ago • 12 documents updated
+                        </div>
+                    </div>
+
+                    <div class="p-3 bg-orange-50 rounded border-l-4 border-orange-500">
+                        <div class="flex justify-between items-center mb-2">
+                            <div>
+                                <div class="font-medium text-sm">Contract Repository Access</div>
+                                <div class="text-xs text-gray-600">Vendor agreements & service contracts</div>
+                            </div>
+                            <button class="text-orange-600 hover:bg-orange-100 px-2 py-1 rounded text-xs" onclick="accessContracts()">
+                                Access
+                            </button>
+                        </div>
+                        <div class="text-xs text-orange-600">
+                            42 active contracts • 3 renewals due this month
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Daily Office Activities -->
+            <div class="clean-card p-6">
+                <h3 class="font-semibold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-briefcase text-purple-600 mr-2"></i>
+                    Daily Office Activities
+                </h3>
+                <div class="space-y-3">
+                    <div class="flex items-center p-3 bg-gray-50 rounded border-l-4 border-blue-500">
+                        <i class="fas fa-envelope text-blue-600 mr-3 text-lg"></i>
+                        <div class="flex-1">
+                            <div class="font-medium text-gray-800">Outlook Email Management</div>
+                            <div class="text-sm text-gray-600">18 unread • 2 urgent from Neren Kisten</div>
+                        </div>
+                        <button class="text-blue-600 hover:bg-blue-100 px-3 py-1 rounded text-sm" onclick="openOutlook()">
+                            Open
+                        </button>
+                    </div>
+
+                    <div class="flex items-center p-3 bg-gray-50 rounded border-l-4 border-green-500">
+                        <i class="fas fa-calendar text-green-600 mr-3 text-lg"></i>
+                        <div class="flex-1">
+                            <div class="font-medium text-gray-800">Today's Meetings</div>
+                            <div class="text-sm text-gray-600">3 scheduled • Next: 14:30 SAST</div>
+                        </div>
+                        <button class="text-green-600 hover:bg-green-100 px-3 py-1 rounded text-sm" onclick="viewMeetings()">
+                            View
+                        </button>
+                    </div>
+
+                    <div class="flex items-center p-3 bg-gray-50 rounded border-l-4 border-purple-500">
+                        <i class="fas fa-phone text-purple-600 mr-3 text-lg"></i>
+                        <div class="flex-1">
+                            <div class="font-medium text-gray-800">Adriaan Coordination Call</div>
+                            <div class="text-sm text-gray-600">Weekly check-in • GMT 15:00 (SAST 17:00)</div>
+                        </div>
+                        <button class="text-purple-600 hover:bg-purple-100 px-3 py-1 rounded text-sm" onclick="joinCoordinationCall()">
+                            Join
+                        </button>
+                    </div>
+
+                    <div class="flex items-center p-3 bg-gray-50 rounded border-l-4 border-orange-500">
+                        <i class="fas fa-file-signature text-orange-600 mr-3 text-lg"></i>
+                        <div class="flex-1">
+                            <div class="font-medium text-gray-800">Document Approval Queue</div>
+                            <div class="text-sm text-gray-600">5 items awaiting signature</div>
+                        </div>
+                        <button class="text-orange-600 hover:bg-orange-100 px-3 py-1 rounded text-sm" onclick="reviewApprovals()">
+                            Review
+                        </button>
+                    </div>
+
+                    <div class="flex items-center p-3 bg-gray-50 rounded border-l-4 border-teal-500">
+                        <i class="fas fa-users text-teal-600 mr-3 text-lg"></i>
+                        <div class="flex-1">
+                            <div class="font-medium text-gray-800">Team Coordination</div>
+                            <div class="text-sm text-gray-600">Direct reports: Neren Kisten + 2 others</div>
+                        </div>
+                        <button class="text-teal-600 hover:bg-teal-100 px-3 py-1 rounded text-sm" onclick="teamDashboard()">
+                            Manage
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- File Access & Management Tools -->
+        <div class="clean-card p-6 mb-8">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-folder-tree"></i>
+                    File Access & Management Tools
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow cursor-pointer" onclick="accessSharePointLibrary()">
+                    <div class="flex items-center mb-3">
+                        <i class="fab fa-microsoft text-blue-600 mr-2 text-xl"></i>
+                        <h4 class="font-semibold text-gray-800">SharePoint Library</h4>
+                    </div>
+                    <div class="space-y-1 text-sm">
+                        <div class="text-gray-600">Estate Documents</div>
+                        <div class="text-blue-600 font-medium">1,247 files</div>
+                        <div class="text-xs text-gray-500">Last updated: 2 mins ago</div>
+                    </div>
+                </div>
+
+                <div class="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow cursor-pointer" onclick="openPolicyCenter()">
+                    <div class="flex items-center mb-3">
+                        <i class="fas fa-shield-alt text-green-600 mr-2 text-xl"></i>
+                        <h4 class="font-semibold text-gray-800">Policy Center</h4>
+                    </div>
+                    <div class="space-y-1 text-sm">
+                        <div class="text-gray-600">Active Policies</div>
+                        <div class="text-green-600 font-medium">156 current</div>
+                        <div class="text-xs text-gray-500">3 pending review</div>
+                    </div>
+                </div>
+
+                <div class="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow cursor-pointer" onclick="accessComplianceRecords()">
+                    <div class="flex items-center mb-3">
+                        <i class="fas fa-clipboard-check text-purple-600 mr-2 text-xl"></i>
+                        <h4 class="font-semibold text-gray-800">Compliance Records</h4>
+                    </div>
+                    <div class="space-y-1 text-sm">
+                        <div class="text-gray-600">Audit Records</div>
+                        <div class="text-purple-600 font-medium">94.2% compliant</div>
+                        <div class="text-xs text-gray-500">Next audit: March</div>
+                    </div>
+                </div>
+
+                <div class="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow cursor-pointer" onclick="manageContracts()">
+                    <div class="flex items-center mb-3">
+                        <i class="fas fa-handshake text-orange-600 mr-2 text-xl"></i>
+                        <h4 class="font-semibold text-gray-800">Contract Management</h4>
+                    </div>
+                    <div class="space-y-1 text-sm">
+                        <div class="text-gray-600">Active Contracts</div>
+                        <div class="text-orange-600 font-medium">42 managed</div>
+                        <div class="text-xs text-gray-500">3 renewals due</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions Panel -->
+        <div class="clean-card p-6">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-bolt"></i>
+                    Estate Management Quick Actions
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <button class="action-btn" onclick="openSharePoint()">
+                    <i class="fab fa-microsoft"></i>
+                    Open SharePoint
+                </button>
+                <button class="action-btn bg-green-600" onclick="newPolicy()">
+                    <i class="fas fa-plus"></i>
+                    New Policy
+                </button>
+                <button class="action-btn bg-purple-600" onclick="complianceReport()">
+                    <i class="fas fa-chart-bar"></i>
+                    Compliance Report
+                </button>
+                <button class="action-btn bg-orange-600" onclick="documentSearch()">
+                    <i class="fas fa-search"></i>
+                    Document Search
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Real-time data simulation
+        function updateDocumentData() {
+            // Simulate real-time updates for document metrics
+            const activeDoc = document.getElementById('activeDocuments');
+            const baseCount = 1247;
+            const variation = Math.floor(Math.random() * 20) - 10;
+            activeDoc.textContent = Math.max(1200, baseCount + variation).toLocaleString();
+
+            // Update compliance rate
+            const compliance = document.getElementById('complianceRate');
+            const baseCompliance = 94.2;
+            const complianceVariation = Math.random() * 1 - 0.5;
+            compliance.textContent = Math.max(90, Math.min(100, baseCompliance + complianceVariation)).toFixed(1);
+
+            // Update pending reviews
+            const pending = document.getElementById('pendingReviews');
+            const basePending = 18;
+            const pendingVariation = Math.floor(Math.random() * 6) - 3;
+            pending.textContent = Math.max(10, basePending + pendingVariation);
+        }
+
+        // Initialize charts
+        function initializeCharts() {
+            // Active Contracts Chart
+            const contractsCtx = document.getElementById('contractsChart').getContext('2d');
+            new Chart(contractsCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Service Contracts', 'Maintenance Agreements', 'Supply Contracts', 'Consulting', 'Other'],
+                    datasets: [{
+                        data: [15, 12, 8, 4, 3],
+                        backgroundColor: [
+                            '#3b82f6',
+                            '#10b981',
+                            '#f59e0b',
+                            '#8b5cf6',
+                            '#6b7280'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // Document Workflow Chart
+            const workflowCtx = document.getElementById('workflowChart').getContext('2d');
+            new Chart(workflowCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    datasets: [{
+                        label: 'Documents Created',
+                        data: [28, 35, 42, 38],
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        fill: true
+                    }, {
+                        label: 'Documents Approved',
+                        data: [22, 30, 38, 35],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Quick action functions
+        function openSharePoint() {
+            alert('Opening SharePoint Document Management...');
+        }
+
+        function newPolicy() {
+            alert('Creating new policy document...');
+        }
+
+        function complianceReport() {
+            alert('Generating compliance report...');
+        }
+
+        function documentSearch() {
+            alert('Opening advanced document search...');
+        }
+
+        // Daily SharePoint workflow functions
+        function openPolicyWorkflow() {
+            alert('Opening Policy Approval Workflow...\n\n• Health & Safety Policy v3.2 → Awaiting Adriaan Verduyn approval\n• Environmental Compliance Update → Under review\n• Contractor Access Protocol → Pending team feedback');
+        }
+
+        function syncDocuments() {
+            alert('Syncing SharePoint Documents...\n\n• Connecting to Durban facility servers\n• 12 documents updated in last sync\n• Version control maintained\n• Team notifications sent');
+        }
+
+        function accessContracts() {
+            alert('Accessing Contract Repository...\n\n• 42 active service contracts\n• 3 renewals due this month\n• LivClean contract expires Feb 15\n• CSG Foods renewal in progress');
+        }
+
+        function viewMeetings() {
+            alert('Today\'s Meeting Schedule (SAST)...\n\n• 09:30 - Team Standup with Neren Kisten\n• 14:30 - Policy Review Session\n• 17:00 - Coordination Call with Adriaan (GMT 15:00)');
+        }
+
+        function joinCoordinationCall() {
+            alert('Joining Weekly Coordination Call...\n\n• Adriaan Verduyn (Isle of Man GMT)\n• Aidan Harris (Durban SAST)\n• Weekly operational updates\n• Budget & compliance review');
+        }
+
+        function reviewApprovals() {
+            alert('Document Approval Queue...\n\n• 5 items pending signature\n• Vendor performance assessments\n• Policy change approvals\n• Contract amendments\n• Budget reallocation requests');
+        }
+
+        // File access functions
+        function accessSharePointLibrary() {
+            alert('Accessing SharePoint Estate Library...\n\n• 1,247 documents available\n• Policies, procedures, contracts\n• Real-time collaboration enabled\n• Version history maintained');
+        }
+
+        function openPolicyCenter() {
+            alert('Opening Policy Management Center...\n\n• 156 active policies\n• 3 pending management review\n• Compliance tracking enabled\n• Automated notifications active');
+        }
+
+        function accessComplianceRecords() {
+            alert('Accessing Compliance Records...\n\n• Current compliance rate: 94.2%\n• Next audit scheduled: March 2025\n• ISO certifications current\n• Risk assessments up to date');
+        }
+
+        function manageContracts() {
+            alert('Contract Management Dashboard...\n\n• 42 active contracts managed\n• 3 renewal deadlines approaching\n• Vendor performance tracking\n• Cost optimization opportunities identified');
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCharts();
+
+            // Update real-time data every 25 seconds
+            setInterval(updateDocumentData, 25000);
+        });
+
+        console.log('Document Control - Estate Management Office initialized');
+    </script>
+</body>
+</html>

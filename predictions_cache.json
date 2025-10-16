@@ -1,0 +1,26 @@
+{
+  "last_updated": "2025-09-17T15:46:48.746784",
+  "predictions": {
+    "ELC001": {
+      "days_until_empty": 7.2,
+      "predicted_depletion_date": "2025-09-24",
+      "average_daily_usage": 3.5,
+      "urgency_level": "HIGH",
+      "confidence": 0.85
+    },
+    "SAF006": {
+      "days_until_empty": 2.1,
+      "predicted_depletion_date": "2025-09-19",
+      "average_daily_usage": 2.0,
+      "urgency_level": "CRITICAL",
+      "confidence": 0.92
+    },
+    "PLM002": {
+      "days_until_empty": 15.8,
+      "predicted_depletion_date": "2025-10-03",
+      "average_daily_usage": 1.2,
+      "urgency_level": "MEDIUM",
+      "confidence": 0.78
+    }
+  }
+}

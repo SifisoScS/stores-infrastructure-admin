@@ -1,0 +1,424 @@
+{% extends "base.html" %}
+
+{% block title %}{{ category_name }} - Derivco Stores Administration{% endblock %}
+
+{% block content %}
+<div class="category-detail-page">
+    <div class="page-header">
+        <div class="breadcrumb">
+            <a href="/">Dashboard</a>
+            <span class="separator">/</span>
+            <span class="current">{{ category_name }}</span>
+        </div>
+        <h2><i class="fas fa-{{ category_name|get_category_icon }}"></i> {{ category_name }} Inventory</h2>
+        <p class="subtitle">Manage {{ category_name.lower() }} items and supplies</p>
+    </div>
+
+    <div class="category-stats-bar">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-boxes"></i>
+            </div>
+            <div class="stat-content">
+                <h3>{{ items|length }}</h3>
+                <p>Total Items</p>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon warning">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="low-stock-count">0</h3>
+                <p>Low Stock</p>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon info">
+                <i class="fas fa-dollar-sign"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="total-value">R0.00</h3>
+                <p>Total Value</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="actions-bar">
+        <div class="search-box">
+            <input type="text" id="item-search" placeholder="Search {{ category_name.lower() }} items...">
+            <i class="fas fa-search"></i>
+        </div>
+        
+        <div class="action-buttons">
+            <button onclick="window.print()" class="btn btn-secondary">
+                <i class="fas fa-print"></i> Print
+            </button>
+            <button onclick="exportCategoryData()" class="btn btn-info">
+                <i class="fas fa-download"></i> Export
+            </button>
+            <a href="/" class="btn btn-primary">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    {% if items %}
+    <div class="items-table-container">
+        <table class="items-table">
+            <thead>
+                <tr>
+                    <th>Item Code</th>
+                    <th>Description</th>
+                    <th>Current Stock</th>
+                    <th>Min Level</th>
+                    <th>Max Level</th>
+                    <th>Location</th>
+                    <th>Unit Cost</th>
+                    <th>Total Value</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="items-tbody">
+                {% for item in items %}
+                <tr class="item-row" data-item-description="{{ item.get('Description', '').lower() }}" data-item-code="{{ item.get('Item Code', '').lower() }}">
+                    <td class="item-code">{{ item.get('Item Code', 'N/A') }}</td>
+                    <td class="item-description">{{ item.get('Description', 'N/A') }}</td>
+                    <td class="current-stock">
+                        <span class="stock-quantity {% if item.get('Quantity on Hand') and item.get('Min. Stock Level') and item.get('Quantity on Hand')|float <= item.get('Min. Stock Level')|float %}low-stock{% endif %}">
+                            {{ item.get('Quantity on Hand', 'N/A') }} {{ item.get('Unit of Measure', '') }}
+                        </span>
+                    </td>
+                    <td class="min-level">{{ item.get('Min. Stock Level', 'N/A') }} {{ item.get('Unit of Measure', '') }}</td>
+                    <td class="max-level">{{ item.get('Max. Stock Level', 'N/A') }} {{ item.get('Unit of Measure', '') }}</td>
+                    <td class="location">{{ item.get('Location', 'N/A') }}</td>
+                    <td class="unit-cost">
+                        {% if item.get('Cost/Unit') %}
+                            R{{ "%.2f"|format(item.get('Cost/Unit', 0)) }}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </td>
+                    <td class="total-value">
+                        {% if item.get('Total Value (auto-calc)') %}
+                            R{{ "%.2f"|format(item.get('Total Value (auto-calc)', 0)) }}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </td>
+                    <td class="status">
+                        {% if item.get('Quantity on Hand') and item.get('Min. Stock Level') and item.get('Quantity on Hand')|float <= item.get('Min. Stock Level')|float %}
+                            <span class="status-badge critical">Low Stock</span>
+                        {% else %}
+                            <span class="status-badge normal">Normal</span>
+                        {% endif %}
+                    </td>
+                    <td class="actions">
+                        <a href="/item/{{ category_name }}/{{ item.get('Item Code', '') }}" class="btn btn-sm btn-info" title="View Details">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <button onclick="quickCheckout('{{ item.get('Item Code', '') }}', '{{ item.get('Description', '') }}')" class="btn btn-sm btn-success" title="Check Out">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                        {% if item.get('Quantity on Hand') and item.get('Min. Stock Level') and item.get('Quantity on Hand')|float <= item.get('Min. Stock Level')|float %}
+                        <button onclick="reorderItem('{{ item.get('Item Code', '') }}')" class="btn btn-sm btn-warning" title="Reorder">
+                            <i class="fas fa-shopping-cart"></i>
+                        </button>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% else %}
+    <div class="no-data">
+        <div class="no-data-content">
+            <i class="fas fa-inbox"></i>
+            <h3>No Items Found</h3>
+            <p>No items are currently registered in the {{ category_name }} category.</p>
+            <p>Add items to the Excel spreadsheet and reload the data.</p>
+            <div class="no-data-actions">
+                <button onclick="reloadData()" class="btn btn-info">
+                    <i class="fas fa-sync-alt"></i> Reload Data
+                </button>
+                <a href="/" class="btn btn-primary">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Item Details Modal -->
+<div id="itemDetailsModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fas fa-info-circle"></i> Item Details</h3>
+            <span class="close" onclick="closeModal('itemDetailsModal')">&times;</span>
+        </div>
+        <div class="modal-body" id="itemDetailsBody">
+            <!-- Item details will be loaded here -->
+        </div>
+    </div>
+</div>
+
+<!-- Reorder Modal -->
+<div id="reorderModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fas fa-shopping-cart"></i> Reorder Item</h3>
+            <span class="close" onclick="closeModal('reorderModal')">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p>Mark this item for reorder?</p>
+            <div id="reorderItemInfo"></div>
+            <div class="modal-actions">
+                <button onclick="confirmReorder()" class="btn btn-warning">Confirm Reorder</button>
+                <button onclick="closeModal('reorderModal')" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    calculateStats();
+    
+    // Search functionality
+    const searchInput = document.getElementById('item-search');
+    const itemRows = document.querySelectorAll('.item-row');
+    
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            
+            itemRows.forEach(row => {
+                const description = row.dataset.itemDescription;
+                const itemCode = row.dataset.itemCode;
+                
+                if (description.includes(searchTerm) || itemCode.includes(searchTerm)) {
+                    row.style.display = 'table-row';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    }
+});
+
+// Calculate and display statistics
+function calculateStats() {
+    const rows = document.querySelectorAll('.item-row');
+    let lowStockCount = 0;
+    let totalValue = 0;
+    
+    rows.forEach(row => {
+        // Count low stock items
+        if (row.querySelector('.stock-quantity.low-stock')) {
+            lowStockCount++;
+        }
+        
+        // Calculate total value
+        const valueCell = row.querySelector('.total-value');
+        if (valueCell && valueCell.textContent.includes('R')) {
+            const value = parseFloat(valueCell.textContent.replace('R', '').replace(',', ''));
+            if (!isNaN(value)) {
+                totalValue += value;
+            }
+        }
+    });
+    
+    // Update display
+    document.getElementById('low-stock-count').textContent = lowStockCount;
+    document.getElementById('total-value').textContent = 'R' + totalValue.toFixed(2);
+}
+
+// View item details
+function viewItemDetails(itemCode) {
+    const row = document.querySelector(`[data-item-code="${itemCode.toLowerCase()}"]`);
+    if (!row) return;
+    
+    const modal = document.getElementById('itemDetailsModal');
+    const modalBody = document.getElementById('itemDetailsBody');
+    
+    // Extract item data from the row
+    const itemData = {
+        code: row.querySelector('.item-code').textContent,
+        description: row.querySelector('.item-description').textContent,
+        currentStock: row.querySelector('.current-stock').textContent.trim(),
+        minLevel: row.querySelector('.min-level').textContent.trim(),
+        maxLevel: row.querySelector('.max-level').textContent.trim(),
+        location: row.querySelector('.location').textContent,
+        unitCost: row.querySelector('.unit-cost').textContent,
+        totalValue: row.querySelector('.total-value').textContent,
+        status: row.querySelector('.status-badge').textContent
+    };
+    
+    // Create details HTML
+    modalBody.innerHTML = `
+        <div class="item-detail-grid">
+            <div class="detail-row"><strong>Item Code:</strong> ${itemData.code}</div>
+            <div class="detail-row"><strong>Description:</strong> ${itemData.description}</div>
+            <div class="detail-row"><strong>Current Stock:</strong> ${itemData.currentStock}</div>
+            <div class="detail-row"><strong>Minimum Level:</strong> ${itemData.minLevel}</div>
+            <div class="detail-row"><strong>Maximum Level:</strong> ${itemData.maxLevel}</div>
+            <div class="detail-row"><strong>Location:</strong> ${itemData.location}</div>
+            <div class="detail-row"><strong>Unit Cost:</strong> ${itemData.unitCost}</div>
+            <div class="detail-row"><strong>Total Value:</strong> ${itemData.totalValue}</div>
+            <div class="detail-row"><strong>Status:</strong> <span class="status-badge ${itemData.status.toLowerCase().replace(' ', '-')}">${itemData.status}</span></div>
+        </div>
+    `;
+    
+    modal.style.display = 'block';
+}
+
+// Reorder item
+function reorderItem(itemCode) {
+    const row = document.querySelector(`[data-item-code="${itemCode.toLowerCase()}"]`);
+    if (!row) return;
+    
+    const modal = document.getElementById('reorderModal');
+    const infoDiv = document.getElementById('reorderItemInfo');
+    
+    const description = row.querySelector('.item-description').textContent;
+    const currentStock = row.querySelector('.current-stock').textContent.trim();
+    
+    infoDiv.innerHTML = `
+        <div class="reorder-info">
+            <p><strong>Item:</strong> ${description}</p>
+            <p><strong>Code:</strong> ${itemCode}</p>
+            <p><strong>Current Stock:</strong> ${currentStock}</p>
+        </div>
+    `;
+    
+    // Store item code for confirmation
+    modal.dataset.itemCode = itemCode;
+    modal.style.display = 'block';
+}
+
+// Confirm reorder
+function confirmReorder() {
+    const modal = document.getElementById('reorderModal');
+    const itemCode = modal.dataset.itemCode;
+    
+    // In a real system, this would make an API call
+    alert('Item marked for reorder: ' + itemCode);
+    closeModal('reorderModal');
+}
+
+// Close modal
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = 'none';
+}
+
+// Export category data
+function exportCategoryData() {
+    const rows = document.querySelectorAll('.item-row');
+    let csvContent = 'Item Code,Description,Current Stock,Min Level,Max Level,Location,Unit Cost,Total Value,Status\n';
+    
+    rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        const rowData = [];
+        
+        // Extract data from each cell (excluding actions column)
+        for (let i = 0; i < cells.length - 1; i++) {
+            let cellText = cells[i].textContent.trim();
+            // Handle status badge
+            if (cells[i].querySelector('.status-badge')) {
+                cellText = cells[i].querySelector('.status-badge').textContent.trim();
+            }
+            rowData.push(`"${cellText}"`);
+        }
+        
+        csvContent += rowData.join(',') + '\n';
+    });
+    
+    // Create download
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${document.title.split(' - ')[0].replace(' ', '_')}_inventory.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+}
+
+// Reload data function
+async function reloadData() {
+    try {
+        const response = await fetch('/api/reload-data', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            alert('Data reloaded successfully!');
+            window.location.reload();
+        } else {
+            alert('Error reloading data: ' + result.message);
+        }
+    } catch (error) {
+        alert('Error reloading data: ' + error.message);
+    }
+}
+
+// Quick checkout function
+function quickCheckout(itemCode, description) {
+    const userName = prompt('Enter your name:');
+    if (!userName) return;
+    
+    const quantity = prompt('Enter quantity to check out:', '1');
+    if (!quantity || isNaN(quantity) || quantity <= 0) return;
+    
+    const notes = prompt('Enter notes (optional):', '');
+    
+    // Make checkout API call
+    fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            item_code: itemCode,
+            category: '{{ category_name }}',
+            quantity: parseInt(quantity),
+            user_name: userName,
+            notes: notes || ''
+        })
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.status === 'success') {
+            alert(`Successfully checked out ${quantity} units of "${description}" to ${userName}`);
+            // Optionally reload the page to update stock levels
+            // window.location.reload();
+        } else {
+            alert('Error: ' + result.message);
+        }
+    })
+    .catch(error => {
+        alert('Error checking out item: ' + error.message);
+    });
+}
+
+// Close modals when clicking outside
+window.onclick = function(event) {
+    const modals = document.querySelectorAll('.modal');
+    modals.forEach(modal => {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+}
+</script>
+{% endblock %}

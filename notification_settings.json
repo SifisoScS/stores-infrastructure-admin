@@ -1,0 +1,11 @@
+{
+  "email_alerts": true,
+  "critical_threshold_days": 3,
+  "high_threshold_days": 7,
+  "recipients": [
+    "facilities@derivco.com",
+    "sifiso.shezi@derivco.com"
+  ],
+  "alert_frequency": "daily",
+  "last_updated": "2025-09-17T15:46:48.747671"
+}

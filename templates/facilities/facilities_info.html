@@ -1,0 +1,1596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facilities Intelligence Hub - Global News & Trends</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0061a8;
+            --secondary: #6c757d;
+            --success: #198754;
+            --info: #0dcaf0;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gradient: linear-gradient(135deg, #0061a8 0%, #003f6c 100%);
+            --tv-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0f1419;
+            color: #e0e0e0;
+            overflow-x: hidden;
+        }
+        
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
+            border: none;
+            background-color: #1e2a3a;
+            color: #e0e0e0;
+        }
+        
+        .bg-gradient-info {
+            background: var(--gradient);
+        }
+        
+        .bg-tv {
+            background: var(--tv-gradient);
+            border: 1px solid #2a3a4a;
+        }
+        
+        .nav-tabs .nav-link {
+            border: none;
+            border-bottom: 3px solid transparent;
+            color: var(--secondary);
+            font-weight: 500;
+            padding: 12px 20px;
+            background-color: transparent;
+        }
+        
+        .nav-tabs .nav-link.active {
+            border-bottom: 3px solid var(--primary);
+            color: var(--primary);
+            background: transparent;
+        }
+        
+        .nav-tabs .nav-link:hover {
+            border-color: transparent;
+            background-color: rgba(0, 97, 168, 0.1);
+        }
+        
+        .stats-card {
+            transition: transform 0.3s;
+        }
+        
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .news-item {
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+        
+        .news-item:hover {
+            border-left: 3px solid var(--primary);
+            background-color: #253144;
+        }
+        
+        .training-program {
+            transition: all 0.3s;
+        }
+        
+        .training-program:hover {
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+        }
+        
+        .tab-content {
+            padding: 20px 0;
+        }
+        
+        .badge {
+            font-weight: 500;
+            padding: 6px 10px;
+        }
+        
+        .border-left {
+            border-left: 4px solid !important;
+        }
+        
+        .charter-content h5 {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 8px;
+            margin: 25px 0 15px;
+        }
+        
+        .charter-content h5:first-child {
+            margin-top: 0;
+        }
+        
+        .progress {
+            height: 8px;
+            background-color: #2a3a4a;
+        }
+        
+        /* TV Interface Styles */
+        .tv-container {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(0, 97, 168, 0.3);
+            background: #0a0f1a;
+            border: 2px solid #2a3a4a;
+        }
+        
+        .tv-screen {
+            position: relative;
+            background: #0a0f1a;
+            min-height: 500px;
+            overflow: hidden;
+        }
+        
+        .tv-header {
+            background: rgba(10, 15, 26, 0.9);
+            padding: 15px 20px;
+            border-bottom: 1px solid #2a3a4a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .tv-channel {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .tv-time {
+            font-size: 0.9rem;
+            color: #8a9ba8;
+        }
+        
+        .tv-content {
+            padding: 20px;
+            height: 100%;
+            overflow-y: auto;
+        }
+        
+        .tv-controls {
+            background: rgba(10, 15, 26, 0.9);
+            padding: 15px 20px;
+            border-top: 1px solid #2a3a4a;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .channel-btn {
+            background: #1e2a3a;
+            border: 1px solid #2a3a4a;
+            color: #8a9ba8;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .channel-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .channel-btn:hover {
+            background: #2a3a4a;
+            color: white;
+        }
+        
+        .tv-content-area {
+            display: none;
+        }
+        
+        .tv-content-area.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* News Ticker */
+        .news-ticker {
+            background: rgba(0, 97, 168, 0.2);
+            border-top: 1px solid #2a3a4a;
+            border-bottom: 1px solid #2a3a4a;
+            padding: 10px 0;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .ticker-content {
+            display: inline-block;
+            white-space: nowrap;
+            animation: ticker 30s linear infinite;
+        }
+        
+        @keyframes ticker {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        
+        .ticker-item {
+            display: inline-block;
+            margin-right: 50px;
+            color: #8a9ba8;
+        }
+        
+        .ticker-item .badge {
+            margin-right: 10px;
+        }
+        
+        /* Global News Styles */
+        .global-news-item {
+            background: #1e2a3a;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--primary);
+            transition: all 0.3s;
+        }
+        
+        .global-news-item:hover {
+            transform: translateX(5px);
+            background: #253144;
+        }
+        
+        .news-source {
+            font-size: 0.8rem;
+            color: #8a9ba8;
+            margin-bottom: 5px;
+        }
+        
+        .news-region {
+            display: inline-block;
+            padding: 2px 8px;
+            background: #2a3a4a;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            margin-right: 5px;
+        }
+        
+        /* Weather Widget */
+        .weather-widget {
+            background: linear-gradient(135deg, #1a3a5f 0%, #2a4a7f 100%);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .weather-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+        
+        .weather-temp {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .weather-location {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        /* Market Data */
+        .market-data {
+            display: flex;
+            justify-content: space-between;
+            background: #1e2a3a;
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+        }
+        
+        .market-item {
+            text-align: center;
+        }
+        
+        .market-value {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        .market-change.positive {
+            color: var(--success);
+        }
+        
+        .market-change.negative {
+            color: var(--danger);
+        }
+        
+        /* Video Player */
+        .video-placeholder {
+            background: #0a0f1a;
+            height: 200px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #8a9ba8;
+            margin-bottom: 15px;
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .tv-controls {
+                flex-wrap: wrap;
+            }
+            
+            .channel-btn {
+                width: 35px;
+                height: 35px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card bg-gradient-info text-white">
+                    <div class="card-body p-4">
+                        <!-- Breadcrumb -->
+                        <nav aria-label="breadcrumb" class="mb-3">
+                            <ol class="breadcrumb mb-0" style="background: transparent;">
+                                <li class="breadcrumb-item">
+                                    <a href="/" class="text-white-50 text-decoration-none">
+                                        <i class="fas fa-home"></i> Home
+                                    </a>
+                                </li>
+                                <li class="breadcrumb-item active text-white" aria-current="page">
+                                    Facilities Intelligence Hub
+                                </li>
+                            </ol>
+                        </nav>
+                        
+                        <div class="d-flex align-items-center">
+                            <div class="me-3">
+                                <i class="fas fa-satellite-dish fa-3x opacity-75"></i>
+                            </div>
+                            <div>
+                                <h1 class="card-title h2 mb-2">Facilities Intelligence Hub</h1>
+                                <p class="card-text h5 mb-0 opacity-90">Global News & Trends in Facility Management - Your Window to the World</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TV Interface -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="tv-container">
+                    <div class="tv-screen">
+                        <div class="tv-header">
+                            <div class="tv-channel" id="current-channel">Global News Channel</div>
+                            <div class="tv-time" id="current-time">Loading...</div>
+                        </div>
+                        
+                        <!-- News Ticker -->
+                        <div class="news-ticker">
+                            <div class="ticker-content">
+                                <span class="ticker-item"><span class="badge bg-primary">BREAKING</span> New EU regulations for sustainable facilities management to be implemented in 2026</span>
+                                <span class="ticker-item"><span class="badge bg-warning">ALERT</span> Major conference on AI in FM scheduled for November in Singapore</span>
+                                <span class="ticker-item"><span class="badge bg-info">TRENDING</span> IoT sensor costs drop 15% year-over-year, accelerating smart building adoption</span>
+                                <span class="ticker-item"><span class="badge bg-success">UPDATE</span> IFMA releases new certification standards for digital facility managers</span>
+                            </div>
+                        </div>
+                        
+                        <div class="tv-content">
+                            <!-- Channel 1: Global News -->
+                            <div class="tv-content-area active" id="channel-1">
+                                <h3 class="mb-4 text-primary"><i class="fas fa-globe-americas me-2"></i>Global FM News</h3>
+                                
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="global-news-item">
+                                            <div class="news-source">
+                                                <span class="news-region">EUROPE</span> Facility Management Journal • 2 hours ago
+                                            </div>
+                                            <h5>New EU Sustainability Directive to Impact FM Industry</h5>
+                                            <p>The European Union has announced new regulations requiring all commercial facilities to reduce energy consumption by 30% by 2030. Facility managers across Europe are preparing for significant operational changes.</p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <small class="text-muted">Tags: Sustainability, Regulation, Europe</small>
+                                                <a href="#" class="btn btn-outline-primary btn-sm">Read Full Story</a>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="global-news-item">
+                                            <div class="news-source">
+                                                <span class="news-region">ASIA</span> Asia FM Today • 5 hours ago
+                                            </div>
+                                            <h5>Singapore Leads in Smart Building Implementation</h5>
+                                            <p>Singapore's Building and Construction Authority reports that 80% of commercial buildings now incorporate AI-driven energy management systems, setting a new benchmark for the region.</p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <small class="text-muted">Tags: Smart Buildings, Asia, Technology</small>
+                                                <a href="#" class="btn btn-outline-primary btn-sm">Read Full Story</a>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="global-news-item">
+                                            <div class="news-source">
+                                                <span class="news-region">NORTH AMERICA</span> FM World News • 8 hours ago
+                                            </div>
+                                            <h5>US Facilities Face Workforce Shortage Crisis</h5>
+                                            <p>A new report indicates that the facility management industry in the United States will need to fill over 100,000 positions by 2027, creating both challenges and opportunities for the sector.</p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <small class="text-muted">Tags: Workforce, North America, Trends</small>
+                                                <a href="#" class="btn btn-outline-primary btn-sm">Read Full Story</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-4">
+                                        <div class="weather-widget mb-4">
+                                            <div class="weather-icon">
+                                                <i class="fas fa-sun"></i>
+                                            </div>
+                                            <div class="weather-temp">24°C</div>
+                                            <div class="weather-location">Durban, South Africa</div>
+                                            <div class="mt-2 small">Humidity: 65% • Wind: 15 km/h</div>
+                                        </div>
+                                        
+                                        <div class="card bg-tv mb-4">
+                                            <div class="card-header">
+                                                <h6><i class="fas fa-chart-line me-2"></i>FM Market Indicators</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="market-data">
+                                                    <div class="market-item">
+                                                        <div class="market-value">$1.2T</div>
+                                                        <div class="market-change positive">+3.2%</div>
+                                                        <small>Global FM Market</small>
+                                                    </div>
+                                                    <div class="market-item">
+                                                        <div class="market-value">$45B</div>
+                                                        <div class="market-change positive">+7.8%</div>
+                                                        <small>FM Tech Market</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="card bg-tv">
+                                            <div class="card-header">
+                                                <h6><i class="fas fa-play-circle me-2"></i>Featured Video</h6>
+                                            </div>
+                                            <div class="card-body p-0">
+                                                <div class="video-placeholder">
+                                                    <div class="text-center">
+                                                        <i class="fas fa-play-circle fa-3x mb-2"></i>
+                                                        <div>The Future of AI in Facility Management</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Channel 2: Technology Trends -->
+                            <div class="tv-content-area" id="channel-2">
+                                <h3 class="mb-4 text-info"><i class="fas fa-microchip me-2"></i>Technology Trends</h3>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="card bg-tv h-100">
+                                            <div class="card-header">
+                                                <h5>AI & Machine Learning</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="mb-3">
+                                                    <h6>Predictive Maintenance</h6>
+                                                    <p>AI algorithms can now predict equipment failures with 92% accuracy, reducing downtime by up to 40%.</p>
+                                                    <div class="progress mb-2">
+                                                        <div class="progress-bar bg-info" style="width: 85%">Adoption: 85%</div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="mb-3">
+                                                    <h6>Generative AI for Space Planning</h6>
+                                                    <p>New tools use generative AI to optimize office layouts based on occupancy data and employee preferences.</p>
+                                                    <div class="progress mb-2">
+                                                        <div class="progress-bar bg-info" style="width: 45%">Adoption: 45%</div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div>
+                                                    <h6>Computer Vision for Safety</h6>
+                                                    <p>Cameras with computer vision can detect safety violations and potential hazards in real-time.</p>
+                                                    <div class="progress mb-2">
+                                                        <div class="progress-bar bg-info" style="width: 30%">Adoption: 30%</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="card bg-tv h-100">
+                                            <div class="card-header">
+                                                <h5>IoT & Smart Buildings</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="mb-3">
+                                                    <h6>Sensor Technology</h6>
+                                                    <p>Cost of IoT sensors has decreased by 60% over the past 3 years, making comprehensive monitoring affordable.</p>
+                                                    <div class="progress mb-2">
+                                                        <div class="progress-bar bg-success" style="width: 75%">Adoption: 75%</div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="mb-3">
+                                                    <h6>Digital Twins</h6>
+                                                    <p>Virtual replicas of physical buildings allow for simulation and optimization before implementation.</p>
+                                                    <div class="progress mb-2">
+                                                        <div class="progress-bar bg-success" style="width: 35%">Adoption: 35%</div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div>
+                                                    <h6>5G Connectivity</h6>
+                                                    <p>Ultra-fast connectivity enables real-time data processing from thousands of building sensors simultaneously.</p>
+                                                    <div class="progress mb-2">
+                                                        <div class="progress-bar bg-success" style="width: 50%">Adoption: 50%</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mt-4">
+                                    <div class="col-12">
+                                        <div class="card bg-tv">
+                                            <div class="card-header">
+                                                <h5>Upcoming Tech Events</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <div class="border-left border-primary ps-3">
+                                                            <h6>Smart Building Expo</h6>
+                                                            <small class="text-muted">London, UK • Oct 15-17, 2025</small>
+                                                            <div class="mt-2">
+                                                                <span class="badge bg-primary">Virtual Option</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="border-left border-info ps-3">
+                                                            <h6>AI in FM Conference</h6>
+                                                            <small class="text-muted">Singapore • Nov 5-7, 2025</small>
+                                                            <div class="mt-2">
+                                                                <span class="badge bg-info">Early Bird Available</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="border-left border-success ps-3">
+                                                            <h6>Green Building Summit</h6>
+                                                            <small class="text-muted">Vancouver, Canada • Dec 3-5, 2025</small>
+                                                            <div class="mt-2">
+                                                                <span class="badge bg-success">Sold Out</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Channel 3: Sustainability -->
+                            <div class="tv-content-area" id="channel-3">
+                                <h3 class="mb-4 text-success"><i class="fas fa-leaf me-2"></i>Sustainability & Green FM</h3>
+                                
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="card bg-tv mb-4">
+                                            <div class="card-header">
+                                                <h5>Global Sustainability Initiatives</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="mb-4">
+                                                            <h6>Carbon Neutral Buildings</h6>
+                                                            <p>By 2030, 40% of new commercial buildings in Europe are projected to be carbon neutral.</p>
+                                                            <div class="progress">
+                                                                <div class="progress-bar bg-success" style="width: 65%">Progress: 65%</div>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div class="mb-4">
+                                                            <h6>Water Recycling Systems</h6>
+                                                            <p>Advanced water recycling can reduce consumption by up to 50% in commercial facilities.</p>
+                                                            <div class="progress">
+                                                                <div class="progress-bar bg-success" style="width: 45%">Progress: 45%</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="mb-4">
+                                                            <h6>Renewable Energy Integration</h6>
+                                                            <p>Solar and wind now account for 25% of energy used in forward-thinking facilities.</p>
+                                                            <div class="progress">
+                                                                <div class="progress-bar bg-success" style="width: 55%">Progress: 55%</div>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div class="mb-4">
+                                                            <h6>Zero Waste to Landfill</h6>
+                                                            <p>Leading companies aim for zero waste to landfill by 2030 through comprehensive recycling.</p>
+                                                            <div class="progress">
+                                                                <div class="progress-bar bg-success" style="width: 35%">Progress: 35%</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-4">
+                                        <div class="card bg-tv mb-4">
+                                            <div class="card-header">
+                                                <h6>Sustainability Leaders</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <ol>
+                                                    <li class="mb-2">Google - Carbon neutral since 2007</li>
+                                                    <li class="mb-2">Microsoft - Carbon negative by 2030</li>
+                                                    <li class="mb-2">Unilever - Zero waste to landfill</li>
+                                                    <li class="mb-2">IKEA - 100% renewable energy</li>
+                                                    <li class="mb-2">Apple - Entire supply chain carbon neutral by 2030</li>
+                                                </ol>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="card bg-tv">
+                                            <div class="card-header">
+                                                <h6>Green Certifications</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="d-grid gap-2">
+                                                    <button class="btn btn-outline-success btn-sm">
+                                                        <i class="fas fa-certificate me-2"></i>LEED Certification
+                                                    </button>
+                                                    <button class="btn btn-outline-success btn-sm">
+                                                        <i class="fas fa-certificate me-2"></i>BREEAM
+                                                    </button>
+                                                    <button class="btn btn-outline-success btn-sm">
+                                                        <i class="fas fa-certificate me-2"></i>WELL Building Standard
+                                                    </button>
+                                                    <button class="btn btn-outline-success btn-sm">
+                                                        <i class="fas fa-certificate me-2"></i>Green Star SA
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Channel 4: Training & Development -->
+                            <div class="tv-content-area" id="channel-4">
+                                <h3 class="mb-4 text-warning"><i class="fas fa-graduation-cap me-2"></i>Training & Development</h3>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="card bg-tv h-100">
+                                            <div class="card-header">
+                                                <h5>Upcoming Webinars</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="mb-3 p-3 border-left border-warning">
+                                                    <h6>AI for Facility Managers</h6>
+                                                    <small class="text-muted">September 20, 2025 • 2:00 PM GMT</small>
+                                                    <div class="mt-2">
+                                                        <span class="badge bg-warning">Free</span>
+                                                        <span class="badge bg-info">IFMA Certified</span>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="mb-3 p-3 border-left border-primary">
+                                                    <h6>Sustainable FM Practices</h6>
+                                                    <small class="text-muted">October 5, 2025 • 10:00 AM GMT</small>
+                                                    <div class="mt-2">
+                                                        <span class="badge bg-primary">Premium</span>
+                                                        <span class="badge bg-success">CEU Credits</span>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="p-3 border-left border-success">
+                                                    <h6>Digital Twin Implementation</h6>
+                                                    <small class="text-muted">November 12, 2025 • 3:00 PM GMT</small>
+                                                    <div class="mt-2">
+                                                        <span class="badge bg-success">Members Only</span>
+                                                        <span class="badge bg-info">Advanced</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="card bg-tv h-100">
+                                            <div class="card-header">
+                                                <h5>Certification Programs</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="mb-3">
+                                                    <h6>FMP (Facility Management Professional)</h6>
+                                                    <p>IFMA's baseline certification for FM professionals.</p>
+                                                    <div class="progress mb-2">
+                                                        <div class="progress-bar bg-warning" style="width: 80%">Popularity: 80%</div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="mb-3">
+                                                    <h6>SFP (Sustainability Facility Professional)</h6>
+                                                    <p>Focuses on sustainable practices in facility management.</p>
+                                                    <div class="progress mb-2">
+                                                        <div class="progress-bar bg-warning" style="width: 65%">Popularity: 65%</div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div>
+                                                    <h6>CFM (Certified Facility Manager)</h6>
+                                                    <p>IFMA's highest level of FM certification.</p>
+                                                    <div class="progress mb-2">
+                                                        <div class="progress-bar bg-warning" style="width: 45%">Popularity: 45%</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mt-4">
+                                    <div class="col-12">
+                                        <div class="card bg-tv">
+                                            <div class="card-header">
+                                                <h5>Recommended Learning Paths</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-md-4 text-center">
+                                                        <div class="p-3">
+                                                            <i class="fas fa-robot fa-2x text-info mb-2"></i>
+                                                            <h6>AI Specialist</h6>
+                                                            <small>6-month program focusing on AI applications in FM</small>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 text-center">
+                                                        <div class="p-3">
+                                                            <i class="fas fa-leaf fa-2x text-success mb-2"></i>
+                                                            <h6>Sustainability Leader</h6>
+                                                            <small>4-month certification in green building practices</small>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 text-center">
+                                                        <div class="p-3">
+                                                            <i class="fas fa-chart-line fa-2x text-primary mb-2"></i>
+                                                            <h6>Data Analyst</h6>
+                                                            <small>8-month course on FM data analysis and visualization</small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tv-controls">
+                            <button class="channel-btn active" data-channel="1">
+                                <i class="fas fa-globe"></i>
+                            </button>
+                            <button class="channel-btn" data-channel="2">
+                                <i class="fas fa-microchip"></i>
+                            </button>
+                            <button class="channel-btn" data-channel="3">
+                                <i class="fas fa-leaf"></i>
+                            </button>
+                            <button class="channel-btn" data-channel="4">
+                                <i class="fas fa-graduation-cap"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card text-center border-primary stats-card">
+                    <div class="card-body">
+                        <i class="fas fa-newspaper fa-2x text-primary mb-3"></i>
+                        <h5 class="text-primary">42</h5>
+                        <p class="card-text">Global News Stories</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center border-success stats-card">
+                    <div class="card-body">
+                        <i class="fas fa-graduation-cap fa-2x text-success mb-3"></i>
+                        <h5 class="text-success">18</h5>
+                        <p class="card-text">Training Programs</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center border-warning stats-card">
+                    <div class="card-body">
+                        <i class="fas fa-chart-line fa-2x text-warning mb-3"></i>
+                        <h5 class="text-warning">26</h5>
+                        <p class="card-text">Industry Trends</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center border-info stats-card">
+                    <div class="card-body">
+                        <i class="fas fa-certificate fa-2x text-info mb-3"></i>
+                        <h5 class="text-info">7</h5>
+                        <p class="card-text">Certifications Available</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Original Content Tabs (Preserved) -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <ul class="nav nav-tabs card-header-tabs" id="mainTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="news-tab" data-bs-toggle="tab" data-bs-target="#news" type="button" role="tab">
+                                    <i class="fas fa-newspaper me-2"></i>Intelligence Briefing
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="training-tab" data-bs-toggle="tab" data-bs-target="#training" type="button" role="tab">
+                                    <i class="fas fa-graduation-cap me-2"></i>AI Academy
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="trends-tab" data-bs-toggle="tab" data-bs-target="#trends" type="button" role="tab">
+                                    <i class="fas fa-chart-line me-2"></i>Strategic Trends
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="charter-tab" data-bs-toggle="tab" data-bs-target="#charter" type="button" role="tab">
+                                    <i class="fas fa-scroll me-2"></i>Facilities Charter
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <div class="tab-content" id="mainTabsContent">
+                            <!-- Latest News Tab -->
+                            <div class="tab-pane fade show active" id="news" role="tabpanel">
+                                <!-- Content remains the same as original -->
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <!-- Featured News -->
+                                        <div class="news-item mb-4 p-3 border rounded">
+                                            <div class="d-flex align-items-start">
+                                                <div class="news-icon me-3">
+                                                    <i class="fas fa-star fa-2x text-warning"></i>
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <h5 class="text-primary">Derivco Facilities Team Wins Excellence Award</h5>
+                                                    <p class="text-muted small mb-2">
+                                                        <i class="fas fa-calendar me-1"></i>September 8, 2025 | 
+                                                        <i class="fas fa-tag me-1"></i>Achievement
+                                                    </p>
+                                                    <p>The Derivco facilities management team, led by innovative approaches to inventory management and customer service, has received the Provincial Facilities Excellence Award for Q3 2025.</p>
+                                                    <a href="#" class="btn btn-outline-primary btn-sm">Read More</a>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Regular News Items -->
+                                        <div class="news-item mb-3 p-3 border rounded">
+                                            <h6 class="text-info">New AI-Powered Inventory Management System Goes Live</h6>
+                                            <p class="text-muted small mb-2">September 5, 2025 | System Update</p>
+                                            <p class="small">Our comprehensive inventory tracking system is now fully operational, featuring real-time updates and predictive analytics powered by AI algorithms.</p>
+                                        </div>
+
+                                        <div class="news-item mb-3 p-3 border rounded">
+                                            <h6 class="text-success">Sustainability Initiative Launched</h6>
+                                            <p class="text-muted small mb-2">September 1, 2025 | Environment</p>
+                                            <p class="small">New eco-friendly practices implemented across all facilities to reduce environmental impact by 30%. AI systems will monitor and optimize energy consumption.</p>
+                                        </div>
+
+                                        <div class="news-item mb-3 p-3 border rounded">
+                                            <h6 class="text-warning">AI-Enhanced Emergency Response Protocol Updated</h6>
+                                            <p class="text-muted small mb-2">August 28, 2025 | Safety</p>
+                                            <p class="small">Enhanced emergency procedures now include digital coordination and improved communication channels with AI-powered alert systems.</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="card bg-light">
+                                            <div class="card-header">
+                                                <h6><i class="fas fa-bullhorn me-2"></i>AI Insights & Announcements</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="announcement-item mb-3">
+                                                    <div class="small text-primary font-weight-bold">Predictive Maintenance Alert</div>
+                                                    <div class="small text-muted">HVAC System #4B requires service within 14 days (92% probability)</div>
+                                                </div>
+                                                <hr>
+                                                <div class="announcement-item mb-3">
+                                                    <div class="small text-success font-weight-bold">Energy Optimization</div>
+                                                    <div class="small text-muted">15.8% savings achieved this month through AI-controlled systems</div>
+                                                </div>
+                                                <hr>
+                                                <div class="announcement-item">
+                                                    <div class="small text-info font-weight-bold">Space Utilization Report</div>
+                                                    <div class="small text-muted">Conference room B-12 has 42% utilization rate - consider repurposing</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card mt-4">
+                                            <div class="card-header">
+                                                <h6><i class="fas fa-calendar-day me-2"></i>Upcoming Events</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="event-item border-left border-primary mb-3 ps-3">
+                                                    <h6 class="text-primary mb-1">AI in FM Workshop</h6>
+                                                    <small class="text-muted d-block">
+                                                        <i class="fas fa-calendar me-1"></i>Sept 15, 2025 - 09:00
+                                                    </small>
+                                                    <small class="text-muted">
+                                                        <i class="fas fa-map-marker-alt me-1"></i>Innovation Lab
+                                                    </small>
+                                                </div>
+                                                <div class="event-item border-left border-success mb-3 ps-3">
+                                                    <h6 class="text-success mb-1">Sustainability Review</h6>
+                                                    <small class="text-muted d-block">
+                                                        <i class="fas fa-calendar me-1"></i>Sept 20, 2025 - 14:00
+                                                    </small>
+                                                    <small class="text-muted">
+                                                        <i class="fas fa-map-marker-alt me-1"></i>Green Room
+                                                    </small>
+                                                </div>
+                                                <div class="event-item border-left border-info ps-3">
+                                                    <h6 class="text-info mb-1">Vendor Demo: New AI Tools</h6>
+                                                    <small class="text-muted d-block">
+                                                        <i class="fas fa-calendar me-1"></i>Oct 5, 2025 - 10:00
+                                                    </small>
+                                                    <small class="text-muted">
+                                                        <i class="fas fa-map-marker-alt me-1"></i>Demo Room A
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Training Programs Tab -->
+                            <div class="tab-pane fade" id="training" role="tabpanel">
+                                <!-- Content remains the same as original -->
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="training-program mb-4">
+                                            <div class="card border-success">
+                                                <div class="card-header bg-success text-white">
+                                                    <h6 class="mb-0"><i class="fas fa-shield-alt me-2"></i>AI Safety & Compliance Training</h6>
+                                                </div>
+                                                <div class="card-body">
+                                                    <p class="small">Comprehensive safety procedures and regulatory compliance training program for AI systems.</p>
+                                                    <div class="progress mb-2">
+                                                        <div class="progress-bar bg-success" style="width: 100%">Completed</div>
+                                                    </div>
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <small class="text-muted">Duration: 4 hours</small>
+                                                        <span class="badge bg-success">Certified</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="training-program mb-4">
+                                            <div class="card border-primary">
+                                                <div class="card-header bg-primary text-white">
+                                                    <h6 class="mb-0"><i class="fas fa-robot me-2"></i>AI-Powered Predictive Maintenance</h6>
+                                                </div>
+                                                <div class="card-body">
+                                                    <p class="small">Implementing and managing AI-driven predictive maintenance systems.</p>
+                                                    <div class="progress mb-2">
+                                                        <div class="progress-bar bg-primary" style="width: 75%">In Progress</div>
+                                                    </div>
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <small class="text-muted">Duration: 6 hours</small>
+                                                        <button class="btn btn-outline-primary btn-sm">Continue</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="training-program mb-4">
+                                            <div class="card border-warning">
+                                                <div class="card-header bg-warning text-dark">
+                                                    <h6 class="mb-0"><i class="fas fa-bolt me-2"></i>AI Energy Optimization</h6>
+                                                </div>
+                                                <div class="card-body">
+                                                    <p class="small">Optimizing building energy consumption through AI systems and IoT sensors.</p>
+                                                    <div class="progress mb-2">
+                                                        <div class="progress-bar bg-warning" style="width: 30%">Not Started</div>
+                                                    </div>
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <small class="text-muted">Duration: 5 hours</small>
+                                                        <button class="btn btn-outline-warning btn-sm">Enroll Now</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="card mb-4">
+                                            <div class="card-header">
+                                                <h6><i class="fas fa-chart-pie me-2"></i>Team AI Skills Assessment</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="text-center mb-3">
+                                                    <div class="position-relative d-inline-block">
+                                                        <canvas id="skillsChart" width="120" height="120"></canvas>
+                                                        <div class="position-absolute top-50 start-50 translate-middle">
+                                                            <span class="h5 mb-0">72%</span>
+                                                        </div>
+                                                    </div>
+                                                    <p class="small mt-2">Overall AI Proficiency Score</p>
+                                                </div>
+                                                <div class="skill-item mb-2">
+                                                    <div class="d-flex justify-content-between">
+                                                        <span>Predictive Maintenance</span>
+                                                        <span>85%</span>
+                                                    </div>
+                                                    <div class="progress mb-3" style="height: 6px;">
+                                                        <div class="progress-bar bg-success" style="width: 85%"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="skill-item mb-2">
+                                                    <div class="d-flex justify-content-between">
+                                                        <span>Energy Management AI</span>
+                                                        <span>65%</span>
+                                                    </div>
+                                                    <div class="progress mb-3" style="height: 6px;">
+                                                        <div class="progress-bar bg-primary" style="width: 65%"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="skill-item mb-2">
+                                                    <div class="d-flex justify-content-between">
+                                                        <span>Data Analysis</span>
+                                                        <span>78%</span>
+                                                    </div>
+                                                    <div class="progress mb-3" style="height: 6px;">
+                                                        <div class="progress-bar bg-info" style="width: 78%"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="skill-item">
+                                                    <div class="d-flex justify-content-between">
+                                                        <span>AI Ethics & Compliance</span>
+                                                        <span>45%</span>
+                                                    </div>
+                                                    <div class="progress" style="height: 6px;">
+                                                        <div class="progress-bar bg-warning" style="width: 45%"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h6><i class="fas fa-external-link-alt me-2"></i>Recommended Certifications</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <ul class="list-group list-group-flush">
+                                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <h6 class="mb-0">IFMA AI in FM Boot Camp</h6>
+                                                            <small class="text-muted">Advanced certification</small>
+                                                        </div>
+                                                        <a href="#" class="btn btn-outline-primary btn-sm">View</a>
+                                                    </li>
+                                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <h6 class="mb-0">RICS Responsible AI Standard</h6>
+                                                            <small class="text-muted">Ethical AI guidelines</small>
+                                                        </div>
+                                                        <a href="#" class="btn btn-outline-primary btn-sm">View</a>
+                                                    </li>
+                                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <h6 class="mb-0">Generative AI for FM</h6>
+                                                            <small class="text-muted">Udemy specialized course</small>
+                                                        </div>
+                                                        <a href="#" class="btn btn-outline-primary btn-sm">View</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Industry Trends Tab -->
+                            <div class="tab-pane fade" id="trends" role="tabpanel">
+                                <!-- Content remains the same as original -->
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="trend-item mb-4">
+                                            <div class="card">
+                                                <div class="card-header bg-primary text-white">
+                                                    <h5><i class="fas fa-robot me-2"></i>AI-Powered Facility Management</h5>
+                                                </div>
+                                                <div class="card-body">
+                                                    <p>Artificial Intelligence is revolutionizing facility management through predictive maintenance, automated systems, and data-driven decision making.</p>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <h6>Key Benefits:</h6>
+                                                            <ul class="small">
+                                                                <li>Predictive maintenance reduces downtime by 30%</li>
+                                                                <li>Energy optimization saves 15-25% costs</li>
+                                                                <li>Automated reporting improves efficiency</li>
+                                                                <li>Enhanced occupant experience</li>
+                                                            </ul>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <h6>Implementation Timeline:</h6>
+                                                            <div class="progress mb-2">
+                                                                <div class="progress-bar bg-success" style="width: 40%">Phase 1: Complete</div>
+                                                            </div>
+                                                            <small class="text-muted">Expected full deployment: Q2 2026</small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="trend-item mb-4">
+                                            <div class="card">
+                                                <div class="card-header bg-success text-white">
+                                                    <h5><i class="fas fa-leaf me-2"></i>Sustainable Facilities Management</h5>
+                                                </div>
+                                                <div class="card-body">
+                                                    <p>Environmental sustainability is becoming a core requirement, driving adoption of green technologies and practices.</p>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <h6>Green Initiatives:</h6>
+                                                            <ul class="small">
+                                                                <li>LED lighting conversion (80% complete)</li>
+                                                                <li>Smart HVAC systems</li>
+                                                                <li>Waste reduction programs</li>
+                                                                <li>Water conservation measures</li>
+                                                            </ul>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <h6>Impact Metrics:</h6>
+                                                            <div class="small">
+                                                                <div class="d-flex justify-content-between">
+                                                                    <span>Energy Reduction:</span>
+                                                                    <span class="text-success">22%</span>
+                                                                </div>
+                                                                <div class="d-flex justify-content-between">
+                                                                    <span>Water Savings:</span>
+                                                                    <span class="text-success">18%</span>
+                                                                </div>
+                                                                <div class="d-flex justify-content-between">
+                                                                    <span>Waste Reduction:</span>
+                                                                    <span class="text-success">35%</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="card mb-4">
+                                            <div class="card-header">
+                                                <h6><i class="fas fa-chart-line me-2"></i>Industry Statistics</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="stat-item mb-3">
+                                                    <div class="h4 text-primary">67%</div>
+                                                    <small>of facilities now use IoT sensors</small>
+                                                </div>
+                                                <div class="stat-item mb-3">
+                                                    <div class="h4 text-success">45%</div>
+                                                    <small>reduction in maintenance costs with AI</small>
+                                                </div>
+                                                <div class="stat-item mb-3">
+                                                    <div class="h4 text-warning">89%</div>
+                                                    <small>of organizations prioritize sustainability</small>
+                                                </div>
+                                                <div class="stat-item">
+                                                    <div class="h4 text-info">$15.7B</div>
+                                                    <small>FM AI market value by 2033</small>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h6><i class="fas fa-binoculars me-2"></i>Technology Watchlist</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="tech-item mb-3">
+                                                    <div class="d-flex align-items-start">
+                                                        <i class="fas fa-microchip text-primary mt-1 me-2"></i>
+                                                        <div>
+                                                            <h6 class="mb-0">Generative AI</h6>
+                                                            <small class="text-muted">For predictive planning and design</small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="tech-item mb-3">
+                                                    <div class="d-flex align-items-start">
+                                                        <i class="fas fa-video text-success mt-1 me-2"></i>
+                                                        <div>
+                                                            <h6 class="mb-0">Computer Vision</h6>
+                                                            <small class="text-muted">Safety and compliance monitoring</small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="tech-item">
+                                                    <div class="d-flex align-items-start">
+                                                        <i class="fas fa-bolt text-warning mt-1 me-2"></i>
+                                                        <div>
+                                                            <h6 class="mb-0">Digital Twins</h6>
+                                                            <small class="text-muted">Virtual building management</small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Facilities Charter Tab -->
+                            <div class="tab-pane fade" id="charter" role="tabpanel">
+                                <!-- Content remains the same as original -->
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="charter-section">
+                                            <h4 class="text-primary mb-3">Derivco Facilities Management Charter</h4>
+                                            
+                                            <div class="charter-content">
+                                                <h5>Mission Statement</h5>
+                                                <div class="alert alert-primary">
+                                                    <p class="mb-0">
+                                                        To provide exceptional, AI-enhanced facilities management services that ensure a safe, efficient, and sustainable workplace environment, 
+                                                        supporting Derivco's operational excellence through innovative solutions and dedicated stewardship.
+                                                    </p>
+                                                </div>
+
+                                                <h5>Core Values</h5>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <ul class="list-unstyled">
+                                                            <li class="mb-2">
+                                                                <i class="fas fa-check-circle text-success me-2"></i>
+                                                                <strong>Excellence:</strong> Delivering superior service in all aspects
+                                                            </li>
+                                                            <li class="mb-2">
+                                                                <i class="fas fa-check-circle text-success me-2"></i>
+                                                                <strong>Integrity:</strong> Honest and transparent communication
+                                                            </li>
+                                                            <li class="mb-2">
+                                                                <i class="fas fa-check-circle text-success me-2"></i>
+                                                                <strong>Innovation:</strong> Embracing technology and improvement
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <ul class="list-unstyled">
+                                                            <li class="mb-2">
+                                                                <i class="fas fa-check-circle text-success me-2"></i>
+                                                                <strong>Sustainability:</strong> Environmental responsibility
+                                                            </li>
+                                                            <li class="mb-2">
+                                                                <i class="fas fa-check-circle text-success me-2"></i>
+                                                                <strong>Safety:</strong> Prioritizing employee well-being
+                                                            </li>
+                                                            <li class="mb-2">
+                                                                <i class="fas fa-check-circle text-success me-2"></i>
+                                                                <strong>Accountability:</strong> Taking ownership of outcomes
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+
+                                                <h5>AI Integration Strategy</h5>
+                                                <div class="row mb-4">
+                                                    <div class="col-md-6">
+                                                        <div class="card bg-light">
+                                                            <div class="card-body">
+                                                                <h6>Phase 1: Foundation</h6>
+                                                                <small>Q1 2025 - IoT Infrastructure</small>
+                                                                <div class="progress mt-2">
+                                                                    <div class="progress-bar bg-success" style="width: 100%">Complete</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="card bg-light">
+                                                            <div class="card-body">
+                                                                <h6>Phase 2: Predictive Systems</h6>
+                                                                <small>Q2 2025 - Maintenance AI</small>
+                                                                <div class="progress mt-2">
+                                                                    <div class="progress-bar bg-primary" style="width: 75%">In Progress</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <h5>Service Standards</h5>
+                                                <div class="table-responsive">
+                                                    <table class="table table-striped">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Service Area</th>
+                                                                <th>Response Time</th>
+                                                                <th>Quality Standard</th>
+                                                                <th>AI Enhancement</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>Emergency Response</td>
+                                                                <td>≤ 15 minutes</td>
+                                                                <td>100% availability</td>
+                                                                <td>AI predictive alerts</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Preventive Maintenance</td>
+                                                                <td>≥ 98% on schedule</td>
+                                                                <td>≤ 2% downtime</td>
+                                                                <td>Predictive scheduling</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Energy Management</td>
+                                                                <td>15-25% reduction</td>
+                                                                <td>Continuous monitoring</td>
+                                                                <td>AI optimization</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Space Utilization</td>
+                                                                <td>≥ 85% efficiency</td>
+                                                                <td>Quarterly reviews</td>
+                                                                <td>AI recommendations</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="card mb-4">
+                                            <div class="card-header">
+                                                <h6><i class="fas fa-tasks me-2"></i>Charter Implementation Status</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="implementation-item mb-3">
+                                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                                        <span>AI Integration</span>
+                                                        <span class="badge bg-success">85%</span>
+                                                    </div>
+                                                    <div class="progress" style="height: 6px;">
+                                                        <div class="progress-bar bg-success" style="width: 85%"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="implementation-item mb-3">
+                                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                                        <span>Sustainability Goals</span>
+                                                        <span class="badge bg-primary">70%</span>
+                                                    </div>
+                                                    <div class="progress" style="height: 6px;">
+                                                        <div class="progress-bar bg-primary" style="width: 70%"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="implementation-item mb-3">
+                                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                                        <span>Team Training</span>
+                                                        <span class="badge bg-info">65%</span>
+                                                    </div>
+                                                    <div class="progress" style="height: 6px;">
+                                                        <div class="progress-bar bg-info" style="width: 65%"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="implementation-item">
+                                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                                        <span>Technology Deployment</span>
+                                                        <span class="badge bg-warning">45%</span>
+                                                    </div>
+                                                    <div class="progress" style="height: 6px;">
+                                                        <div class="progress-bar bg-warning" style="width: 45%"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="card mb-4">
+                                            <div class="card-header">
+                                                <h6><i class="fas fa-users me-2"></i>Team Commitment</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <blockquote class="blockquote small">
+                                                    <p>"We pledge to uphold the highest standards of service delivery, innovation, and sustainability in all facilities management activities, leveraging AI to create exceptional environments."</p>
+                                                    <footer class="blockquote-footer">
+                                                        <cite title="Source Title">Derivco Facilities Management Team</cite>
+                                                    </footer>
+                                                </blockquote>
+                                            </div>
+                                        </div>
+
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h6><i class="fas fa-download me-2"></i>Charter Documents</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="d-grid gap-2">
+                                                    <button class="btn btn-outline-primary btn-sm">
+                                                        <i class="fas fa-file-pdf me-2"></i>Full Charter (PDF)
+                                                    </button>
+                                                    <button class="btn btn-outline-success btn-sm">
+                                                        <i class="fas fa-clipboard-list me-2"></i>Service Standards
+                                                    </button>
+                                                    <button class="btn btn-outline-info btn-sm">
+                                                        <i class="fas fa-chart-bar me-2"></i>Performance Metrics
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // TV Interface Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Update current time
+            function updateTime() {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('en-US', { 
+                    hour12: true, 
+                    hour: '2-digit', 
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+                const dateString = now.toLocaleDateString('en-US', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+                document.getElementById('current-time').textContent = `${dateString} | ${timeString}`;
+            }
+            
+            updateTime();
+            setInterval(updateTime, 1000);
+            
+            // Channel switching functionality
+            const channelButtons = document.querySelectorAll('.channel-btn');
+            const channelContents = document.querySelectorAll('.tv-content-area');
+            const channelNames = [
+                "Global News Channel",
+                "Technology Trends",
+                "Sustainability & Green FM",
+                "Training & Development"
+            ];
+            
+            channelButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const channelId = this.getAttribute('data-channel');
+                    
+                    // Update active button
+                    channelButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Update active content
+                    channelContents.forEach(content => content.classList.remove('active'));
+                    document.getElementById(`channel-${channelId}`).classList.add('active');
+                    
+                    // Update channel name
+                    document.getElementById('current-channel').textContent = channelNames[channelId - 1];
+                });
+            });
+            
+            // Simple JavaScript for the skills chart
+            const canvas = document.getElementById('skillsChart');
+            if (canvas.getContext) {
+                const ctx = canvas.getContext('2d');
+                
+                // Draw background circle
+                ctx.beginPath();
+                ctx.arc(60, 60, 50, 0, Math.PI * 2, false);
+                ctx.strokeStyle = '#2a3a4a';
+                ctx.lineWidth = 8;
+                ctx.stroke();
+                
+                // Draw progress circle (72%)
+                ctx.beginPath();
+                ctx.arc(60, 60, 50, -Math.PI / 2, (Math.PI * 2 * 0.72) - (Math.PI / 2), false);
+                ctx.strokeStyle = '#0061a8';
+                ctx.lineWidth = 8;
+                ctx.stroke();
+            }
+            
+            // Add active class to nav items on click
+            const navItems = document.querySelectorAll('.nav-link');
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        });
+    </script>
+
+    <!-- Footer -->
+    <footer style="background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%); color: white; text-align: center; padding: 2rem 1rem; margin-top: 2rem;">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <div style="margin-bottom: 1rem;">
+                <h4 style="margin-bottom: 0.5rem; color: white; font-size: 1.1rem;">Designed by Sifiso Cyprian Shezi</h4>
+                <p style="color: #bdc3c7; margin: 0;">Facilities Assistant Level 1 — Derivco Durban | Transforming facility management through innovation</p>
+            </div>
+            <div style="border-top: 1px solid #4a5568; padding-top: 1rem;">
+                <p style="color: #9ca3af; font-size: 0.875rem; margin: 0;">&copy; 2025 Derivco Facilities Management System. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

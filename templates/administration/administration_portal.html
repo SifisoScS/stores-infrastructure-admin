@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1" name="viewport"/>
+    <title>Executive Facilities Command Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Professional Enterprise Theme */
+        :root {
+            --derivco-blue: #004289;
+            --derivco-cyan: #00bfff;
+            --derivco-light: #f8fafc;
+            --derivco-gray: #64748b;
+            --text-primary: #1a202c;
+            --text-secondary: #4a5568;
+            --success: #059669;
+            --warning: #d97706;
+            --border-light: #e2e8f0;
+            --shadow-light: rgba(0, 66, 137, 0.08);
+            --shadow-hover: rgba(0, 66, 137, 0.15);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: var(--derivco-light);
+            color: var(--text-primary);
+        }
+
+        .hero-overlay {
+            position: relative;
+            background: linear-gradient(135deg, var(--derivco-blue) 0%, var(--derivco-cyan) 100%);
+            min-height: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px var(--shadow-light);
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+
+        /* Professional Executive Command Cards */
+        .command-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-light);
+            box-shadow: 0 4px 12px var(--shadow-light);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .command-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--derivco-cyan);
+            transform: scaleY(0);
+            transform-origin: bottom;
+            transition: transform 0.3s ease;
+        }
+
+        .command-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 28px var(--shadow-hover);
+            border-color: var(--derivco-cyan);
+        }
+
+        .command-card:hover::before {
+            transform: scaleY(1);
+        }
+
+        .command-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--derivco-blue);
+            text-align: center;
+            display: block;
+        }
+
+        .command-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+            text-align: center;
+            line-height: 1.3;
+        }
+        .command-desc {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+
+        .command-metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .metric-item {
+            background: var(--derivco-light);
+            padding: 0.75rem;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid var(--border-light);
+        }
+
+        .metric-value {
+            font-weight: 700;
+            color: var(--derivco-blue);
+            font-size: 1rem;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .metric-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Dashboard widgets */
+        .dashboard-widget {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 66, 137, 0.1);
+            transition: all 0.3s ease;
+        }
+        .dashboard-widget:hover {
+            box-shadow: 0 8px 25px rgba(0, 66, 137, 0.15);
+            transform: translateY(-2px);
+        }
+
+        /* Chart containers */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+        .mini-chart {
+            height: 150px;
+        }
+
+        /* Status indicators */
+        .status-excellent { 
+            background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .status-good { 
+            background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .status-warning { 
+            background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .status-critical { 
+            background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Modal styles - Updated for full-page feel */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        .modal-content {
+            position: relative;
+            background: white;
+            padding: 0;
+            width: 100%;
+            min-height: 100vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 20px 30px;
+            border-bottom: 2px solid #008080;
+            background: linear-gradient(135deg, #003366 0%, #004080 100%);
+            color: white;
+        }
+        .modal-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white;
+        }
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 2.2rem;
+            cursor: pointer;
+            color: white;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-body {
+            padding: 30px;
+        }
+
+        /* Task list styling */
+        .task-item {
+            background: #f8fafc;
+            border-left: 4px solid #008080;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 0 8px 8px 0;
+            transition: all 0.2s ease;
+        }
+        .task-item:hover {
+            background: #e2e8f0;
+            transform: translateX(5px);
+        }
+        .task-priority-high {
+            border-left-color: #ef4444;
+        }
+        .task-priority-medium {
+            border-left-color: #f59e0b;
+        }
+        .task-priority-low {
+            border-left-color: #10b981;
+        }
+
+        /* Navigation breadcrumb */
+        .breadcrumb {
+            background: rgba(0, 131, 143, 0.1);
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .breadcrumb a {
+            color: #008080;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        /* Quote styling */
+        .executive-quote {
+            background: rgba(0, 131, 143, 0.1);
+            border-left: 4px solid #008080;
+            border-radius: 0 8px 8px 0;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        /* Full-page modal sections */
+        .modal-section {
+            margin-bottom: 30px;
+        }
+        .modal-section-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #003366;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .modal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .modal-card {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        .modal-card-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #003366;
+            margin-bottom: 10px;
+        }
+        
+        /* Core Four Cards Styling */
+        .core-four-section {
+            margin-bottom: 40px;
+        }
+        .core-four-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #00FF99;
+        }
+        
+        .supporting-section {
+            margin-top: 40px;
+        }
+        .supporting-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            color: white;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #008080;
+        }
+
+        /* Manager Workspace Cards */
+        .manager-workspace-card {
+            background: rgba(0, 51, 102, 0.9);
+            border-radius: 15px;
+            padding: 24px;
+            border: 2px solid #008080;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .manager-workspace-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 131, 143, 0.4);
+            border-color: #00FF99;
+        }
+
+        .manager-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(0, 131, 143, 0.3);
+        }
+
+        .manager-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #008080 0%, #00FF99 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .manager-info {
+            flex: 1;
+        }
+
+        .manager-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+            margin: 0 0 5px 0;
+        }
+
+        .manager-title {
+            font-size: 0.9rem;
+            color: #00FF99;
+            margin: 0 0 3px 0;
+            font-weight: 600;
+        }
+
+        .manager-location {
+            font-size: 0.8rem;
+            color: #B0BEC5;
+            margin: 0;
+        }
+
+        .workspace-modules {
+            margin-bottom: 20px;
+        }
+
+        .module-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+        }
+
+        .module-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-left-color: #00FF99;
+            transform: translateX(5px);
+        }
+
+        .module-item i {
+            font-size: 1.2rem;
+            color: #008080;
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .module-details {
+            flex: 1;
+        }
+
+        .module-name {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 2px;
+        }
+
+        .module-desc {
+            font-size: 0.8rem;
+            color: #B0BEC5;
+        }
+
+        .module-metrics {
+            text-align: right;
+        }
+
+        .metric-badge {
+            background: rgba(0, 255, 153, 0.2);
+            color: #00FF99;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: 1px solid rgba(0, 255, 153, 0.3);
+        }
+
+        .workspace-footer {
+            display: flex;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid rgba(0, 131, 143, 0.3);
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-indicator.online {
+            color: #00FF99;
+            animation: pulse-status 2s infinite;
+        }
+
+        @keyframes pulse-status {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .status-text {
+            font-size: 0.8rem;
+            color: #B0BEC5;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen flex flex-col" style="padding: 1rem;">
+        <!-- Header Section -->
+        <header class="hero-overlay">
+            <div class="text-center px-4">
+                <h1 class="text-4xl font-bold text-white leading-tight sm:text-5xl md:text-6xl">
+                    EXECUTIVE FACILITIES COMMAND HUB
+                </h1>
+                <div class="executive-quote max-w-4xl mx-auto mt-6">
+                    <blockquote class="text-lg text-white italic mb-2">
+                        "Strategic oversight transforms operational excellence into organizational success."
+                    </blockquote>
+                    <cite class="text-teal-400 text-sm font-medium">
+                        — Executive Facilities Management Philosophy
+                    </cite>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation Breadcrumb -->
+        <div class="container mx-auto px-4 py-4">
+            <div class="breadcrumb">
+                <a href="/">← Back to Main System</a>
+                <span class="text-gray-600 mx-2">|</span>
+                <span class="text-gray-800 font-semibold">Executive Command Hub</span>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <main class="container mx-auto px-4 py-6 flex-grow">
+            <!-- Core Four Management Areas -->
+            <section class="core-four-section">
+                <h2 class="core-four-title">
+                    CORE FACILITIES MANAGEMENT AREAS
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- PEOPLE Management -->
+                    <div class="command-card" onclick="location.href='/people-management'">
+                        <div class="command-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="command-title">PEOPLE Management</div>
+                        <div class="command-desc">Employees, Contractors, Executives, Visitors - HR Integration</div>
+                        <div class="command-metrics">
+                            <div class="metric-item">
+                                <div class="metric-value">420</div>
+                                <div class="metric-label">Employees</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value">98%</div>
+                                <div class="metric-label">Updated</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PLACES Management -->
+                    <div class="command-card" onclick="location.href='/places-management'">
+                        <div class="command-icon">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <div class="command-title">PLACES Management</div>
+                        <div class="command-desc">Buildings, Floors, Spaces - Floor Plans & Live Storeroom</div>
+                        <div class="command-metrics">
+                            <div class="metric-item">
+                                <div class="metric-value">72%</div>
+                                <div class="metric-label">Utilization</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value">15.2K</div>
+                                <div class="metric-label">m²</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PROCESS Management -->
+                    <div class="command-card" onclick="location.href='/process-management'">
+                        <div class="command-icon">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                        <div class="command-title">PROCESS Management</div>
+                        <div class="command-desc">Work Orders, MAC, Preventive Maintenance</div>
+                        <div class="command-metrics">
+                            <div class="metric-item">
+                                <div class="metric-value">42</div>
+                                <div class="metric-label">Active</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value">94%</div>
+                                <div class="metric-label">On Time</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TECHNOLOGY Integration -->
+                    <div class="command-card" onclick="location.href='/technology-integration'">
+                        <div class="command-icon">
+                            <i class="fas fa-cogs"></i>
+                        </div>
+                        <div class="command-title">TECHNOLOGY Integration</div>
+                        <div class="command-desc">BMS, CMMS, IoT Systems, Analytics</div>
+                        <div class="command-metrics">
+                            <div class="metric-item">
+                                <div class="metric-value">5</div>
+                                <div class="metric-label">Systems</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value">99.2%</div>
+                                <div class="metric-label">Uptime</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Supporting Management Areas - Manager Workspaces -->
+            <section class="supporting-section">
+                <h2 class="supporting-title">
+                    SUPPORTING MANAGEMENT AREAS
+                </h2>
+                <p class="text-center text-gray-600 mb-8">Dedicated Management Workspaces - Isle of Man & Durban Operations</p>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Adriaan Verduyn - Head of Support Services (Isle of Man) -->
+                    <div class="manager-workspace-card">
+                        <div class="manager-header">
+                            <div class="manager-avatar">
+                                <i class="fas fa-user-tie"></i>
+                            </div>
+                            <div class="manager-info">
+                                <h3 class="manager-name">Adriaan Verduyn</h3>
+                                <p class="manager-title">Head of Support Services</p>
+                                <p class="manager-location">🇮🇲 Isle of Man (GMT)</p>
+                            </div>
+                        </div>
+
+                        <div class="workspace-modules">
+                            <div class="module-item" onclick="location.href='/global-coordination'">
+                                <i class="fas fa-comments"></i>
+                                <div class="module-details">
+                                    <div class="module-name">Global Coordination</div>
+                                    <div class="module-desc">Multi-timezone stakeholder management</div>
+                                </div>
+                                <div class="module-metrics">
+                                    <span class="metric-badge">24 Pending</span>
+                                </div>
+                            </div>
+
+                            <div class="module-item" onclick="openCommandModule('financial')">
+                                <i class="fas fa-chart-line"></i>
+                                <div class="module-details">
+                                    <div class="module-name">Financial Command</div>
+                                    <div class="module-desc">Executive budget oversight & approvals</div>
+                                </div>
+                                <div class="module-metrics">
+                                    <span class="metric-badge">R2.4M Budget</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="workspace-footer">
+                            <div class="status-indicator online">●</div>
+                            <span class="status-text">Available - GMT Working Hours</span>
+                        </div>
+                    </div>
+
+                    <!-- Aidan Harris - Estate Manager (Durban) -->
+                    <div class="manager-workspace-card">
+                        <div class="manager-header">
+                            <div class="manager-avatar">
+                                <i class="fas fa-building"></i>
+                            </div>
+                            <div class="manager-info">
+                                <h3 class="manager-name">Aidan Harris</h3>
+                                <p class="manager-title">Estate Manager</p>
+                                <p class="manager-location">🇿🇦 Durban (SAST)</p>
+                            </div>
+                        </div>
+
+                        <div class="workspace-modules">
+                            <div class="module-item" onclick="location.href='/document-control'">
+                                <i class="fas fa-folder-open"></i>
+                                <div class="module-details">
+                                    <div class="module-name">Document Control</div>
+                                    <div class="module-desc">SharePoint, policies & compliance records</div>
+                                </div>
+                                <div class="module-metrics">
+                                    <span class="metric-badge">247 Docs</span>
+                                </div>
+                            </div>
+
+                            <div class="module-item" onclick="openCommandModule('financial')">
+                                <i class="fas fa-calculator"></i>
+                                <div class="module-details">
+                                    <div class="module-name">Budget Management</div>
+                                    <div class="module-desc">Estate cost control & financial reporting</div>
+                                </div>
+                                <div class="module-metrics">
+                                    <span class="metric-badge">76% Used</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="workspace-footer">
+                            <div class="status-indicator online">●</div>
+                            <span class="status-text">Available - SAST Working Hours</span>
+                        </div>
+                    </div>
+
+                    <!-- Neren Kisten - Facilities Manager (Durban) -->
+                    <div class="manager-workspace-card">
+                        <div class="manager-header">
+                            <div class="manager-avatar">
+                                <i class="fas fa-cogs"></i>
+                            </div>
+                            <div class="manager-info">
+                                <h3 class="manager-name">Neren Kisten</h3>
+                                <p class="manager-title">Facilities Manager</p>
+                                <p class="manager-location">🇿🇦 Durban (SAST)</p>
+                            </div>
+                        </div>
+
+                        <div class="workspace-modules">
+                            <div class="module-item" onclick="location.href='/strategic-planning'">
+                                <i class="fas fa-calendar-alt"></i>
+                                <div class="module-details">
+                                    <div class="module-name">Strategic Planning</div>
+                                    <div class="module-desc">Team coordination & resource planning</div>
+                                </div>
+                                <div class="module-metrics">
+                                    <span class="metric-badge">15 Projects</span>
+                                </div>
+                            </div>
+
+                            <div class="module-item" onclick="location.href='/strategic-planning'">
+                                <i class="fas fa-users"></i>
+                                <div class="module-details">
+                                    <div class="module-name">Team Coordination</div>
+                                    <div class="module-desc">Daily operations & team communication</div>
+                                </div>
+                                <div class="module-metrics">
+                                    <span class="metric-badge">10 Members</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="workspace-footer">
+                            <div class="status-indicator online">●</div>
+                            <span class="status-text">Available - Reports to Aidan</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Executive Dashboard -->
+            <section class="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-12">
+                <!-- Today's Priority Actions -->
+                <div class="dashboard-widget">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-tasks text-teal-600 mr-2"></i>
+                        Today's Priority Actions
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="task-item task-priority-high">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <div class="font-semibold text-gray-800">Budget Review Meeting</div>
+                                    <div class="text-sm text-gray-600">Q4 financial planning session</div>
+                                </div>
+                                <span class="status-critical">HIGH</span>
+                            </div>
+                        </div>
+                        <div class="task-item task-priority-medium">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <div class="font-semibold text-gray-800">Vendor Performance Review</div>
+                                    <div class="text-sm text-gray-600">LivClean quarterly assessment</div>
+                                </div>
+                                <span class="status-warning">MEDIUM</span>
+                            </div>
+                        </div>
+                        <div class="task-item task-priority-low">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <div class="font-semibold text-gray-800">Space Utilization Report</div>
+                                    <div class="text-sm text-gray-600">Weekly occupancy analysis</div>
+                                </div>
+                                <span class="status-good">LOW</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Financial Overview -->
+                <div class="dashboard-widget">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-dollar-sign text-green-600 mr-2"></i>
+                        Financial Overview
+                    </h3>
+                    <div class="chart-container mini-chart">
+                        <canvas id="budgetChart"></canvas>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 mt-4">
+                        <div class="text-center p-3 bg-gray-50 rounded">
+                            <div class="text-lg font-bold text-green-600">R1.82M</div>
+                            <div class="text-sm text-gray-600">Spent YTD</div>
+                        </div>
+                        <div class="text-center p-3 bg-gray-50 rounded">
+                            <div class="text-lg font-bold text-blue-600">R580K</div>
+                            <div class="text-sm text-gray-600">Remaining</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Performance -->
+                <div class="dashboard-widget">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-tachometer-alt text-blue-600 mr-2"></i>
+                        System Performance
+                    </h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>Operational Efficiency</span>
+                                <span class="font-bold text-green-600">97.3%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-green-600 h-2 rounded-full" style="width: 97.3%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>Vendor Compliance</span>
+                                <span class="font-bold text-blue-600">94.1%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-blue-600 h-2 rounded-full" style="width: 94.1%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>Documentation Current</span>
+                                <span class="font-bold text-purple-600">98.2%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-purple-600 h-2 rounded-full" style="width: 98.2%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Actions Panel -->
+            <section class="mt-12">
+                <div class="dashboard-widget">
+                    <h3 class="text-xl font-bold text-gray-800 mb-6 text-center">Executive Quick Actions</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <button class="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 transform hover:scale-105" onclick="generateExecutiveReport()">
+                            <i class="fas fa-file-alt mr-2"></i>
+                            Executive Report
+                        </button>
+                        <button class="bg-gradient-to-r from-green-600 to-green-700 text-white px-6 py-3 rounded-lg hover:from-green-700 hover:to-green-800 transition-all duration-200 transform hover:scale-105" onclick="scheduleMeeting()">
+                            <i class="fas fa-calendar-plus mr-2"></i>
+                            Schedule Meeting
+                        </button>
+                        <button class="bg-gradient-to-r from-purple-600 to-purple-700 text-white px-6 py-3 rounded-lg hover:from-purple-700 hover:to-purple-800 transition-all duration-200 transform hover:scale-105" onclick="openPowerBI()">
+                            <i class="fas fa-chart-line mr-2"></i>
+                            Power BI Dashboard
+                        </button>
+                        <button class="bg-gradient-to-r from-red-600 to-red-700 text-white px-6 py-3 rounded-lg hover:from-red-700 hover:to-red-800 transition-all duration-200 transform hover:scale-105" onclick="viewAlerts()">
+                            <i class="fas fa-exclamation-triangle mr-2"></i>
+                            Priority Alerts
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Command Module Modal -->
+        <div id="commandModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="modalTitle" class="modal-title">Command Module</h2>
+                    <button class="close-modal" onclick="closeModal()">&times;</button>
+                </div>
+                <div id="modalContent" class="modal-body">
+                    <!-- Dynamic content will be inserted here -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <footer class="bg-slate-900 text-center py-4">
+            <p class="text-gray-400 text-sm">Designed by Sifiso Cyprian Shezi</p>
+            <p class="text-gray-400 text-sm">Facilities Assistant Level 1 — Derivco Durban | Transforming facility management through innovation</p>
+            <p class="text-gray-500 text-xs mt-2">&copy; 2025 Derivco Facilities Management System. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Initialize budget chart
+        function initializeBudgetChart() {
+            const ctx = document.getElementById('budgetChart').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Spent', 'Remaining', 'Reserved'],
+                    datasets: [{
+                        data: [1820000, 580000, 200000],
+                        backgroundColor: [
+                            '#ef4444',
+                            '#10b981',
+                            '#3b82f6'
+                        ],
+                        borderColor: '#ffffff',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: {
+                                    size: 11
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Command module data - Updated for full-page feel
+        const commandModules = {
+            people: {
+                title: 'PEOPLE Management - Employees, Contractors, Executives, Visitors',
+                content: `
+                    <div class="modal-section">
+                        <h3 class="modal-section-title">Personnel Overview</h3>
+                        <div class="modal-grid">
+                            <div class="modal-card">
+                                <h4 class="modal-card-title">Employee Statistics</h4>
+                                <div class="space-y-2">
+                                    <div class="flex justify-between items-center p-2 bg-white rounded shadow-sm">
+                                        <span class="text-sm">Total Employees</span>
+                                        <span class="font-bold text-blue-600">420</span>
+                                    </div>
+                                    <div class="flex justify-between items-center p-2 bg-white rounded shadow-sm">
+                                        <span class="text-sm">Contractors</span>
+                                        <span class="font-bold text-green-600">35</span>
+                                    </div>
+                                    <div class="flex justify-between items-center p-2 bg-white rounded shadow-sm">
+                                        <span class="text-sm">Executives</span>
+                                        <span class="font-bold text-purple-600">12</span>
+                                    </div>
+                                    <div class="flex justify-between items-center p-2 bg-white rounded shadow-sm">
+                                        <span class="text-sm">Data Accuracy</span>
+                                        <span class="font-bold text-green-600">98%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-card">
+                                <h4 class="modal-card-title">HR Integration Status</h4>
+                                <div class="space-y-2">
+                                    <div class="flex justify-between items-center p-2 bg-white rounded shadow-sm">
+                                        <span class="text-sm">Last Sync</span>
+                                        <span class="font-bold text-blue-600">Today 08:45</span>
+                                    </div>
+                                    <div class="flex justify-between items-center p-2 bg-white rounded shadow-sm">
+                                        <span class="text-sm">Pending Updates</span>
+                                        <span class="font-bold text-orange-600">3</span>
+                                    </div>
+                                    <div class="flex justify-between items-center p-2 bg-white rounded shadow-sm">
+                                        <span class="text-sm">Integration Health</span>
+                                        <span class="font-bold text-green-600">Excellent</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-section">
+                        <h3 class="modal-section-title">Department Distribution</h3>
+                        <div class="modal-grid">
+                            <div class="modal-card">
+                                <h4 class="modal-card-title">By Department</h4>
+                                <div class="space-y-2 text-sm">
+                                    <div class="p-2 bg-white rounded flex justify-between">
+                                        <span>Engineering</span>
+                                        <span class="font-bold text-blue-600">142</span>
+                                    </div>
+                                    <div class="p-2 bg-white rounded flex justify-between">
+                                        <span>Sales & Marketing</span>
+                                        <span class="font-bold text-green-600">85</span>
+                                    </div>
+                                    <div class="p-2 bg-white rounded flex justify-between">
+                                        <span>Operations</span>
+                                        <span class="font-bold text-purple-600">78</span>
+                                    </div>
+                                    <div class="p-2 bg-white rounded flex justify-between">
+                                        <span>Administration</span>
+                                        <span class="font-bold text-orange-600">45</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-card">
+                                <h4 class="modal-card-title">Location Distribution</h4>
+                                <div class="space-y-2 text-sm">
+                                    <div class="p-2 bg-white rounded flex justify-between">
+                                        <span>Headquarters</span>
+                                        <span class="font-bold text-blue-600">320</span>
+                                    </div>
+                                    <div class="p-2 bg-white rounded flex justify-between">
+                                        <span>Regional Office A</span>
+                                        <span class="font-bold text-green-600">65</span>
+                                    </div>
+                                    <div class="p-2 bg-white rounded flex justify-between">
+                                        <span>Regional Office B</span>
+                                        <span class="font-bold text-purple-600">35</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-section">
+                        <h3 class="modal-section-title">Quick Actions</h3>
+                        <div class="flex space-x-4">
+                            <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">HR Portal</button>
+                            <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Employee Directory</button>
+                            <button class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">Org Chart</button>
+                        </div>
+                    </div>
+                `
+            },
+            places: {
+                title: 'PLACES Management - Buildings, Floors, Spaces, Occupancy Analytics',
+                content: `
+                    <div class="modal-section">
+                        <h3 class="modal-section-title">Building Portfolio</h3>
+                        <div class="modal-grid">
+                            <div class="modal-card">
+                                <h4 class="modal-card-title">Building Overview</h4>
+                                <div class="space-y-2">
+                                    <div class="flex justify-between items-center p-2 bg-white rounded shadow-sm">
+                                        <span class="text-sm">Total Buildings</span>
+                                        <span class="font-bold text-blue-600">3</span>
+                                    </div>
+                                    <div class="flex justify-between items-center p-2 bg-white rounded shadow-sm">
+                                        <span class="text-sm">Total Floor Area</span>
+                                        <span class="font-bold text-green-600">15,240 m²</span>
+                                    </div>
+                                    <div class="flex justify-between items-center p-2 bg-white rounded shadow-sm">
+                                        <span class="text-sm">Average Occupancy</span>
+                                        <span class="font-bold text-purple-600">72%</span>
+                                    </div>
+                                    <div class="flex justify-between items-center p-2 bg-white rounded shadow-sm">
+                                        <span class="text-sm">Peak Utilization</span>
+                                        <span class="font-bold text-orange-600">89%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-card">
+                                <h4 class="modal-card-title">Space Allocation</h4>
+                                <div class="space-y-2">
+                                    <div class="flex justify-between items-center p-2 bg-white rounded shadow-sm">
+                                        <span class="text-sm">Workstations</span>
+                                        <span class="font-bold text-blue-600">420</span>
+                                    </div>
+                                    <div class="flex justify-between items-center p-2 bg-white rounded shadow-sm">
+                                        <span class="text-sm">Meeting Rooms</span>
+                                        <span class="font-bold text-green-600">28</span>
+                                    </div>
+                                    <div class="flex justify-between items-center p-2 bg-white rounded shadow-sm">
+                                        <span class="text-sm">Common Areas</span>
+                                        <span class="font-bold text-purple-600">12</span>
+                                    </div>
+                                    <div class="flex justify-between items-center p-2 bg-white rounded shadow-sm">
+                                        <span class="text-sm">Vacant Spaces</span>
+                                        <span class="font-bold text-orange-600">15</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-section">
+                        <h3 class="modal-section-title">Floor Analytics</h3>
+                        <div class="modal-grid">
+                            <div class="modal-card">
+                                <h4 class="modal-card-title">Floor 3 - Engineering</h4>
+                                <div class="space-y-2 text-sm">
+                                    <div class="p-2 bg-white rounded flex justify-between">
+                                        <span>Total Area</span>
+                                        <span class="font-bold text-blue-600">4,850 m²</span>
+                                    </div>
+                                    <div class="p-2 bg-white rounded flex justify-between">
+                                        <span>Current Occupancy</span>
+                                        <span class="font-bold text-green-600">78%</span>
+                                    </div>
+                                    <div class="p-2 bg-white rounded flex justify-between">
+                                        <span>Workstations</span>
+                                        <span class="font-bold text-purple-600">142</span>
+                                    </div>
+                                    <div class="p-2 bg-white rounded flex justify-between">
+                                        <span>Meeting Rooms</span>
+                                        <span class="font-bold text-orange-600">8</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-card">
+                                <h4 class="modal-card-title">Floor 2 - Sales & Operations</h4>
+                                <div class="space-y-2 text-sm">
+                                    <div class="p-2 bg-white rounded flex justify-between">
+                                        <span>Total Area</span>
+                                        <span class="font-bold text-blue-600">5,120 m²</span>
+                                    </div>
+                                    <div class="p-2 bg-white rounded flex justify-between">
+                                        <span>Current Occupancy</span>
+                                        <span class="font-bold text-green-600">65%</span>
+                                    </div>
+                                    <div class="p-2 bg-white rounded flex justify-between">
+                                        <span>Workstations</span>
+                                        <span class="font-bold text-purple-600">163</span>
+                                    </div>
+                                    <div class="p-2 bg-white rounded flex justify-between">
+                                        <span>Meeting Rooms</span>
+                                        <span class="font-bold text-orange-600">12</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-section">
+                        <h3 class="modal-section-title">Quick Actions</h3>
+                        <div class="flex space-x-4">
+                            <button class="bg-cyan-600 text-white px-4 py-2 rounded hover:bg-cyan-700">Space Analytics</button>
+                            <button class="bg-lime-600 text-white px-4 py-2 rounded hover:bg-lime-700">Floor Plans</button>
+                            <button class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">Occupancy Reports</button>
+                        </div>
+                    </div>
+                `
+            },
+            process: {
+                title: 'PROCESS Management - Work Orders, MAC, Preventive Maintenance',
+                content: `
+                    <div class="modal-section">
+                        <h3 class="modal-section-title">Work Order Management</h3>
+                        <div class="modal-grid">
+                            <div class="modal-card">
+                                <h4 class="modal-card-title">Active Work Orders</h4>
+                                <div class="space-y-2">
+                                    <div class="flex justify-between items-center p-2 bg-white rounded shadow-sm">
+                                        <span class="text-sm">Total Active</span>
+                                        <span class="font-bold text-blue-600">42</span>
+                                    </div>
+                                    <div class="flex justify-between items-center p-2 bg-white rounded shadow-sm">
+                                        <span class="text-sm">High Priority</span>
+                                        <span class="font-bold text-red-600">8</span>
+                                    </div>
+                                    <div class="flex justify-between items-center p-2 bg-white rounded shadow-sm">
+                                        <span class="text-sm">On Schedule</span>
+                                        <span class="font-bold text-green-600">94%</span>
+                                    </div>
+                                    <div class="flex justify-between items-center p-2 bg-white rounded shadow-sm">
+                                        <span class="text-sm">Overdue</span>
+                                        <span class="font-bold text-orange-600">2</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-card">
+                                <h4 class="modal-card-title">Moves, Adds & Changes (MAC)</h4>
+                                <div class="space-y-2">
+                                    <div class="flex justify-between items-center p-2 bg-white rounded shadow-sm">
+                                        <span class="text-sm">Active MAC Projects</span>
+                                        <span class="font-bold text-purple-600">5</span>
+                                    </div>
+                                    <div class="flex justify-between items-center p-2 bg-white rounded shadow-sm">
+                                        <span class="text-sm">Completed This Month</span>
+                                        <span class="font-bold text-green-600">12</span>
+                                    </div>
+                                    <div class="flex justify-between items-center p-2 bg-white rounded shadow-sm">
+                                        <span class="text-sm">Scheduled Next Month</span>
+                                        <span class="font-bold text-blue-600">8</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-section">
+                        <h3 class="modal-section-title">Maintenance Processes</h3>
+                        <div class="modal-grid">
+                            <div class="modal-card">
+                                <h4 class="modal-card-title">Preventive Maintenance</h4>
+                                <div class="space-y-2 text-sm">
+                                    <div class="p-2 bg-white rounded flex justify-between">
+                                        <span>Scheduled This Week</span>
+                                        <span class="font-bold text-blue-600">18</span>
+                                    </div>
+                                    <div class="p-2 bg-white rounded flex justify-between">
+                                        <span>Completed</span>
+                                        <span class="font-bold text-green-600">15</span>
+                                    </div>
+                                    <div class="p-2 bg-white rounded flex justify-between">
+                                        <span>Compliance Rate</span>
+                                        <span class="font-bold text-purple-600">96%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-card">
+                                <h4 class="modal-card-title">Process Efficiency</h4>
+                                <div class="space-y-2 text-sm">
+                                    <div class="p-2 bg-white rounded flex justify-between">
+                                        <span>Average Response Time</span>
+                                        <span class="font-bold text-green-600">2.1 hrs</span>
+                                    </div>
+                                    <div class="p-2 bg-white rounded flex justify-between">
+                                        <span>Resolution Rate</span>
+                                        <span class="font-bold text-blue-600">95%</span>
+                                    </div>
+                                    <div class="p-2 bg-white rounded flex justify-between">
+                                        <span>Customer Satisfaction</span>
+                                        <span class="font-bold text-purple-600">4.7/5</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-section">
+                        <h3 class="modal-section-title">Quick Actions</h3>
+                        <div class="flex space-x-4">
+                            <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Work Order System</button>
+                            <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">MAC Dashboard</button>
+                            <button class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">Maintenance Schedule</button>
+                        </div>
+                    </div>
+                `
+            },
+            technology: {
+                title: 'TECHNOLOGY Integration - BMS, CMMS, IoT Systems, Analytics',
+                content: `
+                    <div class="modal-section">
+                        <h3 class="modal-section-title">System Status</h3>
+                        <div class="modal-grid">
+                            <div class="modal-card">
+                                <h4 class="modal-card-title">Core Systems</h4>
+                                <div class="space-y-2">
+                                    <div class="p-2 bg-white rounded flex justify-between items-center">
+                                        <span class="text-sm">Building Management System</span>
+                                        <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">ONLINE</span>
+                                    </div>
+                                    <div class="p-2 bg-white rounded flex justify-between items-center">
+                                        <span class="text-sm">IoT Sensor Network</span>
+                                        <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">99.2%</span>
+                                    </div>
+                                    <div class="p-2 bg-white rounded flex justify-between items-center">
+                                        <span class="text-sm">CMMS Integration</span>
+                                        <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">SYNC</span>
+                                    </div>
+                                    <div class="p-2 bg-white rounded flex justify-between items-center">
+                                        <span class="text-sm">Data Analytics</span>
+                                        <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded text-xs">ACTIVE</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-card">
+                                <h4 class="modal-card-title">Integration Health</h4>
+                                <div class="space-y-2 text-sm">
+                                    <div class="p-2 bg-white rounded flex justify-between">
+                                        <span>System Uptime</span>
+                                        <span class="font-bold text-green-600">99.2%</span>
+                                    </div>
+                                    <div class="p-2 bg-white rounded flex justify-between">
+                                        <span>Data Sync Rate</span>
+                                        <span class="font-bold text-blue-600">98.7%</span>
+                                    </div>
+                                    <div class="p-2 bg-white rounded flex justify-between">
+                                        <span>API Response Time</span>
+                                        <span class="font-bold text-purple-600">145ms</span>
+                                    </div>
+                                    <div class="p-2 bg-white rounded flex justify-between">
+                                        <span>Security Compliance</span>
+                                        <span class="font-bold text-green-600">100%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-section">
+                        <h3 class="modal-section-title">Technology Stack</h3>
+                        <div class="modal-grid">
+                            <div class="modal-card">
+                                <h4 class="modal-card-title">Connected Systems</h4>
+                                <div class="space-y-2 text-sm">
+                                    <div class="p-2 bg-white rounded">BMS - Building Automation</div>
+                                    <div class="p-2 bg-white rounded">CMMS - Maintenance Management</div>
+                                    <div class="p-2 bg-white rounded">IoT - Environmental Sensors</div>
+                                    <div class="p-2 bg-white rounded">Analytics - Power BI Integration</div>
+                                </div>
+                            </div>
+                            <div class="modal-card">
+                                <h4 class="modal-card-title">Data Sources</h4>
+                                <div class="space-y-2 text-sm">
+                                    <div class="p-2 bg-white rounded">Energy Consumption Data</div>
+                                    <div class="p-2 bg-white rounded">Occupancy Sensors</div>
+                                    <div class="p-2 bg-white rounded">Maintenance Work Orders</div>
+                                    <div class="p-2 bg-white rounded">Space Utilization Metrics</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-section">
+                        <h3 class="modal-section-title">Quick Actions</h3>
+                        <div class="flex space-x-4">
+                            <button class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700">System Console</button>
+                            <button class="bg-slate-600 text-white px-4 py-2 rounded hover:bg-slate-700">Integration Manager</button>
+                            <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Data Analytics</button>
+                        </div>
+                    </div>
+                `
+            },
+            communication: {
+                title: 'Communication & Coordination Hub',
+                content: `
+                    <div class="modal-section">
+                        <h3 class="modal-section-title">Today's Communications</h3>
+                        <div class="modal-grid">
+                            <div class="modal-card">
+                                <h4 class="modal-card-title">Email Communications</h4>
+                                <div class="space-y-2">
+                                    <div class="flex justify-between items-center p-2 bg-white rounded shadow-sm">
+                                        <span class="text-sm">Unread Emails</span>
+                                        <span class="font-bold text-red-600">24</span>
+                                    </div>
+                                    <div class="flex justify-between items-center p-2 bg-white rounded shadow-sm">
+                                        <span class="text-sm">Urgent Messages</span>
+                                        <span class="font-bold text-orange-600">8</span>
+                                    </div>
+                                    <div class="flex justify-between items-center p-2 bg-white rounded shadow-sm">
+                                        <span class="text-sm">Follow-ups Required</span>
+                                        <span class="font-bold text-blue-600">12</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-card">
+                                <h4 class="modal-card-title">Team Coordination</h4>
+                                <div class="space-y-2">
+                                    <div class="flex justify-between items-center p-2 bg-white rounded shadow-sm">
+                                        <span class="text-sm">Teams Messages</span>
+                                        <span class="font-bold text-blue-600">8</span>
+                                    </div>
+                                    <div class="flex justify-between items-center p-2 bg-white rounded shadow-sm">
+                                        <span class="text-sm">Meetings Today</span>
+                                        <span class="font-bold text-green-600">5</span>
+                                    </div>
+                                    <div class="flex justify-between items-center p-2 bg-white rounded shadow-sm">
+                                        <span class="text-sm">Pending Decisions</span>
+                                        <span class="font-bold text-purple-600">3</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-section">
+                        <h3 class="modal-section-title">Stakeholder Management</h3>
+                        <div class="modal-grid">
+                            <div class="modal-card">
+                                <h4 class="modal-card-title">Executive Updates</h4>
+                                <div class="space-y-2 text-sm">
+                                    <div class="p-2 bg-white rounded">CEO: Budget approval needed</div>
+                                    <div class="p-2 bg-white rounded">HR Director: Space planning meeting</div>
+                                    <div class="p-2 bg-white rounded">IT Director: System integration update</div>
+                                </div>
+                            </div>
+                            <div class="modal-card">
+                                <h4 class="modal-card-title">HR Integration</h4>
+                                <div class="space-y-2 text-sm">
+                                    <div class="p-2 bg-white rounded">Staff Allocation: 78% Optimal</div>
+                                    <div class="p-2 bg-white rounded">Training Compliance: 92% Complete</div>
+                                    <div class="p-2 bg-white rounded">Performance Reviews: 15 Pending</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-section">
+                        <h3 class="modal-section-title">Quick Actions</h3>
+                        <div class="flex space-x-4">
+                            <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Open Outlook</button>
+                            <button class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">Open Teams</button>
+                            <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">HR Portal</button>
+                        </div>
+                    </div>
+                `
+            }
+        };
+
+        // Open command module
+        function openCommandModule(module) {
+            const moduleData = commandModules[module];
+            if (moduleData) {
+                document.getElementById('modalTitle').innerHTML = moduleData.title;
+                document.getElementById('modalContent').innerHTML = moduleData.content;
+                document.getElementById('commandModal').style.display = 'block';
+                document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            }
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('commandModal').style.display = 'none';
+            document.body.style.overflow = 'auto'; // Restore scrolling
+        }
+
+        // Quick action functions
+        function generateExecutiveReport() {
+            alert('Generating comprehensive executive facilities report...');
+        }
+
+        function scheduleMeeting() {
+            alert('Opening calendar to schedule executive meeting...');
+        }
+
+        function openPowerBI() {
+            alert('Launching Power BI facilities dashboard...');
+        }
+
+        function viewAlerts() {
+            alert('Loading priority facility alerts...');
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('commandModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeBudgetChart();
+        });
+    </script>
+</body>
+</html>

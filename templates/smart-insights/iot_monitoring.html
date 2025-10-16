@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page_title }} - Derivco Facilities</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --derivco-blue: rgb(0, 66, 137);
+            --derivco-cyan: rgb(0, 191, 255);
+            --derivco-blue-light: rgba(0, 66, 137, 0.1);
+            --derivco-cyan-light: rgba(0, 191, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            min-height: 100vh;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, var(--derivco-blue) 0%, var(--derivco-cyan) 100%);
+            color: white;
+        }
+
+        .clean-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0, 66, 137, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .clean-card:hover {
+            box-shadow: 0 8px 24px rgba(0, 66, 137, 0.12);
+            transform: translateY(-2px);
+        }
+
+        .sensor-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 66, 137, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .sensor-card:hover {
+            box-shadow: 0 8px 16px rgba(0, 66, 137, 0.12);
+            transform: translateY(-1px);
+        }
+
+        .status-optimal { background: #10b981; }
+        .status-normal { background: #3b82f6; }
+        .status-warning { background: #f59e0b; }
+        .status-critical { background: #ef4444; }
+        .status-good { background: #22c55e; }
+
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="text-xl font-semibold text-gray-900">Derivco Facilities</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/smart-insights" class="text-blue-600 hover:text-blue-800 px-3 py-2 rounded-md font-medium flex items-center gap-2">
+                        <i class="fas fa-arrow-left"></i> Back to Smart Insights
+                    </a>
+                    <a href="/" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md">Home</a>
+                    <a href="/inventory" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md">Inventory</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold mb-2">IoT Monitoring Dashboard</h1>
+                    <p class="text-lg opacity-90">Real-time sensor network monitoring and environmental analytics</p>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <div class="glass px-4 py-2 rounded-lg">
+                        <div class="text-sm">Live Data Stream</div>
+                    </div>
+                    <div class="bg-white bg-opacity-20 px-4 py-2 rounded-lg">
+                        <div class="text-sm">Network Status: <span class="font-bold pulse-animation">Active</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Sensor Overview Grid -->
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+            {% for sensor_type, data in sensors.items() %}
+            <div class="sensor-card text-center">
+                <div class="flex justify-between items-center mb-2">
+                    <div class="w-3 h-3 rounded-full status-{{ data.status }}"></div>
+                    <span class="text-xs font-medium text-green-600">{{ data.online }}/{{ data.total }}</span>
+                </div>
+                <div class="text-lg font-bold text-gray-900">{{ data.avg_reading }}</div>
+                <div class="text-xs text-gray-600 capitalize">{{ sensor_type.replace('_', ' ') }}</div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Live Sensor Data -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- Real-time Readings -->
+            <div class="clean-card p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-bold text-gray-900 flex items-center">
+                        <i class="fas fa-satellite-dish mr-2" style="color: var(--derivco-blue);"></i>
+                        Live Sensor Readings
+                    </h3>
+                    <button class="text-sm font-medium px-3 py-1 rounded-lg bg-gray-100 hover:bg-gray-200" style="color: var(--derivco-blue);">
+                        <i class="fas fa-sync-alt mr-1 pulse-animation"></i> Auto-refresh
+                    </button>
+                </div>
+
+                <div class="space-y-4">
+                    {% for zone_data in live_data %}
+                    <div class="p-4 rounded-xl border-l-4" style="border-color: var(--derivco-blue); background: var(--derivco-blue-light);">
+                        <div class="flex justify-between items-center mb-3">
+                            <h4 class="font-semibold text-gray-900">{{ zone_data.zone }}</h4>
+                            <span class="text-xs px-2 py-1 bg-green-100 text-green-800 rounded">ONLINE</span>
+                        </div>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                            <div class="text-center">
+                                <i class="fas fa-thermometer-half text-red-500 mb-1"></i>
+                                <div class="font-bold">{{ zone_data.temp }}°C</div>
+                                <div class="text-xs text-gray-600">Temperature</div>
+                            </div>
+                            <div class="text-center">
+                                <i class="fas fa-tint text-blue-500 mb-1"></i>
+                                <div class="font-bold">{{ zone_data.humidity }}%</div>
+                                <div class="text-xs text-gray-600">Humidity</div>
+                            </div>
+                            <div class="text-center">
+                                <i class="fas fa-wind text-green-500 mb-1"></i>
+                                <div class="font-bold">{{ zone_data.co2 }}ppm</div>
+                                <div class="text-xs text-gray-600">CO₂</div>
+                            </div>
+                            <div class="text-center">
+                                <i class="fas fa-volume-up text-purple-500 mb-1"></i>
+                                <div class="font-bold">{{ zone_data.noise }}dB</div>
+                                <div class="text-xs text-gray-600">Noise</div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Sensor Network Health -->
+            <div class="clean-card p-6">
+                <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                    <i class="fas fa-network-wired mr-2" style="color: var(--derivco-cyan);"></i>
+                    Network Health Status
+                </h3>
+
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 rounded-full bg-green-500 mr-3"></div>
+                            <span class="text-sm font-medium">Temperature Sensors</span>
+                        </div>
+                        <span class="text-sm text-gray-600">{{ sensors.temperature.online }}/{{ sensors.temperature.total }} Online</span>
+                    </div>
+
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 rounded-full bg-green-500 mr-3"></div>
+                            <span class="text-sm font-medium">Humidity Sensors</span>
+                        </div>
+                        <span class="text-sm text-gray-600">{{ sensors.humidity.online }}/{{ sensors.humidity.total }} Online</span>
+                    </div>
+
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 rounded-full bg-yellow-500 mr-3"></div>
+                            <span class="text-sm font-medium">Motion Detectors</span>
+                        </div>
+                        <span class="text-sm text-gray-600">{{ sensors.motion.online }}/{{ sensors.motion.total }} Online</span>
+                    </div>
+
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 rounded-full bg-green-500 mr-3"></div>
+                            <span class="text-sm font-medium">Security Cameras</span>
+                        </div>
+                        <span class="text-sm text-gray-600">{{ sensors.security.online }}/{{ sensors.security.total }} Online</span>
+                    </div>
+
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 rounded-full bg-green-500 mr-3"></div>
+                            <span class="text-sm font-medium">Air Quality Sensors</span>
+                        </div>
+                        <span class="text-sm text-gray-600">{{ sensors.air_quality.online }}/{{ sensors.air_quality.total }} Online</span>
+                    </div>
+
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 rounded-full bg-green-500 mr-3"></div>
+                            <span class="text-sm font-medium">Noise Monitors</span>
+                        </div>
+                        <span class="text-sm text-gray-600">{{ sensors.noise.online }}/{{ sensors.noise.total }} Online</span>
+                    </div>
+                </div>
+
+                <!-- Network Statistics -->
+                <div class="mt-6 pt-6 border-t border-gray-100">
+                    <h4 class="font-semibold text-gray-900 mb-3">Network Statistics</h4>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="text-center p-3 rounded-lg" style="background: var(--derivco-blue-light);">
+                            <div class="text-lg font-bold" style="color: var(--derivco-blue);">98.2%</div>
+                            <div class="text-xs text-gray-600">Uptime</div>
+                        </div>
+                        <div class="text-center p-3 rounded-lg" style="background: var(--derivco-cyan-light);">
+                            <div class="text-lg font-bold" style="color: var(--derivco-cyan);">2.1s</div>
+                            <div class="text-xs text-gray-600">Avg Response</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Advanced Analytics -->
+        <div class="clean-card p-6 mb-8">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-bold text-gray-900 flex items-center">
+                    <i class="fas fa-chart-line mr-2" style="color: var(--derivco-blue);"></i>
+                    Advanced IoT Analytics
+                </h3>
+                <div class="flex space-x-2">
+                    <button class="text-sm font-medium px-3 py-1 rounded-lg bg-blue-100 text-blue-800 hover:bg-blue-200">
+                        <i class="fas fa-chart-bar mr-1"></i> View Trends
+                    </button>
+                    <button class="text-sm font-medium px-3 py-1 rounded-lg bg-green-100 text-green-800 hover:bg-green-200">
+                        <i class="fas fa-download mr-1"></i> Export Data
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="text-center p-4 rounded-xl" style="background: var(--derivco-blue-light);">
+                    <i class="fas fa-database text-2xl mb-3" style="color: var(--derivco-blue);"></i>
+                    <div class="text-2xl font-bold text-gray-900">1.2M</div>
+                    <div class="text-sm text-gray-600">Data Points Today</div>
+                </div>
+
+                <div class="text-center p-4 rounded-xl" style="background: var(--derivco-cyan-light);">
+                    <i class="fas fa-exclamation-triangle text-2xl mb-3" style="color: var(--derivco-cyan);"></i>
+                    <div class="text-2xl font-bold text-gray-900">3</div>
+                    <div class="text-sm text-gray-600">Active Alerts</div>
+                </div>
+
+                <div class="text-center p-4 rounded-xl" style="background: var(--derivco-blue-light);">
+                    <i class="fas fa-clock text-2xl mb-3" style="color: var(--derivco-blue);"></i>
+                    <div class="text-2xl font-bold text-gray-900">24/7</div>
+                    <div class="text-sm text-gray-600">Monitoring</div>
+                </div>
+
+                <div class="text-center p-4 rounded-xl" style="background: var(--derivco-cyan-light);">
+                    <i class="fas fa-wifi text-2xl mb-3" style="color: var(--derivco-cyan);"></i>
+                    <div class="text-2xl font-bold text-gray-900">5G</div>
+                    <div class="text-sm text-gray-600">Network Ready</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="clean-card p-8 text-center">
+            <h3 class="text-xl font-bold text-gray-900 mb-6">IoT Management Actions</h3>
+            <div class="flex flex-wrap justify-center gap-4">
+                <button id="configure-sensors-btn" class="px-6 py-3 rounded-xl font-medium shadow-lg text-white" style="background: linear-gradient(135deg, var(--derivco-blue) 0%, var(--derivco-cyan) 100%);">
+                    <i class="fas fa-cogs mr-2"></i>Configure Sensors
+                </button>
+                <button id="set-alerts-btn" class="px-6 py-3 rounded-xl font-medium shadow-lg text-white" style="background: linear-gradient(135deg, var(--derivco-blue) 0%, var(--derivco-cyan) 100%);">
+                    <i class="fas fa-bell mr-2"></i>Set Alerts
+                </button>
+                <button id="export-report-btn" class="px-6 py-3 rounded-xl font-medium shadow-lg text-white" style="background: linear-gradient(135deg, var(--derivco-blue) 0%, var(--derivco-cyan) 100%);">
+                    <i class="fas fa-download mr-2"></i>Export Report
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Designed by Sifiso Cyprian Shezi</p>
+        <p>Facilities Assistant Level 1 — Derivco Durban | Transforming facility management through innovation</p>
+        <p>&copy; 2025 Derivco Facilities Management System. All rights reserved.</p>
+    </footer>
+
+    <script>
+    // Auto-refresh functionality
+    function refreshSensorData() {
+        fetch(`/api/iot/live-data?t=${new Date().getTime()}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Sensor data refreshed:', data);
+                // Update UI elements here if needed
+            })
+            .catch(error => console.error('Error refreshing sensor data:', error));
+    }
+
+    // Refresh every 30 seconds
+    setInterval(refreshSensorData, 30000);
+
+    // IoT Management Action Buttons
+    document.getElementById('configure-sensors-btn').addEventListener('click', async function() {
+        this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Configuring...';
+        this.disabled = true;
+
+        try {
+            const response = await fetch('/api/iot/configure-sensors', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            const result = await response.json();
+
+            if (result.success) {
+                showNotification(`Sensor configuration updated! ${result.sensors_configured} sensors configured.`, 'success');
+            } else {
+                showNotification('Failed to configure sensors: ' + result.error, 'error');
+            }
+        } catch (error) {
+            showNotification('Error configuring sensors: ' + error.message, 'error');
+        } finally {
+            this.innerHTML = '<i class="fas fa-cogs mr-2"></i>Configure Sensors';
+            this.disabled = false;
+        }
+    });
+
+    document.getElementById('set-alerts-btn').addEventListener('click', async function() {
+        this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Setting Alerts...';
+        this.disabled = true;
+
+        try {
+            const response = await fetch('/api/iot/set-alerts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            const result = await response.json();
+
+            if (result.success) {
+                showNotification(`Alert configurations saved! ${result.alerts_configured} alerts configured.`, 'success');
+            } else {
+                showNotification('Failed to set alerts: ' + result.error, 'error');
+            }
+        } catch (error) {
+            showNotification('Error setting alerts: ' + error.message, 'error');
+        } finally {
+            this.innerHTML = '<i class="fas fa-bell mr-2"></i>Set Alerts';
+            this.disabled = false;
+        }
+    });
+
+    document.getElementById('export-report-btn').addEventListener('click', async function() {
+        this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Generating Report...';
+        this.disabled = true;
+
+        try {
+            const response = await fetch('/api/iot/export-report');
+            const result = await response.json();
+
+            if (result.success) {
+                showNotification(`IoT monitoring report generated successfully! Size: ${result.report_size}`, 'success');
+            } else {
+                showNotification('Failed to generate report: ' + result.error, 'error');
+            }
+        } catch (error) {
+            showNotification('Error generating report: ' + error.message, 'error');
+        } finally {
+            this.innerHTML = '<i class="fas fa-download mr-2"></i>Export Report';
+            this.disabled = false;
+        }
+    });
+
+    // Notification helper function
+    function showNotification(message, type) {
+        const notification = document.createElement('div');
+        const bgColor = type === 'success' ? 'bg-green-600' : 'bg-red-600';
+        const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+
+        notification.className = `fixed top-4 right-4 ${bgColor} text-white px-6 py-3 rounded-lg shadow-lg z-50`;
+        notification.innerHTML = `<i class="fas ${icon} mr-2"></i>${message}`;
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.remove();
+        }, 4000);
+    }
+
+    // Other button handlers
+    document.querySelectorAll('button').forEach(btn => {
+        // Skip the main action buttons - they have their own handlers
+        if (btn.id === 'configure-sensors-btn' || btn.id === 'set-alerts-btn' || btn.id === 'export-report-btn') {
+            return;
+        }
+
+        if (btn.textContent.includes('View') || btn.textContent.includes('Auto-refresh')) {
+            btn.addEventListener('click', function() {
+                const action = this.textContent.trim();
+                showNotification(`${action} functionality activated.`, 'success');
+            });
+        }
+    });
+    </script>
+</body>
+</html>

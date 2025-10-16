@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sustainability Ledger - Strategic Facilities Intelligence</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-blue: #003366;
+            --secondary-teal: #008080;
+            --sustainability-green: #059669;
+            --sustainability-emerald: #10b981;
+            --text-gray: #4a5568;
+            --bg-primary: #f8fafc;
+            --bg-card: #ffffff;
+            --border-color: #334155;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: #1a202c;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--sustainability-emerald) 0%, var(--primary-blue) 100%);
+            padding: 2rem 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="sustainability" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="2" fill="%23ffffff" opacity="0.1"/><circle cx="5" cy="5" r="1" fill="%23ffffff" opacity="0.05"/><circle cx="15" cy="15" r="1.5" fill="%23ffffff" opacity="0.08"/></pattern></defs><rect width="100" height="100" fill="url(%23sustainability)"/></svg>');
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .nav-back {
+            margin-bottom: 1rem;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            color: #1a202c;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .back-button i {
+            margin-right: 0.5rem;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .header-icon {
+            font-size: 3rem;
+            margin-right: 1rem;
+        }
+
+        .header-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+
+        .header-description {
+            font-size: 1rem;
+            opacity: 0.8;
+            max-width: 800px;
+        }
+
+        /* Content Sections */
+        .content-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 1rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            color: var(--sustainability-green);
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title i {
+            margin-right: 0.75rem;
+            font-size: 1.5rem;
+        }
+
+        /* Environmental Metrics */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .metric-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--sustainability-green);
+        }
+
+        .metric-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(5, 150, 105, 0.2);
+        }
+
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .metric-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--sustainability-green) 0%, var(--sustainability-emerald) 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1a202c;
+            font-size: 1.2rem;
+        }
+
+        .metric-value {
+            text-align: right;
+        }
+
+        .metric-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--sustainability-green);
+        }
+
+        .metric-unit {
+            font-size: 0.8rem;
+            color: var(--text-gray);
+        }
+
+        .metric-trend {
+            display: flex;
+            align-items: center;
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .metric-trend.positive {
+            color: var(--sustainability-emerald);
+        }
+
+        .metric-trend.negative {
+            color: #f87171;
+        }
+
+        .metric-trend i {
+            margin-right: 0.25rem;
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #1a202c;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-description {
+            font-size: 0.8rem;
+            color: var(--text-gray);
+            margin-top: 0.5rem;
+        }
+
+        /* Initiatives Section */
+        .initiatives-section {
+            background: var(--bg-card);
+            padding: 3rem 1rem;
+        }
+
+        .initiatives-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .initiative-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .initiative-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.1);
+        }
+
+        .initiative-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .initiative-icon {
+            font-size: 2rem;
+            margin-right: 1rem;
+        }
+
+        .initiative-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1a202c;
+        }
+
+        .initiative-status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .initiative-status.active {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--sustainability-emerald);
+        }
+
+        .initiative-status.planning {
+            background: rgba(251, 146, 60, 0.2);
+            color: #fb923c;
+        }
+
+        .initiative-progress {
+            width: 100%;
+            height: 6px;
+            background: var(--border-color);
+            border-radius: 3px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+
+        .initiative-progress-fill {
+            height: 100%;
+            background: var(--sustainability-green);
+            border-radius: 3px;
+            transition: width 0.6s ease;
+        }
+
+        .initiative-impact {
+            font-size: 0.8rem;
+            color: var(--text-gray);
+            margin-top: 0.5rem;
+        }
+
+        /* Charts Section */
+        .charts-section {
+            padding: 3rem 1rem;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .chart-container {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .chart-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--sustainability-green);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        /* Action Section */
+        .action-section {
+            background: var(--bg-card);
+            padding: 3rem 1rem;
+            text-align: center;
+        }
+
+        .action-button {
+            display: inline-flex;
+            align-items: center;
+            background: linear-gradient(135deg, var(--sustainability-green) 0%, var(--sustainability-emerald) 100%);
+            color: #1a202c;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin: 0 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(5, 150, 105, 0.3);
+        }
+
+        .action-button i {
+            margin-right: 0.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-title {
+                font-size: 2rem;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .header-icon {
+                margin-bottom: 0.5rem;
+            }
+
+            .metrics-grid,
+            .initiatives-grid,
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-button {
+                margin: 0.5rem;
+                width: calc(100% - 1rem);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="nav-back">
+                <a href="/" class="back-button">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Home
+                </a>
+            </div>
+
+            <h1 class="header-title">
+                <span class="header-icon">🌱</span>
+                Sustainability Ledger
+            </h1>
+
+            <p class="header-subtitle">Track Energy & Waste Initiatives</p>
+            <p class="header-description">
+                Comprehensive environmental tracking and sustainability management system that monitors energy consumption, waste reduction,
+                and environmental impact initiatives to drive green facility management practices and corporate sustainability goals.
+            </p>
+        </div>
+    </header>
+
+    <!-- Environmental Metrics -->
+    <section class="content-section">
+        <h2 class="section-title">
+            <i class="fas fa-chart-bar"></i>
+            Environmental Metrics Dashboard
+        </h2>
+
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-header">
+                    <div class="metric-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <div class="metric-value">
+                        <div class="metric-number">324</div>
+                        <div class="metric-unit">kWh/day</div>
+                        <div class="metric-trend positive">
+                            <i class="fas fa-arrow-down"></i>
+                            -18% vs last month
+                        </div>
+                    </div>
+                </div>
+                <div class="metric-label">Energy Consumption</div>
+                <div class="metric-description">
+                    Daily average energy usage across all facility operations with smart monitoring.
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-header">
+                    <div class="metric-icon">
+                        <i class="fas fa-tint"></i>
+                    </div>
+                    <div class="metric-value">
+                        <div class="metric-number">1,240</div>
+                        <div class="metric-unit">Liters/day</div>
+                        <div class="metric-trend positive">
+                            <i class="fas fa-arrow-down"></i>
+                            -12% water savings
+                        </div>
+                    </div>
+                </div>
+                <div class="metric-label">Water Usage</div>
+                <div class="metric-description">
+                    Daily water consumption tracking with leak detection and conservation measures.
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-header">
+                    <div class="metric-icon">
+                        <i class="fas fa-recycle"></i>
+                    </div>
+                    <div class="metric-value">
+                        <div class="metric-number">78%</div>
+                        <div class="metric-unit">Recycled</div>
+                        <div class="metric-trend positive">
+                            <i class="fas fa-arrow-up"></i>
+                            +8% improvement
+                        </div>
+                    </div>
+                </div>
+                <div class="metric-label">Waste Diversion</div>
+                <div class="metric-description">
+                    Percentage of waste diverted from landfills through recycling and composting programs.
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-header">
+                    <div class="metric-icon">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <div class="metric-value">
+                        <div class="metric-number">2.1</div>
+                        <div class="metric-unit">tCO₂e</div>
+                        <div class="metric-trend positive">
+                            <i class="fas fa-arrow-down"></i>
+                            -22% carbon footprint
+                        </div>
+                    </div>
+                </div>
+                <div class="metric-label">Carbon Emissions</div>
+                <div class="metric-description">
+                    Monthly carbon footprint measurement with offset initiatives and reduction strategies.
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-header">
+                    <div class="metric-icon">
+                        <i class="fas fa-sun"></i>
+                    </div>
+                    <div class="metric-value">
+                        <div class="metric-number">156</div>
+                        <div class="metric-unit">kWh/day</div>
+                        <div class="metric-trend positive">
+                            <i class="fas fa-arrow-up"></i>
+                            +25% generation
+                        </div>
+                    </div>
+                </div>
+                <div class="metric-label">Solar Generation</div>
+                <div class="metric-description">
+                    Daily renewable energy generation from rooftop solar panels and green technology.
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-header">
+                    <div class="metric-icon">
+                        <i class="fas fa-tree"></i>
+                    </div>
+                    <div class="metric-value">
+                        <div class="metric-number">94</div>
+                        <div class="metric-unit">Points</div>
+                        <div class="metric-trend positive">
+                            <i class="fas fa-arrow-up"></i>
+                            +12 ESG score
+                        </div>
+                    </div>
+                </div>
+                <div class="metric-label">Green Building Score</div>
+                <div class="metric-description">
+                    Comprehensive environmental, social, and governance performance rating.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Green Initiatives -->
+    <section class="initiatives-section">
+        <div class="content-section">
+            <h2 class="section-title">
+                <i class="fas fa-seedling"></i>
+                Sustainability Initiatives
+            </h2>
+        </div>
+
+        <div class="initiatives-grid">
+            <div class="initiative-card">
+                <div class="initiative-header">
+                    <div class="initiative-icon">☀️</div>
+                    <div>
+                        <h3 class="initiative-title">Solar Panel Installation</h3>
+                        <span class="initiative-status active">Active</span>
+                    </div>
+                </div>
+                <div class="initiative-progress">
+                    <div class="initiative-progress-fill" style="width: 85%"></div>
+                </div>
+                <div class="initiative-impact">
+                    Target: 30% energy offset by Q2 2025. Current generation: 156 kWh/day saving R 2,400/month.
+                </div>
+            </div>
+
+            <div class="initiative-card">
+                <div class="initiative-header">
+                    <div class="initiative-icon">♻️</div>
+                    <div>
+                        <h3 class="initiative-title">Smart Recycling Program</h3>
+                        <span class="initiative-status active">Active</span>
+                    </div>
+                </div>
+                <div class="initiative-progress">
+                    <div class="initiative-progress-fill" style="width: 78%"></div>
+                </div>
+                <div class="initiative-impact">
+                    AI-powered waste sorting achieving 78% diversion rate. Monthly waste reduction: 1.2 tons.
+                </div>
+            </div>
+
+            <div class="initiative-card">
+                <div class="initiative-header">
+                    <div class="initiative-icon">💧</div>
+                    <div>
+                        <h3 class="initiative-title">Water Conservation System</h3>
+                        <span class="initiative-status active">Active</span>
+                    </div>
+                </div>
+                <div class="initiative-progress">
+                    <div class="initiative-progress-fill" style="width: 67%"></div>
+                </div>
+                <div class="initiative-impact">
+                    Smart sensors and greywater recycling saving 12% water usage. Monthly savings: R 850.
+                </div>
+            </div>
+
+            <div class="initiative-card">
+                <div class="initiative-header">
+                    <div class="initiative-icon">🌿</div>
+                    <div>
+                        <h3 class="initiative-title">Green Roof Garden</h3>
+                        <span class="initiative-status planning">Planning</span>
+                    </div>
+                </div>
+                <div class="initiative-progress">
+                    <div class="initiative-progress-fill" style="width: 25%"></div>
+                </div>
+                <div class="initiative-impact">
+                    Planned rooftop garden to improve air quality and reduce cooling costs by 15%.
+                </div>
+            </div>
+
+            <div class="initiative-card">
+                <div class="initiative-header">
+                    <div class="initiative-icon">🔋</div>
+                    <div>
+                        <h3 class="initiative-title">Energy Storage System</h3>
+                        <span class="initiative-status planning">Planning</span>
+                    </div>
+                </div>
+                <div class="initiative-progress">
+                    <div class="initiative-progress-fill" style="width: 15%"></div>
+                </div>
+                <div class="initiative-impact">
+                    Battery storage system to optimize solar energy usage and reduce grid dependency.
+                </div>
+            </div>
+
+            <div class="initiative-card">
+                <div class="initiative-header">
+                    <div class="initiative-icon">🚗</div>
+                    <div>
+                        <h3 class="initiative-title">EV Charging Stations</h3>
+                        <span class="initiative-status active">Active</span>
+                    </div>
+                </div>
+                <div class="initiative-progress">
+                    <div class="initiative-progress-fill" style="width: 92%"></div>
+                </div>
+                <div class="initiative-impact">
+                    4 charging stations installed supporting employee transition to electric vehicles.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Analytics Charts -->
+    <section class="charts-section">
+        <div class="content-section">
+            <h2 class="section-title">
+                <i class="fas fa-chart-line"></i>
+                Environmental Trends
+            </h2>
+        </div>
+
+        <div class="charts-grid">
+            <div class="chart-container">
+                <h3 class="chart-title">Monthly Energy & Water Usage</h3>
+                <canvas id="usageChart" width="400" height="200"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <h3 class="chart-title">Waste Management Breakdown</h3>
+                <canvas id="wasteChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <!-- Action Section -->
+    <section class="action-section">
+        <h2 class="section-title">
+            <i class="fas fa-leaf"></i>
+            Environmental Action Center
+        </h2>
+        <p style="margin-bottom: 2rem; color: var(--text-gray); max-width: 600px; margin-left: auto; margin-right: auto;">
+            Access detailed environmental reports and manage sustainability initiatives with our comprehensive tracking system.
+        </p>
+
+        <div>
+            <a href="#" class="action-button">
+                <i class="fas fa-chart-area"></i>
+                View ESG Report
+            </a>
+
+            <a href="#" class="action-button" style="background: var(--bg-primary); border: 2px solid var(--sustainability-green); color: var(--sustainability-green);">
+                <i class="fas fa-plus"></i>
+                New Initiative
+            </a>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Usage Trends Chart
+            const usageCtx = document.getElementById('usageChart').getContext('2d');
+            new Chart(usageCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Energy (kWh/day)',
+                        data: [420, 395, 380, 365, 342, 324],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }, {
+                        label: 'Water (L/day)',
+                        data: [1580, 1520, 1450, 1380, 1310, 1240],
+                        borderColor: '#059669',
+                        backgroundColor: 'rgba(5, 150, 105, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        yAxisID: 'y1'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#CCCCCC' }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            position: 'left',
+                            ticks: { color: '#CCCCCC' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            ticks: { color: '#CCCCCC' },
+                            grid: { drawOnChartArea: false }
+                        },
+                        x: {
+                            ticks: { color: '#CCCCCC' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        }
+                    }
+                }
+            });
+
+            // Waste Management Chart
+            const wasteCtx = document.getElementById('wasteChart').getContext('2d');
+            new Chart(wasteCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Recycled', 'Composted', 'Energy Recovery', 'Landfill'],
+                    datasets: [{
+                        data: [45, 33, 15, 7],
+                        backgroundColor: ['#10b981', '#059669', '#047857', '#d1d5db'],
+                        borderColor: '#1a365d',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { color: '#CCCCCC', padding: 20 }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

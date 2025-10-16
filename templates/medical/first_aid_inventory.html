@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>First Aid Kit Inventory - Derivco Medical</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
+            min-height: 100vh;
+        }
+        
+        .medical-glass {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+        }
+        
+        .first-aid-table {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+        }
+        
+        .first-aid-table th {
+            background: rgba(71, 85, 105, 0.2);
+            color: #f8fafc;
+            font-weight: 700;
+            padding: 16px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+        
+        .first-aid-table td {
+            color: #f8fafc;
+            padding: 14px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-weight: 500;
+        }
+        
+        .first-aid-table tr:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+        
+        .item-number {
+            background: linear-gradient(135deg, #64748b, #475569);
+            color: #f8fafc;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        .stock-normal { color: #10b981; }
+        .stock-low { color: #f59e0b; }
+        .stock-critical { color: #ef4444; }
+        .stock-empty { color: #6b7280; }
+        
+        .expiry-good { color: #10b981; }
+        .expiry-warning { color: #f59e0b; }
+        .expiry-expired { color: #ef4444; }
+        
+        .category-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .cat-disposables { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+        .cat-wound-care { background: rgba(34, 197, 94, 0.2); color: #10b981; }
+        .cat-bandages { background: rgba(251, 191, 36, 0.2); color: #f59e0b; }
+        .cat-instruments { background: rgba(139, 92, 246, 0.2); color: #8b5cf6; }
+        .cat-ppe { background: rgba(236, 72, 153, 0.2); color: #ec4899; }
+        .cat-solutions { background: rgba(6, 182, 212, 0.2); color: #06b6d4; }
+        .cat-emergency { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        .cat-medication { background: rgba(168, 85, 247, 0.2); color: #a855f7; }
+        .cat-antiseptics { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+        .cat-accessories { background: rgba(75, 85, 99, 0.2); color: #4b5563; }
+        .cat-immobilization { background: rgba(20, 184, 166, 0.2); color: #14b8a6; }
+        .cat-cold-therapy { background: rgba(14, 165, 233, 0.2); color: #0ea5e9; }
+        .cat-burn-treatment { background: rgba(220, 38, 38, 0.2); color: #dc2626; }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen p-6">
+        <!-- Navigation -->
+        <div class="medical-glass mb-8 p-4">
+            <nav class="flex items-center justify-between text-slate-800">
+                <div class="flex items-center space-x-2">
+                    <a href="/" class="hover:text-slate-200 transition-colors">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                    <i class="fas fa-chevron-right text-slate-200"></i>
+                    <a href="/medical" class="hover:text-slate-200 transition-colors">Medical Services</a>
+                    <i class="fas fa-chevron-right text-slate-200"></i>
+                    <span class="text-slate-100 font-semibold">First Aid Kit Inventory</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-medkit text-slate-300 text-xl"></i>
+                        <span class="text-sm">Kit Status: Active</span>
+                    </div>
+                </div>
+            </nav>
+        </div>
+
+        <!-- Header -->
+        <div class="medical-glass p-8 mb-8 text-center text-slate-800">
+            <h1 class="text-4xl font-bold mb-4">First Aid Kit Contents</h1>
+            <p class="text-xl opacity-90 mb-6">Complete inventory as per Paramedic Forms</p>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
+                <div>
+                    <div class="text-3xl font-bold text-green-300">{{ total_items }}</div>
+                    <div class="text-sm opacity-75">Total Items</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-yellow-300">{{ low_stock_count }}</div>
+                    <div class="text-sm opacity-75">Low Stock</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-orange-300">{{ expiring_count }}</div>
+                    <div class="text-sm opacity-75">Expiring Soon</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-blue-300">25</div>
+                    <div class="text-sm opacity-75">Standard Items</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- First Aid Kit Inventory Table -->
+        <div class="medical-glass p-8">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-slate-800 flex items-center">
+                    <i class="fas fa-list-ul mr-3 text-slate-300"></i>
+                    Contents of First Aid Box
+                </h2>
+                <div class="flex space-x-2">
+                    <button onclick="printInventory()" class="bg-slate-600 hover:bg-slate-700 px-4 py-2 rounded-lg text-slate-800 font-medium transition-colors">
+                        <i class="fas fa-print mr-2"></i>Print List
+                    </button>
+                    <button onclick="updateStock()" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg text-slate-800 font-medium transition-colors">
+                        <i class="fas fa-edit mr-2"></i>Update Stock
+                    </button>
+                </div>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full first-aid-table">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Item No.</th>
+                            <th>Item Name</th>
+                            <th>Category</th>
+                            <th class="text-center">Current Stock</th>
+                            <th class="text-center">Stock Status</th>
+                            <th class="text-center">Expiry Date</th>
+                            <th>Location</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in inventory_items %}
+                        <tr>
+                            <td class="text-center">
+                                <div class="item-number">{{ loop.index }}</div>
+                            </td>
+                            <td>
+                                <div class="font-semibold">{{ item['Item Name'] }}</div>
+                                <div class="text-sm opacity-75">{{ item['Item Code'] }}</div>
+                            </td>
+                            <td>
+                                {% set category_class = 'cat-' + item['Category'].lower().replace(' ', '-').replace('&', '') %}
+                                <span class="category-badge {{ category_class }}">{{ item['Category'] }}</span>
+                            </td>
+                            <td class="text-center">
+                                <div class="font-bold text-lg">{{ item['Stock'] }}</div>
+                                <div class="text-sm opacity-75">{{ item['Unit'] }}</div>
+                            </td>
+                            <td class="text-center">
+                                {% if item['Stock'] <= 0 %}
+                                    <span class="stock-empty font-semibold">EMPTY</span>
+                                {% elif item['Stock'] == item['Min Level'] %}
+                                    <span class="stock-critical font-semibold">CRITICAL</span>
+                                {% elif item['Stock'] <= item['Max Level'] // 2 %}
+                                    <span class="stock-low font-semibold">LOW</span>
+                                {% else %}
+                                    <span class="stock-normal font-semibold">GOOD</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                <div class="text-sm">{{ item['Expiry Date'] }}</div>
+                                <!-- Add expiry status logic here -->
+                            </td>
+                            <td>{{ item['Location'] }}</td>
+                            <td class="text-center">
+                                <div class="flex justify-center space-x-2">
+                                    <button onclick="useItem('{{ item['Item Code'] }}')" class="text-blue-300 hover:text-blue-100 transition-colors" title="Use Item">
+                                        <i class="fas fa-minus-circle"></i>
+                                    </button>
+                                    <button onclick="restockItem('{{ item['Item Code'] }}')" class="text-green-300 hover:text-green-100 transition-colors" title="Restock">
+                                        <i class="fas fa-plus-circle"></i>
+                                    </button>
+                                    <button onclick="viewDetails('{{ item['Item Code'] }}')" class="text-purple-300 hover:text-purple-100 transition-colors" title="Details">
+                                        <i class="fas fa-info-circle"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Quick Stats Footer -->
+        <div class="medical-glass p-6 mt-8">
+            <div class="grid grid-cols-2 md:grid-cols-6 gap-4 text-center text-slate-800">
+                <div>
+                    <div class="text-lg font-bold text-slate-300">{{ categories.Bandages or 0 }}</div>
+                    <div class="text-sm opacity-75">Bandages</div>
+                </div>
+                <div>
+                    <div class="text-lg font-bold text-green-300">{{ categories['Wound Care'] or 0 }}</div>
+                    <div class="text-sm opacity-75">Wound Care</div>
+                </div>
+                <div>
+                    <div class="text-lg font-bold text-blue-300">{{ categories.Solutions or 0 }}</div>
+                    <div class="text-sm opacity-75">Solutions</div>
+                </div>
+                <div>
+                    <div class="text-lg font-bold text-purple-300">{{ categories.PPE or 0 }}</div>
+                    <div class="text-sm opacity-75">PPE</div>
+                </div>
+                <div>
+                    <div class="text-lg font-bold text-yellow-300">{{ categories.Emergency or 0 }}</div>
+                    <div class="text-sm opacity-75">Emergency</div>
+                </div>
+                <div>
+                    <div class="text-lg font-bold text-orange-300">{{ categories.Medication or 0 }}</div>
+                    <div class="text-sm opacity-75">Medication</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function useItem(itemCode) {
+        if (confirm('Record usage of this item?')) {
+            fetch('/api/medical/inventory/use', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    item_code: itemCode, 
+                    quantity_used: 1,
+                    notes: 'Used in first aid treatment'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('Item usage recorded', 'success');
+                    location.reload();
+                } else {
+                    showToast('Error: ' + data.error, 'error');
+                }
+            });
+        }
+    }
+
+    function restockItem(itemCode) {
+        const quantity = prompt('Enter restock quantity:');
+        if (quantity && !isNaN(quantity)) {
+            // API call to restock item
+            showToast('Restock request recorded', 'success');
+        }
+    }
+
+    function viewDetails(itemCode) {
+        // Show detailed item information
+        showToast('Opening item details...', 'info');
+    }
+
+    function printInventory() {
+        window.print();
+    }
+
+    function updateStock() {
+        showToast('Opening stock update form...', 'info');
+    }
+
+    function showToast(message, type) {
+        const toast = document.createElement('div');
+        toast.className = `fixed top-4 right-4 z-50 px-6 py-4 rounded-xl text-slate-800 font-semibold ${
+            type === 'success' ? 'bg-green-600' : type === 'error' ? 'bg-red-600' : 'bg-blue-600'
+        }`;
+        toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-triangle' : 'info-circle'} mr-2"></i>${message}`;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
+    </script>
+</body>
+</html>

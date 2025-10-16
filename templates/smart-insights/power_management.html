@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Power Management - Derivco Facilities</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .power-status-indicator {
+            animation: pulse 2s infinite;
+        }
+        .power-mains { background: linear-gradient(45deg, #10b981, #34d399); }
+        .power-generator { background: linear-gradient(45deg, #f59e0b, #fbbf24); }
+        .power-ups { background: linear-gradient(45deg, #3b82f6, #60a5fa); }
+        .power-no-power { background: linear-gradient(45deg, #ef4444, #f87171); }
+
+        .equipment-priority-critical { border-left: 4px solid #dc2626; }
+        .equipment-priority-high { border-left: 4px solid #ea580c; }
+        .equipment-priority-medium { border-left: 4px solid #ca8a04; }
+        .equipment-priority-low { border-left: 4px solid #65a30d; }
+
+        .outage-card {
+            transition: all 0.3s ease;
+        }
+        .outage-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="flex items-center space-x-2 text-indigo-600 hover:text-indigo-800">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Back to Dashboard</span>
+                    </a>
+                    <div class="h-6 border-l border-gray-300"></div>
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-bolt text-yellow-500 text-xl"></i>
+                        <h1 class="text-xl font-semibold text-gray-900">Power Management</h1>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="text-sm text-gray-500">
+                        Last updated: <span id="lastUpdated">{{ timestamp[:19].replace('T', ' ') }}</span>
+                    </div>
+                    <button id="refreshBtn" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
+                        <i class="fas fa-sync-alt mr-2"></i>Refresh
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Current Status Banner -->
+        <div class="mb-8">
+            <div class="power-status-indicator power-{{ power_status.current_status }} rounded-lg p-6 text-white shadow-lg">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        {% if power_status.current_status == 'mains' %}
+                        <i class="fas fa-plug text-4xl"></i>
+                        <div>
+                            <h2 class="text-2xl font-bold">Mains Power Active</h2>
+                            <p class="text-lg opacity-90">All systems operational</p>
+                        </div>
+                        {% elif power_status.current_status == 'generator' %}
+                        <i class="fas fa-cogs text-4xl"></i>
+                        <div>
+                            <h2 class="text-2xl font-bold">Generator Active - Stage {{ power_status.current_stage }}</h2>
+                            <p class="text-lg opacity-90">Load shedding in progress</p>
+                        </div>
+                        {% elif power_status.current_status == 'ups' %}
+                        <i class="fas fa-battery-three-quarters text-4xl"></i>
+                        <div>
+                            <h2 class="text-2xl font-bold">UPS Power</h2>
+                            <p class="text-lg opacity-90">Battery backup active</p>
+                        </div>
+                        {% else %}
+                        <i class="fas fa-exclamation-triangle text-4xl"></i>
+                        <div>
+                            <h2 class="text-2xl font-bold">Power Issue Detected</h2>
+                            <p class="text-lg opacity-90">Check backup systems</p>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="text-right">
+                        {% if power_status.active_outages %}
+                        <div class="text-2xl font-bold">{{ power_status.active_outages|length }} Area(s)</div>
+                        <div class="opacity-90">Affected by load shedding</div>
+                        {% else %}
+                        <div class="text-2xl font-bold">✓ All Areas</div>
+                        <div class="opacity-90">Normal power supply</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Metrics Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- Backup Capacity -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">Backup Capacity</h3>
+                    <i class="fas fa-battery-full text-2xl text-green-600"></i>
+                </div>
+                <div class="text-3xl font-bold text-gray-900 mb-2">
+                    {{ capacity_analysis.total_backup_capacity|round(1) }}kW
+                </div>
+                <div class="text-sm text-gray-600">
+                    Critical: {{ capacity_analysis.critical_load|round(1) }}kW
+                    ({{ capacity_analysis.capacity_utilization.critical|round(1) }}%)
+                </div>
+                <div class="mt-2 bg-gray-200 rounded-full h-2">
+                    <div class="bg-green-500 h-2 rounded-full"
+                         style="width: {{ capacity_analysis.capacity_utilization.critical|round(1) }}%"></div>
+                </div>
+            </div>
+
+            <!-- Fuel Level -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">Fuel Level</h3>
+                    <i class="fas fa-gas-pump text-2xl text-blue-600"></i>
+                </div>
+                <div class="text-3xl font-bold text-gray-900 mb-2">
+                    {% for backup in power_status.backup_systems_status %}
+                    {% if backup.type == 'generator' %}
+                    {{ backup.fuel_level|round(1) }}%
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="text-sm text-gray-600">
+                    Runtime:
+                    {% for backup in power_status.backup_systems_status %}
+                    {% if backup.type == 'generator' %}
+                    {{ backup.runtime_remaining|round(1) }}h remaining
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="mt-2 bg-gray-200 rounded-full h-2">
+                    {% for backup in power_status.backup_systems_status %}
+                    {% if backup.type == 'generator' %}
+                    <div class="bg-blue-500 h-2 rounded-full"
+                         style="width: {{ backup.fuel_level }}%"></div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Next Outage -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">Next Outage</h3>
+                    <i class="fas fa-clock text-2xl text-orange-600"></i>
+                </div>
+                {% if upcoming_outages %}
+                <div class="text-2xl font-bold text-gray-900 mb-2">
+                    {{ upcoming_outages[0].hours_until|round(1) }}h
+                </div>
+                <div class="text-sm text-gray-600">
+                    Stage {{ upcoming_outages[0].stage }} • {{ upcoming_outages[0].area }}
+                </div>
+                <div class="text-xs text-gray-500 mt-1">
+                    {{ upcoming_outages[0].duration_hours|round(1) }}h duration
+                </div>
+                {% else %}
+                <div class="text-2xl font-bold text-green-600 mb-2">None</div>
+                <div class="text-sm text-gray-600">No scheduled outages</div>
+                {% endif %}
+            </div>
+
+            <!-- Equipment Status -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">Equipment Status</h3>
+                    <i class="fas fa-cog text-2xl text-purple-600"></i>
+                </div>
+                <div class="text-2xl font-bold text-gray-900 mb-2">
+                    {{ equipment_priorities.keep_running|length + equipment_priorities.conditional|length }}
+                </div>
+                <div class="text-sm text-gray-600">
+                    {{ equipment_priorities.keep_running|length }} Critical •
+                    {{ equipment_priorities.conditional|length }} High Priority
+                </div>
+                <div class="text-xs text-gray-500 mt-1">
+                    {{ equipment_priorities.shutdown|length }} can be shutdown
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Upcoming Outages -->
+            <div class="lg:col-span-2 bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h2 class="text-lg font-semibold text-gray-900">Upcoming Load Shedding Schedule</h2>
+                </div>
+                <div class="p-6">
+                    {% if upcoming_outages %}
+                    <div class="space-y-4 max-h-96 overflow-y-auto">
+                        {% for outage in upcoming_outages %}
+                        <div class="outage-card border border-gray-200 rounded-lg p-4">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium
+                                                   {% if outage.stage <= 2 %}bg-yellow-100 text-yellow-800{% elif outage.stage <= 4 %}bg-orange-100 text-orange-800{% else %}bg-red-100 text-red-800{% endif %}">
+                                            Stage {{ outage.stage }}
+                                        </span>
+                                        <span class="text-sm font-medium text-gray-900">{{ outage.area }}</span>
+                                    </div>
+                                    <div class="text-sm text-gray-600 mt-1">
+                                        {% if outage.hours_until > 0 %}
+                                        In {{ outage.hours_until|round(1) }} hours
+                                        {% else %}
+                                        Active now
+                                        {% endif %}
+                                        • Duration: {{ outage.duration_hours|round(1) }}h
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-sm font-medium text-gray-900">
+                                        {{ (outage.probability * 100)|round(0) }}%
+                                    </div>
+                                    <div class="text-xs text-gray-500">Probability</div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-8">
+                        <i class="fas fa-check-circle text-4xl text-green-500 mb-4"></i>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">No Scheduled Outages</h3>
+                        <p class="text-gray-500">All Derivco areas have stable power supply</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Equipment Priorities -->
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h2 class="text-lg font-semibold text-gray-900">Equipment Priorities</h2>
+                </div>
+                <div class="p-6">
+                    <!-- Critical Equipment -->
+                    <div class="mb-6">
+                        <h3 class="text-sm font-medium text-gray-900 mb-3">Critical (Always On)</h3>
+                        <div class="space-y-2">
+                            {% for item in equipment_priorities.keep_running %}
+                            <div class="equipment-priority-critical bg-red-50 p-3 rounded-lg">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div class="text-sm font-medium text-gray-900">{{ item.name }}</div>
+                                        <div class="text-xs text-gray-600">{{ item.location }}</div>
+                                    </div>
+                                    <div class="text-xs text-red-600 font-medium">
+                                        {{ item.power_consumption }}kW
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- High Priority Equipment -->
+                    {% if equipment_priorities.conditional %}
+                    <div class="mb-6">
+                        <h3 class="text-sm font-medium text-gray-900 mb-3">High Priority (If Capacity)</h3>
+                        <div class="space-y-2">
+                            {% for item in equipment_priorities.conditional %}
+                            <div class="equipment-priority-high bg-orange-50 p-3 rounded-lg">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div class="text-sm font-medium text-gray-900">{{ item.name }}</div>
+                                        <div class="text-xs text-gray-600">{{ item.location }}</div>
+                                    </div>
+                                    <div class="text-xs text-orange-600 font-medium">
+                                        {{ item.power_consumption }}kW
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Shutdown Equipment -->
+                    {% if equipment_priorities.shutdown %}
+                    <div>
+                        <h3 class="text-sm font-medium text-gray-900 mb-3">Can Shutdown</h3>
+                        <div class="text-xs text-gray-500">
+                            {{ equipment_priorities.shutdown|length }} items •
+                            {{ equipment_priorities.shutdown|sum(attribute='power_consumption')|round(1) }}kW total
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Backup Systems Status -->
+        <div class="mt-8 bg-white rounded-lg shadow">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h2 class="text-lg font-semibold text-gray-900">Backup Systems Status</h2>
+            </div>
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {% for backup in power_status.backup_systems_status %}
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center space-x-2">
+                                {% if backup.type == 'generator' %}
+                                <i class="fas fa-cogs text-xl text-blue-600"></i>
+                                {% elif backup.type == 'ups' %}
+                                <i class="fas fa-battery-three-quarters text-xl text-green-600"></i>
+                                {% else %}
+                                <i class="fas fa-plug text-xl text-purple-600"></i>
+                                {% endif %}
+                                <span class="font-medium text-gray-900">{{ backup.type.upper() }}</span>
+                            </div>
+                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
+                                       {% if backup.status == 'ready' %}bg-green-100 text-green-800{% elif backup.status == 'online' %}bg-blue-100 text-blue-800{% else %}bg-gray-100 text-gray-800{% endif %}">
+                                {{ backup.status }}
+                            </span>
+                        </div>
+
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Capacity:</span>
+                                <span class="font-medium">{{ backup.capacity }}kW</span>
+                            </div>
+                            {% if backup.type == 'generator' %}
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Fuel Level:</span>
+                                <span class="font-medium">{{ backup.fuel_level|round(1) }}%</span>
+                            </div>
+                            {% endif %}
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Runtime:</span>
+                                <span class="font-medium">{{ backup.runtime_remaining|round(1) }}h</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Auto-refresh functionality
+        let refreshInterval;
+
+        function startAutoRefresh() {
+            refreshInterval = setInterval(async () => {
+                try {
+                    const response = await fetch('/api/load-shedding/status');
+                    const data = await response.json();
+
+                    // Update timestamp
+                    document.getElementById('lastUpdated').textContent =
+                        new Date().toISOString().slice(0, 19).replace('T', ' ');
+
+                    // You could update specific elements here without full page refresh
+                    // For now, we'll do a simple refresh every 5 minutes
+                } catch (error) {
+                    console.error('Auto-refresh failed:', error);
+                }
+            }, 300000); // 5 minutes
+        }
+
+        // Manual refresh
+        document.getElementById('refreshBtn').addEventListener('click', () => {
+            location.reload();
+        });
+
+        // Start auto-refresh on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            startAutoRefresh();
+        });
+
+        // Stop auto-refresh when page is hidden
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                clearInterval(refreshInterval);
+            } else {
+                startAutoRefresh();
+            }
+        });
+    </script>
+</body>
+</html>

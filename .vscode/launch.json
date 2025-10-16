@@ -1,0 +1,32 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Flask App",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/app.py",
+            "console": "integratedTerminal",
+            "env": {
+                "FLASK_ENV": "development",
+                "FLASK_DEBUG": "1"
+            },
+            "args": [],
+            "jinja": true
+        },
+        {
+            "name": "Analyze Excel",
+            "type": "python", 
+            "request": "launch",
+            "program": "${workspaceFolder}/analyze_excel.py",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Add Sample Data",
+            "type": "python",
+            "request": "launch", 
+            "program": "${workspaceFolder}/add_sample_data.py",
+            "console": "integratedTerminal"
+        }
+    ]
+}

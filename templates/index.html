@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Dashboard - Derivco Facilities Management System</title>
+
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="/static/css/style.css?v=20250923">
+
+    <!-- Meta Tags -->
+    <meta name="description" content="Derivco Facilities Management System - Advanced inventory tracking, compliance monitoring, and infrastructure management for Derivco Durban facilities">
+    <meta name="author" content="Sifiso Cyprian Shezi">
+    <meta name="theme-color" content="#004289">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTMgN0gxM0wxMSA5SDNWN1oiIGZpbGw9IiMwMDQyODkiLz4KPHA=">
+    
+    <style>
+        /* Override styles for reduced hero section */
+        .hero-section.inventory-hero {
+            padding: 1.5rem 0 !important;
+            min-height: auto !important;
+        }
+        
+        .hero-content {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 1rem !important;
+        }
+        
+        .hero-title {
+            font-size: 1.8rem !important;
+            margin-bottom: 0.5rem !important;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.2rem !important;
+            margin-top: 0.25rem !important;
+        }
+        
+        .hero-description {
+            font-size: 0.95rem !important;
+            max-width: 100% !important;
+            line-height: 1.4 !important;
+        }
+        
+        .hero-visual {
+            display: none !important; /* Hide the visual element to save space */
+        }
+        
+        /* Override styles for reduced Quick Actions buttons */
+        .actions-grid {
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) !important;
+            gap: 0.8rem !important;
+            margin-top: 1rem !important;
+        }
+        
+        .action-card {
+            padding: 0.8rem 0.5rem !important;
+            min-height: auto !important;
+            border-radius: 8px !important;
+        }
+        
+        .action-icon {
+            font-size: 1.2rem !important;
+            margin-bottom: 0.4rem !important;
+            width: 2.5rem !important;
+            height: 2.5rem !important;
+            line-height: 2.5rem !important;
+        }
+        
+        .action-content h3 {
+            font-size: 0.9rem !important;
+            margin-bottom: 0.2rem !important;
+        }
+        
+        .action-content p {
+            font-size: 0.75rem !important;
+            line-height: 1.2 !important;
+        }
+        
+        /* Adjust spacing between sections */
+        .quick-stats.inventory-stats {
+            margin: 1rem 0 !important;
+        }
+        
+        .quick-actions-section {
+            margin: 1.5rem 0 !important;
+        }
+        
+        .section-header {
+            margin-bottom: 1rem !important;
+        }
+        
+        .section-header h2 {
+            font-size: 1.3rem !important;
+            margin-bottom: 0.25rem !important;
+        }
+        
+        .section-header p {
+            font-size: 0.9rem !important;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-building-columns"></i>
+                    <h1>Derivco Facilities</h1>
+                </div>
+                <nav class="nav">
+                    <!-- Back Button (hidden on home page) -->
+                    <a href="javascript:history.back()" class="nav-link back-btn" id="backBtn" style="display: none;">
+                        <i class="fas fa-arrow-left"></i>Back
+                    </a>
+                    <a href="/" class="nav-link">
+                        <i class="fas fa-home"></i>Home
+                    </a>
+                    <a href="/inventory" class="nav-link">
+                        <i class="fas fa-boxes"></i>Inventory
+                    </a>
+                    <a href="/floor-plan" class="nav-link">
+                        <i class="fas fa-map"></i>Floor Plans
+                    </a>
+                    <a href="/search" class="nav-link">
+                        <i class="fas fa-search"></i>Search
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            
+<div class="dashboard">
+    <!-- Hero Header - Reduced Size -->
+    <section class="hero-section inventory-hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">
+                    <span class="gradient-text"><i class="fas fa-boxes"></i> Inventory</span>
+                    <span class="hero-subtitle">Management Dashboard</span>
+                </h1>
+                <p class="hero-description">
+                    Advanced facilities inventory management with real-time monitoring,
+                    AI-powered analytics, and intelligent automation for Derivco Durban operations.
+                </p>
+            </div>
+            <!-- Removed hero-visual to save space -->
+        </div>
+    </section>
+
+    <!-- Enhanced Animated Stats -->
+    <section class="quick-stats inventory-stats">
+        <div class="stats-container">
+            <div class="stat-item">
+                <div class="stat-number" data-target="45">0</div>
+                <div class="stat-label"><i class="fas fa-boxes"></i> Total Items</div>
+            </div>
+            <div class="stat-item critical">
+                <div class="stat-number" data-target="19">0</div>
+                <div class="stat-label"><i class="fas fa-exclamation-triangle"></i> Low Stock</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" data-target="10">0</div>
+                <div class="stat-label"><i class="fas fa-list"></i> Active Categories</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" data-target="10">0</div>
+                <div class="stat-label"><i class="fas fa-industry"></i> All Categories</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Enhanced Quick Actions - Reduced Size -->
+    <section class="quick-actions-section">
+        <div class="section-header">
+            <h2><i class="fas fa-bolt"></i> Quick Actions</h2>
+            <p>Common inventory management tasks</p>
+        </div>
+        <div class="actions-grid">
+            <a href="/search" class="action-card">
+                <div class="action-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <div class="action-content">
+                    <h3>Advanced Search</h3>
+                    <p>Find items with filters</p>
+                </div>
+            </a>
+            <a href="/low-stock" class="action-card critical">
+                <div class="action-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="action-content">
+                    <h3>Low Stock Alert</h3>
+                    <p>Items needing attention</p>
+                </div>
+            </a>
+            <a href="/maintenance" class="action-card">
+                <div class="action-icon">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <div class="action-content">
+                    <h3>Maintenance Log</h3>
+                    <p>Track repairs & services</p>
+                </div>
+            </a>
+            <a href="/suppliers" class="action-card">
+                <div class="action-icon">
+                    <i class="fas fa-truck"></i>
+                </div>
+                <div class="action-content">
+                    <h3>Suppliers</h3>
+                    <p>Manage vendor contacts</p>
+                </div>
+            </a>
+            <button onclick="reloadData()" class="action-card primary">
+                <div class="action-icon">
+                    <i class="fas fa-sync-alt"></i>
+                </div>
+                <div class="action-content">
+                    <h3>Reload Data</h3>
+                    <p>Refresh from Excel</p>
+                </div>
+            </button>
+            <a href="/smart-insights" class="action-card featured">
+                <div class="action-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <div class="action-content">
+                    <h3>AI Insights</h3>
+                    <p>Smart recommendations</p>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <!-- Charts Section -->
+    <div class="charts-section">
+        <div class="section-header">
+            <h3><i class="fas fa-chart-pie"></i> Inventory Analytics</h3>
+        </div>
+        
+        <div class="charts-grid">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h4><i class="fas fa-chart-pie"></i> Inventory Distribution</h4>
+                    <p class="chart-subtitle">Items by category</p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="categoryPieChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h4><i class="fas fa-dollar-sign"></i> Value Distribution</h4>
+                    <p class="chart-subtitle">Total value by category</p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="valueDonutChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-card chart-card-wide">
+                <div class="chart-header">
+                    <h4><i class="fas fa-chart-bar"></i> Stock Status Overview</h4>
+                    <p class="chart-subtitle">Items vs. low stock by category</p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="stockStatusChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Categories Section -->
+    <div class="categories-section">
+        <div class="section-header">
+            <h3><i class="fas fa-th-large"></i> Inventory Categories</h3>
+            <div class="category-controls">
+                <div class="category-tabs">
+                    <button class="tab-btn active" data-group="all">All</button>
+                    <button class="tab-btn" data-group="critical">Critical</button>
+                    <button class="tab-btn" data-group="maintenance">Maintenance</button>
+                    <button class="tab-btn" data-group="infrastructure">Infrastructure</button>
+                </div>
+                <div class="view-controls">
+                    <button id="compactViewBtn" class="view-btn active" title="Compact View">
+                        <i class="fas fa-th"></i>
+                    </button>
+                    <button id="detailedViewBtn" class="view-btn" title="Detailed View">
+                        <i class="fas fa-th-large"></i>
+                    </button>
+                    <div class="search-box">
+                        <input type="text" id="category-search" placeholder="Search categories...">
+                        <i class="fas fa-search"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Priority Categories (Always Visible) -->
+        <div class="priority-categories">
+            <h4><i class="fas fa-star"></i> Priority Categories</h4>
+            <div class="priority-grid" id="priority-categories-container">
+                <!-- Priority categories will be populated here -->
+            </div>
+        </div>
+
+        <!-- All Categories (Tabbed/Filtered View) -->
+        <div class="all-categories">
+            <div class="categories-grid compact-view" id="categories-container">
+            
+            <div class="category-card" data-category-name="electric">
+                <div class="category-header">
+                    <h4><i class="fas fa-bolt"></i> Electric</h4>
+                    <span class="status-badge success">
+                        Normal
+                    </span>
+                </div>
+                
+                <div class="category-stats">
+                    <div class="stat-row">
+                        <span class="stat-label">Total Items:</span>
+                        <span class="stat-value">10</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Low Stock:</span>
+                        <span class="stat-value ">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Total Value:</span>
+                        <span class="stat-value">R0.00</span>
+                    </div>
+                </div>
+                
+                <div class="category-actions">
+                    <a href="/category/Electric" class="btn btn-primary">
+                        <i class="fas fa-eye"></i> View Items
+                    </a>
+                </div>
+            </div>
+            
+            <div class="category-card" data-category-name="plumbing">
+                <div class="category-header">
+                    <h4><i class="fas fa-tint"></i> Plumbing</h4>
+                    <span class="status-badge success">
+                        Normal
+                    </span>
+                </div>
+                
+                <div class="category-stats">
+                    <div class="stat-row">
+                        <span class="stat-label">Total Items:</span>
+                        <span class="stat-value">8</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Low Stock:</span>
+                        <span class="stat-value ">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Total Value:</span>
+                        <span class="stat-value">R0.00</span>
+                    </div>
+                </div>
+                
+                <div class="category-actions">
+                    <a href="/category/Plumbing" class="btn btn-primary">
+                        <i class="fas fa-eye"></i> View Items
+                    </a>
+                </div>
+            </div>
+            
+            <div class="category-card" data-category-name="carpentry">
+                <div class="category-header">
+                    <h4><i class="fas fa-hammer"></i> Carpentry</h4>
+                    <span class="status-badge warning">
+                        Low Stock
+                    </span>
+                </div>
+                
+                <div class="category-stats">
+                    <div class="stat-row">
+                        <span class="stat-label">Total Items:</span>
+                        <span class="stat-value">5</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Low Stock:</span>
+                        <span class="stat-value warning">3</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Total Value:</span>
+                        <span class="stat-value">R7165.00</span>
+                    </div>
+                </div>
+                
+                <div class="category-actions">
+                    <a href="/category/Carpentry" class="btn btn-primary">
+                        <i class="fas fa-eye"></i> View Items
+                    </a>
+                </div>
+            </div>
+            
+            <div class="category-card" data-category-name="painting">
+                <div class="category-header">
+                    <h4><i class="fas fa-paint-brush"></i> Painting</h4>
+                    <span class="status-badge warning">
+                        Low Stock
+                    </span>
+                </div>
+                
+                <div class="category-stats">
+                    <div class="stat-row">
+                        <span class="stat-label">Total Items:</span>
+                        <span class="stat-value">5</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Low Stock:</span>
+                        <span class="stat-value warning">2</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Total Value:</span>
+                        <span class="stat-value">R15644.00</span>
+                    </div>
+                </div>
+                
+                <div class="category-actions">
+                    <a href="/category/Painting" class="btn btn-primary">
+                        <i class="fas fa-eye"></i> View Items
+                    </a>
+                </div>
+            </div>
+            
+            <div class="category-card" data-category-name="aircon">
+                <div class="category-header">
+                    <h4><i class="fas fa-snowflake"></i> Aircon</h4>
+                    <span class="status-badge warning">
+                        Low Stock
+                    </span>
+                </div>
+                
+                <div class="category-stats">
+                    <div class="stat-row">
+                        <span class="stat-label">Total Items:</span>
+                        <span class="stat-value">4</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Low Stock:</span>
+                        <span class="stat-value warning">3</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Total Value:</span>
+                        <span class="stat-value">R12524.50</span>
+                    </div>
+                </div>
+                
+                <div class="category-actions">
+                    <a href="/category/Aircon" class="btn btn-primary">
+                        <i class="fas fa-eye"></i> View Items
+                    </a>
+                </div>
+            </div>
+            
+            <div class="category-card" data-category-name="ceiling tiles">
+                <div class="category-header">
+                    <h4><i class="fas fa-th"></i> Ceiling Tiles</h4>
+                    <span class="status-badge warning">
+                        Low Stock
+                    </span>
+                </div>
+                
+                <div class="category-stats">
+                    <div class="stat-row">
+                        <span class="stat-label">Total Items:</span>
+                        <span class="stat-value">2</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Low Stock:</span>
+                        <span class="stat-value warning">2</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Total Value:</span>
+                        <span class="stat-value">R5285.00</span>
+                    </div>
+                </div>
+                
+                <div class="category-actions">
+                    <a href="/category/Ceiling Tiles" class="btn btn-primary">
+                        <i class="fas fa-eye"></i> View Items
+                    </a>
+                </div>
+            </div>
+            
+            <div class="category-card" data-category-name="decoration">
+                <div class="category-header">
+                    <h4><i class="fas fa-palette"></i> Decoration</h4>
+                    <span class="status-badge warning">
+                        Low Stock
+                    </span>
+                </div>
+                
+                <div class="category-stats">
+                    <div class="stat-row">
+                        <span class="stat-label">Total Items:</span>
+                        <span class="stat-value">2</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Low Stock:</span>
+                        <span class="stat-value warning">2</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Total Value:</span>
+                        <span class="stat-value">R4702.50</span>
+                    </div>
+                </div>
+                
+                <div class="category-actions">
+                    <a href="/category/Decoration" class="btn btn-primary">
+                        <i class="fas fa-eye"></i> View Items
+                    </a>
+                </div>
+            </div>
+            
+            <div class="category-card" data-category-name="parking &amp; signage">
+                <div class="category-header">
+                    <h4><i class="fas fa-parking"></i> Parking &amp; Signage</h4>
+                    <span class="status-badge warning">
+                        Low Stock
+                    </span>
+                </div>
+                
+                <div class="category-stats">
+                    <div class="stat-row">
+                        <span class="stat-label">Total Items:</span>
+                        <span class="stat-value">2</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Low Stock:</span>
+                        <span class="stat-value warning">2</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Total Value:</span>
+                        <span class="stat-value">R2130.00</span>
+                    </div>
+                </div>
+                
+                <div class="category-actions">
+                    <a href="/category/Parking &amp; Signage" class="btn btn-primary">
+                        <i class="fas fa-eye"></i> View Items
+                    </a>
+                </div>
+            </div>
+            
+            <div class="category-card" data-category-name="safety">
+                <div class="category-header">
+                    <h4><i class="fas fa-shield-alt"></i> Safety</h4>
+                    <span class="status-badge warning">
+                        Low Stock
+                    </span>
+                </div>
+                
+                <div class="category-stats">
+                    <div class="stat-row">
+                        <span class="stat-label">Total Items:</span>
+                        <span class="stat-value">5</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Low Stock:</span>
+                        <span class="stat-value warning">3</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Total Value:</span>
+                        <span class="stat-value">R18285.00</span>
+                    </div>
+                </div>
+                
+                <div class="category-actions">
+                    <a href="/category/Safety" class="btn btn-primary">
+                        <i class="fas fa-eye"></i> View Items
+                    </a>
+                </div>
+            </div>
+            
+            <div class="category-card" data-category-name="access control">
+                <div class="category-header">
+                    <h4><i class="fas fa-key"></i> Access Control</h4>
+                    <span class="status-badge warning">
+                        Low Stock
+                    </span>
+                </div>
+                
+                <div class="category-stats">
+                    <div class="stat-row">
+                        <span class="stat-label">Total Items:</span>
+                        <span class="stat-value">2</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Low Stock:</span>
+                        <span class="stat-value warning">2</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Total Value:</span>
+                        <span class="stat-value">R7125.00</span>
+                    </div>
+                </div>
+                
+                <div class="category-actions">
+                    <a href="/category/Access Control" class="btn btn-primary">
+                        <i class="fas fa-eye"></i> View Items
+                    </a>
+                </div>
+            </div>
+            
+            </div>
+        </div>
+
+        
+    </div>
+
+    <!-- Low Stock Alerts Navigation -->
+    
+    <div class="alerts-navigation-section">
+        <div class="alert-navigation-card">
+            <div class="alert-nav-content">
+                <div class="alert-nav-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="alert-nav-info">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Low Stock Alert</h3>
+                    <p>19 items require immediate attention</p>
+                    <div class="alert-nav-summary">
+                        <span class="alert-count critical">19</span>
+                        <span class="alert-label">Items Below Minimum Stock Level</span>
+                    </div>
+                </div>
+                <div class="alert-nav-action">
+                    <a href="/low-stock" class="btn btn-warning btn-lg">
+                        <i class="fas fa-eye"></i> View Low Stock Alerts
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+<!-- Toast notification for actions -->
+<div id="toast" class="toast" style="display: none;">
+    <div class="toast-content">
+        <span id="toast-message"></span>
+    </div>
+</div>
+
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div style="text-align: center; padding: 2rem 0;">
+                <div style="margin-bottom: 1rem;">
+                    <h4 style="margin-bottom: 0.5rem; color: white; font-size: 1.1rem;">Designed by Sifiso Cyprian Shezi</h4>
+                    <p style="color: #bdc3c7; margin: 0;">Facilities Assistant Level 1 — Derivco Durban | Transforming facility management through innovation</p>
+                </div>
+                <div style="border-top: 1px solid #4a5568; padding-top: 1rem;">
+                    <p style="color: #9ca3af; font-size: 0.875rem; margin: 0;">&copy; 2025 Derivco Facilities Management System. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/static/js/main.js"></script>
+    <script>
+        // Show/hide back button based on current page and browser history
+        document.addEventListener('DOMContentLoaded', function() {
+            const backBtn = document.getElementById('backBtn');
+            const currentPath = window.location.pathname;
+            
+            // Show back button on all pages except home page and if there's history
+            if (currentPath !== '/' && window.history.length > 1) {
+                backBtn.style.display = 'inline-flex';
+            }
+        });
+    </script>
+    
+<script>
+// Category icon mapping
+function getCategoryIcon(categoryName) {
+    const icons = {
+        'Electric': 'bolt',
+        'Plumbing': 'tint',
+        'Carpentry': 'hammer',
+        'Painting': 'paint-brush',
+        'Aircon': 'snowflake',
+        'Ceiling Tiles': 'th',
+        'Decoration': 'palette',
+        'Parking & Signage': 'parking',
+        'Safety': 'shield-alt',
+        'Access Control': 'key'
+    };
+    return icons[categoryName] || 'box';
+}
+
+// Chart colors for consistency
+const CHART_COLORS = [
+    '#3498db', '#e74c3c', '#2ecc71', '#f39c12', '#9b59b6',
+    '#1abc9c', '#34495e', '#e67e22', '#8e44ad', '#16a085'
+];
+
+let charts = {}; // Store chart instances
+
+// Search functionality and chart initialization
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('category-search');
+    const categoryCards = document.querySelectorAll('.category-card');
+    
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            
+            categoryCards.forEach(card => {
+                const categoryName = card.dataset.categoryName;
+                
+                if (categoryName.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    }
+
+    // Initialize charts
+    initializeCharts();
+    
+    // Add animated counter effect to stats
+    animateCounters();
+    
+    // Initialize category management
+    initializeCategoryManagement();
+});
+
+// Animate stat counters
+function animateCounters() {
+    const statNumbers = document.querySelectorAll('.stat-number[data-target]');
+
+    statNumbers.forEach(element => {
+        const target = parseInt(element.getAttribute('data-target')) || 0;
+        let current = 0;
+        const increment = Math.max(1, Math.ceil(target / 50)); // Smoother animation
+
+        const timer = setInterval(() => {
+            current += increment;
+            if (current >= target) {
+                current = target;
+                clearInterval(timer);
+            }
+
+            element.textContent = current.toLocaleString();
+        }, 30); // Faster animation
+    });
+}
+
+// Initialize all charts
+async function initializeCharts() {
+    try {
+        const response = await fetch('/api/categories');
+        const categories = await response.json();
+        
+        if (categories && categories.length > 0) {
+            createCategoryPieChart(categories);
+            createValueDonutChart(categories);
+            createStockStatusChart(categories);
+        }
+    } catch (error) {
+        console.error('Error loading chart data:', error);
+    }
+}
+
+// Create category distribution pie chart
+function createCategoryPieChart(categories) {
+    const ctx = document.getElementById('categoryPieChart');
+    if (!ctx) return;
+    
+    const data = categories.map(cat => cat.total_items);
+    const labels = categories.map(cat => cat.name);
+    
+    charts.categoryPie = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: CHART_COLORS.slice(0, data.length),
+                borderWidth: 2,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        padding: 10,
+                        usePointStyle: true,
+                        font: { size: 11 }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = ((context.raw / total) * 100).toFixed(1);
+                            return `${context.label}: ${context.raw} items (${percentage}%)`;
+                        }
+                    }
+                }
+            },
+            onClick: (event, elements) => {
+                if (elements.length > 0) {
+                    const index = elements[0].index;
+                    const categoryName = labels[index];
+                    window.location.href = `/category/${categoryName}`;
+                }
+            }
+        }
+    });
+}
+
+// Create value distribution donut chart
+function createValueDonutChart(categories) {
+    const ctx = document.getElementById('valueDonutChart');
+    if (!ctx) return;
+    
+    const data = categories.map(cat => cat.total_value);
+    const labels = categories.map(cat => cat.name);
+    
+    charts.valueDonut = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: CHART_COLORS.slice(0, data.length),
+                borderWidth: 2,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '50%',
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        padding: 10,
+                        usePointStyle: true,
+                        font: { size: 11 }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = ((context.raw / total) * 100).toFixed(1);
+                            return `${context.label}: R${context.raw.toLocaleString()} (${percentage}%)`;
+                        }
+                    }
+                }
+            },
+            onClick: (event, elements) => {
+                if (elements.length > 0) {
+                    const index = elements[0].index;
+                    const categoryName = labels[index];
+                    window.location.href = `/category/${categoryName}`;
+                }
+            }
+        }
+    });
+}
+
+// Create stock status bar chart
+function createStockStatusChart(categories) {
+    const ctx = document.getElementById('stockStatusChart');
+    if (!ctx) return;
+    
+    const labels = categories.map(cat => cat.name.length > 10 ? cat.name.substring(0, 10) + '...' : cat.name);
+    const totalItems = categories.map(cat => cat.total_items);
+    const lowStockItems = categories.map(cat => cat.low_stock);
+    
+    charts.stockStatus = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Total Items',
+                    data: totalItems,
+                    backgroundColor: '#3498db',
+                    borderColor: '#2980b9',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Low Stock Items',
+                    data: lowStockItems,
+                    backgroundColor: '#e74c3c',
+                    borderColor: '#c0392b',
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                },
+                x: {
+                    ticks: {
+                        maxRotation: 45
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'top'
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false
+                }
+            },
+            onClick: (event, elements) => {
+                if (elements.length > 0) {
+                    const index = elements[0].index;
+                    const categoryName = categories[index].name;
+                    window.location.href = `/category/${categoryName}`;
+                }
+            }
+        }
+    });
+}
+
+// Reload data function
+async function reloadData() {
+    showToast('Reloading data...', 'info');
+    
+    try {
+        const response = await fetch('/api/reload-data', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            showToast('Data reloaded successfully!', 'success');
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
+        } else {
+            showToast('Error reloading data: ' + result.message, 'error');
+        }
+    } catch (error) {
+        showToast('Error reloading data: ' + error.message, 'error');
+    }
+}
+
+// Toast notification function
+function showToast(message, type = 'info') {
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toast-message');
+    
+    toastMessage.textContent = message;
+    toast.className = `toast toast-${type}`;
+    toast.style.display = 'block';
+    
+    setTimeout(() => {
+        toast.style.display = 'none';
+    }, 3000);
+}
+
+// Category Management for Clean Dashboard
+function initializeCategoryManagement() {
+    // Category grouping data
+    const categoryGroups = {
+        critical: ['Electric', 'Safety', 'Plumbing'],
+        maintenance: ['Carpentry', 'Painting', 'Aircon'],
+        infrastructure: ['Ceiling Tiles', 'Decoration', 'Parking & Signage', 'Access Control']
+    };
+    
+    // Initialize priority categories
+    initializePriorityCategories();
+    
+    // Tab functionality
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    tabButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const group = this.dataset.group;
+            
+            // Update active tab
+            tabButtons.forEach(tab => tab.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Filter categories
+            filterCategoriesByGroup(group, categoryGroups);
+        });
+    });
+    
+    // View toggle functionality
+    const compactViewBtn = document.getElementById('compactViewBtn');
+    const detailedViewBtn = document.getElementById('detailedViewBtn');
+    const categoriesGrid = document.getElementById('categories-container');
+    
+    compactViewBtn.addEventListener('click', function() {
+        categoriesGrid.className = 'categories-grid compact-view';
+        compactViewBtn.classList.add('active');
+        detailedViewBtn.classList.remove('active');
+    });
+    
+    detailedViewBtn.addEventListener('click', function() {
+        categoriesGrid.className = 'categories-grid detailed-view';
+        detailedViewBtn.classList.add('active');
+        compactViewBtn.classList.remove('active');
+    });
+}
+
+function initializePriorityCategories() {
+    const priorityContainer = document.getElementById('priority-categories-container');
+    
+    // Get categories data from the page
+    const categoryCards = document.querySelectorAll('.category-card');
+    const priorityCategories = [];
+    
+    categoryCards.forEach(card => {
+        const categoryName = card.querySelector('h4').textContent.trim();
+        const statsRows = card.querySelectorAll('.stat-row');
+        
+        let totalItems = 0;
+        let lowStock = 0;
+        
+        statsRows.forEach(row => {
+            const label = row.querySelector('.stat-label').textContent;
+            const value = parseInt(row.querySelector('.stat-value').textContent) || 0;
+            
+            if (label.includes('Total Items')) totalItems = value;
+            if (label.includes('Low Stock')) lowStock = value;
+        });
+        
+        // Prioritize categories with low stock or high activity
+        if (lowStock > 0 || ['Electric', 'Safety', 'Plumbing'].includes(categoryName.replace(/.*fa-\w+['"]\s*><\/i>\s*/, ''))) {
+            priorityCategories.push({
+                name: categoryName.replace(/.*fa-\w+['"]\s*><\/i>\s*/, ''),
+                icon: getCategoryIcon(categoryName.replace(/.*fa-\w+['"]\s*><\/i>\s*/, '')),
+                totalItems,
+                lowStock,
+                fullCard: card
+            });
+        }
+    });
+    
+    // Limit to top 3 priority categories
+    priorityCategories.slice(0, 3).forEach(category => {
+        const priorityCard = createPriorityCard(category);
+        priorityContainer.appendChild(priorityCard);
+    });
+}
+
+function createPriorityCard(category) {
+    const card = document.createElement('div');
+    card.className = 'priority-card';
+    card.onclick = () => window.location.href = `/category/${category.name}`;
+    
+    card.innerHTML = `
+        <h5><i class="fas fa-${category.icon}"></i> ${category.name}</h5>
+        <div class="priority-stats">
+            <div class="priority-stat">
+                <span class="number">${category.totalItems}</span>
+                <span class="label">Items</span>
+            </div>
+            <div class="priority-stat ${category.lowStock > 0 ? 'warning' : ''}">
+                <span class="number">${category.lowStock}</span>
+                <span class="label">Low Stock</span>
+            </div>
+        </div>
+        <div class="priority-actions">
+            <button onclick="event.stopPropagation(); window.location.href='/category/${category.name}'" class="btn btn-sm btn-primary">
+                <i class="fas fa-eye"></i> View
+            </button>
+        </div>
+    `;
+    
+    return card;
+}
+
+function filterCategoriesByGroup(group, categoryGroups) {
+    const categoryCards = document.querySelectorAll('.category-card');
+    
+    if (group === 'all') {
+        categoryCards.forEach(card => card.style.display = 'block');
+        return;
+    }
+    
+    const groupCategories = categoryGroups[group] || [];
+    
+    categoryCards.forEach(card => {
+        const categoryName = card.dataset.categoryName;
+        const shouldShow = groupCategories.some(cat => 
+            categoryName.includes(cat.toLowerCase())
+        );
+        
+        card.style.display = shouldShow ? 'block' : 'none';
+    });
+}
+</script>
+
+</body>
+</html>

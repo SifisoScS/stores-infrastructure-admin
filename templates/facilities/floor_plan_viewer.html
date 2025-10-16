@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Floor Plan Viewer - Derivco Facilities</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .floor-plan-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .tools-sidebar {
+            width: 250px;
+            background: white;
+            border-right: 1px solid #e0e0e0;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .floor-plan-area {
+            flex: 1;
+            position: relative;
+            background: white;
+        }
+
+        .tools-section {
+            margin-bottom: 25px;
+        }
+
+        .tools-section h3 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .tool-btn {
+            display: block;
+            width: 100%;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .tool-btn:hover {
+            background: #e3f2fd;
+            border-color: #1976d2;
+            color: #1976d2;
+        }
+
+        .tool-btn.active {
+            background: #1976d2;
+            color: white;
+            border-color: #1976d2;
+        }
+
+        .view-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .view-btn {
+            flex: 1;
+            min-width: 100px;
+            padding: 8px 12px;
+            background: #f0f0f0;
+            border: 1px solid #d0d0d0;
+            border-radius: 4px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .view-btn:hover {
+            background: #e0e0e0;
+        }
+
+        .view-btn.active {
+            background: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+
+        .legend {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 15px;
+            max-width: 200px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            z-index: 50;
+        }
+
+        .legend h4 {
+            margin-bottom: 10px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 6px;
+            font-size: 12px;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border: 1px solid #999;
+            margin-right: 8px;
+            border-radius: 2px;
+        }
+
+        .floor-canvas {
+            width: 100%;
+            height: 100%;
+            cursor: grab;
+        }
+
+        .floor-canvas:active {
+            cursor: grabbing;
+        }
+
+        .floor-controls {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 50;
+        }
+
+        .control-btn {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .control-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .top-header {
+            position: absolute;
+            top: 0;
+            left: 250px;
+            right: 0;
+            height: 60px;
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 100;
+        }
+
+        .floor-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .floor-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .current-view {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .header-btn {
+            padding: 8px 16px;
+            background: #f5f5f5;
+            border: 1px solid #d0d0d0;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .header-btn:hover {
+            background: #e0e0e0;
+        }
+
+        .space {
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .space:hover {
+            stroke-width: 2;
+            stroke: #1976d2;
+        }
+
+        .space.selected {
+            stroke: #1976d2 !important;
+            stroke-width: 3 !important;
+        }
+
+        .space.bulk-selected {
+            stroke: #FF5722 !important;
+            stroke-width: 4 !important;
+            stroke-dasharray: 5,5 !important;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .tools-sidebar {
+                display: none;
+            }
+
+            .top-header {
+                left: 0;
+                height: 50px;
+            }
+
+            .floor-plan-area {
+                padding-bottom: 120px;
+            }
+
+            .legend {
+                top: 60px;
+                right: 10px;
+                max-width: 150px;
+                font-size: 11px;
+            }
+
+            .floor-controls {
+                bottom: 130px;
+                left: 10px;
+            }
+
+            .control-btn {
+                width: 45px;
+                height: 45px;
+                font-size: 16px;
+            }
+        }
+
+        @media (orientation: landscape) and (max-width: 768px) {
+            .floor-plan-area {
+                padding-bottom: 0 !important;
+                padding-right: 200px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floor-plan-container">
+        <!-- Desktop Tools Sidebar -->
+        <div class="tools-sidebar">
+            <div class="tools-section">
+                <h3>File Actions</h3>
+                <button class="tool-btn" id="download-file">
+                    <i class="fas fa-download"></i> Download
+                </button>
+                <button class="tool-btn" id="print-file">
+                    <i class="fas fa-print"></i> Print
+                </button>
+                <button class="tool-btn" id="link-drawing">
+                    <i class="fas fa-link"></i> Link Drawing
+                </button>
+            </div>
+
+            <div class="tools-section">
+                <h3>Measurements</h3>
+                <button class="tool-btn" id="measure-distance">
+                    <i class="fas fa-ruler"></i> Distance
+                </button>
+                <button class="tool-btn" id="measure-area">
+                    <i class="fas fa-draw-polygon"></i> Area
+                </button>
+            </div>
+
+            <div class="tools-section">
+                <h3>Views</h3>
+                <div class="view-buttons">
+                    <button class="view-btn active" data-view="occupancy">Occupancy</button>
+                    <button class="view-btn" data-view="categorization">Categories</button>
+                    <button class="view-btn" data-view="surfaces">Surfaces</button>
+                    <button class="view-btn" data-view="status">Status</button>
+                    <button class="view-btn" data-view="organizations">Organizations</button>
+                    <button class="view-btn" data-view="equipment">Equipment</button>
+                </div>
+            </div>
+
+            <div class="tools-section">
+                <h3>Tools</h3>
+                <button class="tool-btn" id="find-person">
+                    <i class="fas fa-user-search"></i> Find Person
+                </button>
+                <button class="tool-btn" id="assign-people">
+                    <i class="fas fa-users"></i> Assign People
+                </button>
+                <button class="tool-btn" id="add-equipment">
+                    <i class="fas fa-plus-circle"></i> Add Equipment
+                </button>
+                <button class="tool-btn" id="service-request">
+                    <i class="fas fa-hard-hat"></i> Service Request
+                </button>
+            </div>
+        </div>
+
+        <!-- Floor Plan Area -->
+        <div class="floor-plan-area">
+            <!-- Header -->
+            <div class="top-header">
+                <div class="floor-info">
+                    <div class="floor-title" id="floor-title">Commons Building - 4th Floor</div>
+                    <div class="current-view" id="current-view">Occupancy View</div>
+                </div>
+                <div class="header-actions">
+                    <button class="header-btn" id="3d-view">
+                        <i class="fas fa-cube"></i> 3D View
+                    </button>
+                    <button class="header-btn" id="full-screen">
+                        <i class="fas fa-expand"></i> Full Screen
+                    </button>
+                </div>
+            </div>
+
+            <!-- Canvas Area -->
+            <svg class="floor-canvas" id="floor-canvas" style="margin-top: 60px;">
+                <!-- Floor plan will be dynamically loaded here -->
+                <defs>
+                    <!-- Define patterns and gradients -->
+                    <pattern id="carpet" patternUnits="userSpaceOnUse" width="10" height="10">
+                        <rect width="10" height="10" fill="#e8f5e8"/>
+                        <rect width="5" height="5" fill="#d4edda"/>
+                    </pattern>
+                    <pattern id="tile" patternUnits="userSpaceOnUse" width="8" height="8">
+                        <rect width="8" height="8" fill="#f8f9fa" stroke="#dee2e6" stroke-width="0.5"/>
+                    </pattern>
+                </defs>
+
+                <!-- Sample floor plan spaces -->
+                <g id="spaces-layer">
+                    <!-- These would be loaded from DWG data -->
+                </g>
+
+                <!-- People assignments layer -->
+                <g id="people-layer">
+                </g>
+
+                <!-- Equipment layer -->
+                <g id="equipment-layer">
+                </g>
+            </svg>
+
+            <!-- Controls -->
+            <div class="floor-controls">
+                <button class="control-btn" id="zoom-in">
+                    <i class="fas fa-plus"></i>
+                </button>
+                <button class="control-btn" id="zoom-out">
+                    <i class="fas fa-minus"></i>
+                </button>
+                <button class="control-btn" id="zoom-fit">
+                    <i class="fas fa-expand-arrows-alt"></i>
+                </button>
+            </div>
+
+            <!-- Legend -->
+            <div class="legend" id="legend">
+                <h4>Occupancy</h4>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #4CAF50;"></div>
+                    <span>Occupied (158)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #FF9800;"></div>
+                    <span>Over-utilized (1)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #f44336;"></div>
+                    <span>Unassigned (48)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include JavaScript modules -->
+    <script src="/static/js/drag-drop-engine.js"></script>
+    <script src="/static/js/bulk-operations.js"></script>
+    <script src="/static/js/mobile-responsive.js"></script>
+    <script src="/static/js/dwg-processor.js"></script>
+    <script src="/static/js/main-integration.js"></script>
+
+    <script>
+        // Floor Plan Engine Core
+        class FloorPlanEngine {
+            constructor() {
+                this.canvas = document.getElementById('floor-canvas');
+                this.currentView = 'occupancy';
+                this.scale = 1;
+                this.panX = 0;
+                this.panY = 0;
+                this.spaces = [];
+                this.people = [];
+                this.selectedSpaces = [];
+                this.isMultiSelect = false;
+
+                this.init();
+                this.loadSampleData();
+            }
+
+            init() {
+                this.setupEventListeners();
+                this.setupViewport();
+            }
+
+            setupEventListeners() {
+                // View switching
+                document.querySelectorAll('.view-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        this.switchView(e.target.dataset.view);
+                    });
+                });
+
+                // Zoom controls
+                document.getElementById('zoom-in').addEventListener('click', () => this.zoom(1.2));
+                document.getElementById('zoom-out').addEventListener('click', () => this.zoom(0.8));
+                document.getElementById('zoom-fit').addEventListener('click', () => this.fitToView());
+
+                // Canvas interactions
+                this.setupCanvasInteractions();
+            }
+
+            setupCanvasInteractions() {
+                let isDragging = false;
+                let dragStart = { x: 0, y: 0 };
+
+                // Pan functionality
+                this.canvas.addEventListener('mousedown', (e) => {
+                    if (e.target === this.canvas) {
+                        isDragging = true;
+                        dragStart = { x: e.clientX - this.panX, y: e.clientY - this.panY };
+                        this.canvas.style.cursor = 'grabbing';
+                    }
+                });
+
+                document.addEventListener('mousemove', (e) => {
+                    if (isDragging) {
+                        this.panX = e.clientX - dragStart.x;
+                        this.panY = e.clientY - dragStart.y;
+                        this.updateTransform();
+                    }
+                });
+
+                document.addEventListener('mouseup', () => {
+                    isDragging = false;
+                    this.canvas.style.cursor = 'grab';
+                });
+
+                // Wheel zoom
+                this.canvas.addEventListener('wheel', (e) => {
+                    e.preventDefault();
+                    const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1;
+                    this.zoom(zoomFactor);
+                });
+
+                // Space selection
+                this.canvas.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('space')) {
+                        this.selectSpace(e.target, e);
+                    }
+                });
+            }
+
+            setupViewport() {
+                const viewBox = `0 0 800 600`;
+                this.canvas.setAttribute('viewBox', viewBox);
+                this.updateTransform();
+            }
+
+            updateTransform() {
+                const spacesLayer = document.getElementById('spaces-layer');
+                if (spacesLayer) {
+                    spacesLayer.setAttribute('transform', `translate(${this.panX}, ${this.panY}) scale(${this.scale})`);
+                }
+            }
+
+            zoom(factor) {
+                this.scale *= factor;
+                this.scale = Math.max(0.1, Math.min(5, this.scale));
+                this.updateTransform();
+            }
+
+            fitToView() {
+                this.scale = 1;
+                this.panX = 0;
+                this.panY = 0;
+                this.updateTransform();
+            }
+
+            switchView(viewType) {
+                this.currentView = viewType;
+
+                // Update UI
+                document.querySelectorAll('.view-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.view === viewType);
+                });
+
+                document.getElementById('current-view').textContent =
+                    viewType.charAt(0).toUpperCase() + viewType.slice(1) + ' View';
+
+                // Update legend and colors
+                this.updateViewDisplay();
+            }
+
+            updateViewDisplay() {
+                const legend = document.getElementById('legend');
+
+                switch(this.currentView) {
+                    case 'occupancy':
+                        legend.innerHTML = `
+                            <h4>Occupancy</h4>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #4CAF50;"></div>
+                                <span>Occupied (158)</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #FF9800;"></div>
+                                <span>Over-utilized (1)</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #f44336;"></div>
+                                <span>Unassigned (48)</span>
+                            </div>
+                        `;
+                        this.colorSpacesByOccupancy();
+                        break;
+
+                    case 'categorization':
+                        legend.innerHTML = `
+                            <h4>Space Categories</h4>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #2196F3;"></div>
+                                <span>Offices (89)</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #9C27B0;"></div>
+                                <span>Meeting Rooms (12)</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #FF5722;"></div>
+                                <span>Circulation (45)</span>
+                            </div>
+                        `;
+                        this.colorSpacesByCategory();
+                        break;
+
+                    case 'surfaces':
+                        legend.innerHTML = `
+                            <h4>Surface Types</h4>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: url(#carpet);"></div>
+                                <span>Carpet (156)</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #E0E0E0;"></div>
+                                <span>Ceramic Tile (89)</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #BDBDBD;"></div>
+                                <span>Concrete (23)</span>
+                            </div>
+                        `;
+                        this.colorSpacesBySurface();
+                        break;
+                }
+            }
+
+            colorSpacesByOccupancy() {
+                document.querySelectorAll('.space').forEach((space, index) => {
+                    const occupied = Math.random() > 0.3;
+                    const overUtilized = Math.random() > 0.95;
+
+                    if (overUtilized) {
+                        space.style.fill = '#FF9800';
+                    } else if (occupied) {
+                        space.style.fill = '#4CAF50';
+                    } else {
+                        space.style.fill = '#f44336';
+                    }
+                });
+            }
+
+            colorSpacesByCategory() {
+                document.querySelectorAll('.space').forEach((space, index) => {
+                    const categories = ['#2196F3', '#9C27B0', '#FF5722', '#4CAF50'];
+                    space.style.fill = categories[index % categories.length];
+                });
+            }
+
+            colorSpacesBySurface() {
+                document.querySelectorAll('.space').forEach((space, index) => {
+                    const surfaces = ['url(#carpet)', '#E0E0E0', '#BDBDBD'];
+                    space.style.fill = surfaces[index % surfaces.length];
+                });
+            }
+
+            selectSpace(spaceElement, event) {
+                // Multi-select with Shift
+                if (event && event.shiftKey) {
+                    spaceElement.classList.toggle('selected');
+                    if (spaceElement.classList.contains('selected')) {
+                        this.selectedSpaces.push(spaceElement);
+                    } else {
+                        this.selectedSpaces = this.selectedSpaces.filter(s => s !== spaceElement);
+                    }
+                } else {
+                    // Single select
+                    this.selectedSpaces.forEach(s => s.classList.remove('selected'));
+                    this.selectedSpaces = [spaceElement];
+                    spaceElement.classList.add('selected');
+                }
+
+                // Add selection styling
+                document.querySelectorAll('.space.selected').forEach(space => {
+                    space.style.stroke = '#1976d2';
+                    space.style.strokeWidth = '3';
+                });
+
+                document.querySelectorAll('.space:not(.selected)').forEach(space => {
+                    space.style.stroke = '#333';
+                    space.style.strokeWidth = '1';
+                });
+
+                this.showSpaceInfo();
+            }
+
+            showSpaceInfo() {
+                if (this.selectedSpaces.length === 1) {
+                    const space = this.selectedSpaces[0];
+                    console.log(`Selected space: ${space.id}`);
+                } else if (this.selectedSpaces.length > 1) {
+                    console.log(`Selected ${this.selectedSpaces.length} spaces`);
+                }
+            }
+
+            loadSampleData() {
+                // Create sample floor plan spaces
+                const spacesLayer = document.getElementById('spaces-layer');
+
+                // Sample room data (normally loaded from DWG)
+                const rooms = [
+                    { id: '401', x: 50, y: 50, width: 80, height: 60, type: 'office' },
+                    { id: '402', x: 150, y: 50, width: 80, height: 60, type: 'office' },
+                    { id: '403', x: 250, y: 50, width: 120, height: 60, type: 'meeting' },
+                    { id: '404', x: 50, y: 130, width: 80, height: 60, type: 'office' },
+                    { id: '405', x: 150, y: 130, width: 80, height: 60, type: 'office' },
+                    { id: '406', x: 250, y: 130, width: 120, height: 60, type: 'storage' },
+                    { id: '407', x: 50, y: 210, width: 160, height: 80, type: 'lab' },
+                    { id: '408', x: 230, y: 210, width: 140, height: 80, type: 'conference' }
+                ];
+
+                rooms.forEach(room => {
+                    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                    rect.setAttribute('x', room.x);
+                    rect.setAttribute('y', room.y);
+                    rect.setAttribute('width', room.width);
+                    rect.setAttribute('height', room.height);
+                    rect.setAttribute('fill', '#e3f2fd');
+                    rect.setAttribute('stroke', '#333');
+                    rect.setAttribute('stroke-width', '1');
+                    rect.classList.add('space');
+                    rect.id = room.id;
+
+                    // Add room number text
+                    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    text.setAttribute('x', room.x + room.width/2);
+                    text.setAttribute('y', room.y + room.height/2);
+                    text.setAttribute('text-anchor', 'middle');
+                    text.setAttribute('dominant-baseline', 'central');
+                    text.setAttribute('font-size', '14');
+                    text.setAttribute('font-weight', 'bold');
+                    text.textContent = room.id;
+
+                    spacesLayer.appendChild(rect);
+                    spacesLayer.appendChild(text);
+                });
+
+                // Apply initial view
+                this.updateViewDisplay();
+            }
+        }
+
+        // Initialize the floor plan engine
+        document.addEventListener('DOMContentLoaded', () => {
+            window.floorPlan = new FloorPlanEngine();
+
+            // Show welcome message
+            setTimeout(() => {
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: #4CAF50;
+                    color: white;
+                    padding: 15px 20px;
+                    border-radius: 8px;
+                    font-weight: 600;
+                    z-index: 9999;
+                    animation: slideIn 0.3s ease;
+                `;
+                notification.innerHTML = `
+                    <i class="fas fa-check-circle"></i> Floor Plan System Ready!<br>
+                    <small style="opacity: 0.9;">Try: Shift+Click for multi-select, drag to pan, wheel to zoom</small>
+                `;
+                document.body.appendChild(notification);
+
+                setTimeout(() => {
+                    notification.style.animation = 'slideOut 0.3s ease';
+                    setTimeout(() => notification.remove(), 300);
+                }, 5000);
+            }, 1000);
+        });
+
+        // Add CSS animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

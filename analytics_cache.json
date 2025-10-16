@@ -1,0 +1,22 @@
+{
+  "last_updated": "2025-09-17T15:46:48.748474",
+  "inventory_health_score": 87.3,
+  "category_performance": {
+    "Electric": {
+      "health_percentage": 85.2,
+      "total_items": 15
+    },
+    "Plumbing": {
+      "health_percentage": 92.1,
+      "total_items": 12
+    },
+    "Carpentry": {
+      "health_percentage": 78.5,
+      "total_items": 18
+    },
+    "Safety": {
+      "health_percentage": 94.3,
+      "total_items": 8
+    }
+  }
+}

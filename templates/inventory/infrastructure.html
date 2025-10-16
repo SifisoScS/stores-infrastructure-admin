@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+
+{% block title %}Infrastructure Overview - Derivco Stores Administration{% endblock %}
+
+{% block content %}
+<div class="infrastructure-overview">
+    <div class="page-header">
+        <h2><i class="fas fa-tools"></i> Infrastructure Overview</h2>
+        <p class="subtitle">System status across all Derivco facilities</p>
+    </div>
+
+    <div class="infrastructure-stats">
+        <div class="stat-card power">
+            <div class="stat-icon">
+                <i class="fas fa-bolt"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="power-operational">0</h3>
+                <p>Power Systems Operational</p>
+            </div>
+        </div>
+        
+        <div class="stat-card network">
+            <div class="stat-icon">
+                <i class="fas fa-network-wired"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="network-operational">0</h3>
+                <p>Network Systems Operational</p>
+            </div>
+        </div>
+        
+        <div class="stat-card hvac">
+            <div class="stat-icon">
+                <i class="fas fa-wind"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="hvac-operational">0</h3>
+                <p>HVAC Systems Operational</p>
+            </div>
+        </div>
+        
+        <div class="stat-card maintenance">
+            <div class="stat-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="total-maintenance">0</h3>
+                <p>Systems Need Maintenance</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="infrastructure-grid">
+        <div class="infra-section">
+            <h3><i class="fas fa-bolt"></i> Power Systems</h3>
+            <div class="system-status-grid" id="power-systems">
+                {% for store in stores %}
+                <div class="system-card">
+                    <div class="system-header">
+                        <h4>{{ store.name }}</h4>
+                        <span class="status-indicator {{ 'operational' if store.infrastructure.power == 'Operational' else 'maintenance' }}">
+                            <i class="fas {{ 'fa-check' if store.infrastructure.power == 'Operational' else 'fa-wrench' }}"></i>
+                            {{ store.infrastructure.power }}
+                        </span>
+                    </div>
+                    <p class="location">{{ store.location }}</p>
+                    <div class="system-actions">
+                        <button class="btn btn-sm" onclick="showSystemDetail('{{ store.id }}', 'power')">
+                            <i class="fas fa-eye"></i> Details
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="infra-section">
+            <h3><i class="fas fa-network-wired"></i> Network Systems</h3>
+            <div class="system-status-grid" id="network-systems">
+                {% for store in stores %}
+                <div class="system-card">
+                    <div class="system-header">
+                        <h4>{{ store.name }}</h4>
+                        <span class="status-indicator {{ 'operational' if store.infrastructure.network == 'Operational' else 'maintenance' }}">
+                            <i class="fas {{ 'fa-check' if store.infrastructure.network == 'Operational' else 'fa-wrench' }}"></i>
+                            {{ store.infrastructure.network }}
+                        </span>
+                    </div>
+                    <p class="location">{{ store.location }}</p>
+                    <div class="system-actions">
+                        <button class="btn btn-sm" onclick="showSystemDetail('{{ store.id }}', 'network')">
+                            <i class="fas fa-eye"></i> Details
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="infra-section">
+            <h3><i class="fas fa-wind"></i> HVAC Systems</h3>
+            <div class="system-status-grid" id="hvac-systems">
+                {% for store in stores %}
+                <div class="system-card">
+                    <div class="system-header">
+                        <h4>{{ store.name }}</h4>
+                        <span class="status-indicator {{ 'operational' if store.infrastructure.hvac == 'Operational' else 'maintenance' }}">
+                            <i class="fas {{ 'fa-check' if store.infrastructure.hvac == 'Operational' else 'fa-wrench' }}"></i>
+                            {{ store.infrastructure.hvac }}
+                        </span>
+                    </div>
+                    <p class="location">{{ store.location }}</p>
+                    <div class="system-actions">
+                        <button class="btn btn-sm" onclick="showSystemDetail('{{ store.id }}', 'hvac')">
+                            <i class="fas fa-eye"></i> Details
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="alert-section">
+        <h3><i class="fas fa-bell"></i> Active Alerts</h3>
+        <div class="alerts-container" id="alerts-container">
+            <!-- Alerts will be populated by JavaScript -->
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    calculateInfraStats();
+    generateAlerts();
+});
+
+function calculateInfraStats() {
+    const stores = {{ stores|tojson }};
+    
+    let powerOp = 0, networkOp = 0, hvacOp = 0, totalMaint = 0;
+    
+    stores.forEach(store => {
+        if (store.infrastructure.power === 'Operational') powerOp++;
+        else totalMaint++;
+        
+        if (store.infrastructure.network === 'Operational') networkOp++;
+        else totalMaint++;
+        
+        if (store.infrastructure.hvac === 'Operational') hvacOp++;
+        else totalMaint++;
+    });
+    
+    document.getElementById('power-operational').textContent = powerOp;
+    document.getElementById('network-operational').textContent = networkOp;
+    document.getElementById('hvac-operational').textContent = hvacOp;
+    document.getElementById('total-maintenance').textContent = totalMaint;
+}
+
+function generateAlerts() {
+    const stores = {{ stores|tojson }};
+    const alertsContainer = document.getElementById('alerts-container');
+    let alerts = [];
+    
+    stores.forEach(store => {
+        ['power', 'network', 'hvac'].forEach(system => {
+            if (store.infrastructure[system] !== 'Operational') {
+                alerts.push({
+                    store: store.name,
+                    system: system.toUpperCase(),
+                    status: store.infrastructure[system],
+                    location: store.location
+                });
+            }
+        });
+    });
+    
+    if (alerts.length === 0) {
+        alertsContainer.innerHTML = '<div class="no-alerts"><i class="fas fa-check-circle"></i> No active alerts</div>';
+    } else {
+        let alertsHtml = '';
+        alerts.forEach(alert => {
+            alertsHtml += `
+                <div class="alert-item">
+                    <div class="alert-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="alert-content">
+                        <h4>${alert.store} - ${alert.system}</h4>
+                        <p>Status: ${alert.status}</p>
+                        <p class="location">${alert.location}</p>
+                    </div>
+                    <div class="alert-actions">
+                        <button class="btn btn-sm btn-warning">Acknowledge</button>
+                    </div>
+                </div>
+            `;
+        });
+        alertsContainer.innerHTML = alertsHtml;
+    }
+}
+
+function showSystemDetail(storeId, system) {
+    window.location.href = `/store/${storeId}`;
+}
+</script>
+{% endblock %}

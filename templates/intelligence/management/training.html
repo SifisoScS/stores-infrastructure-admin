@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Training Module - Strategic Facilities Intelligence</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-blue: #003366;
+            --secondary-teal: #008080;
+            --training-blue: #3b82f6;
+            --training-sky: #0ea5e9;
+            --text-gray: #4a5568;
+            --bg-primary: #f8fafc;
+            --bg-card: #ffffff;
+            --border-color: #334155;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: #1a202c;
+            line-height: 1.6;
+        }
+
+        /* Header with Hero Image */
+        .header {
+            background: 
+                linear-gradient(rgba(0, 51, 102, 0.85), rgba(0, 51, 102, 0.7)),
+                url('https://images.unsplash.com/photo-1581094794329-c8112a89af12?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            padding: 2rem 1rem;
+            position: relative;
+            overflow: hidden;
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+            width: 100%;
+        }
+
+        .nav-back {
+            margin-bottom: 1rem;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            color: #1a202c;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .back-button i {
+            margin-right: 0.5rem;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .header-icon {
+            font-size: 3rem;
+            margin-right: 1rem;
+        }
+
+        .header-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+
+        .header-description {
+            font-size: 1rem;
+            opacity: 0.9;
+            max-width: 800px;
+            line-height: 1.6;
+        }
+
+        /* Content Sections */
+        .content-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--training-blue);
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title i {
+            margin-right: 0.75rem;
+            font-size: 1.5rem;
+        }
+
+        /* Training Programs Grid - Reduced Size */
+        .programs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .program-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            border-top: 4px solid var(--training-blue);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .program-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.2);
+        }
+
+        .program-level {
+            display: inline-block;
+            background: var(--training-blue);
+            color: #1a202c;
+            padding: 0.2rem 0.6rem;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+        }
+
+        .program-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 0.8rem;
+        }
+
+        .program-description {
+            color: var(--text-gray);
+            margin-bottom: 1.2rem;
+            font-size: 0.9rem;
+            flex-grow: 1;
+        }
+
+        .program-features {
+            list-style: none;
+            margin-bottom: 1.2rem;
+        }
+
+        .program-features li {
+            padding: 0.2rem 0;
+            color: var(--text-gray);
+            position: relative;
+            padding-left: 1.3rem;
+            font-size: 0.85rem;
+        }
+
+        .program-features li::before {
+            content: '🎓';
+            position: absolute;
+            left: 0;
+            font-size: 0.8rem;
+        }
+
+        .program-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .program-stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--training-blue);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-gray);
+        }
+
+        /* Career Pathways Section */
+        .pathways-section {
+            background: var(--bg-card);
+            padding: 2rem 1rem;
+        }
+
+        .pathway-timeline {
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .pathway-timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--training-blue);
+            transform: translateX(-50%);
+        }
+
+        .pathway-item {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .pathway-item:nth-child(odd) {
+            text-align: right;
+            padding-right: calc(50% + 2rem);
+        }
+
+        .pathway-item:nth-child(even) {
+            text-align: left;
+            padding-left: calc(50% + 2rem);
+        }
+
+        .pathway-icon {
+            position: absolute;
+            top: 0;
+            width: 35px;
+            height: 35px;
+            background: var(--training-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1a202c;
+            font-weight: 700;
+            border: 4px solid var(--bg-primary);
+            font-size: 0.9rem;
+        }
+
+        .pathway-item:nth-child(odd) .pathway-icon {
+            right: calc(50% - 17.5px);
+        }
+
+        .pathway-item:nth-child(even) .pathway-icon {
+            left: calc(50% - 17.5px);
+        }
+
+        .pathway-content {
+            background: var(--bg-primary);
+            padding: 1.2rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .pathway-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--training-blue);
+            margin-bottom: 0.4rem;
+        }
+
+        .pathway-level {
+            font-size: 0.8rem;
+            color: var(--text-gray);
+            margin-bottom: 0.4rem;
+        }
+
+        .pathway-description {
+            color: var(--text-gray);
+            font-size: 0.85rem;
+        }
+
+        /* Skills Matrix */
+        .skills-section {
+            padding: 2rem 1rem;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .skill-category {
+            background: var(--bg-card);
+            border-radius: 10px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .skill-category h4 {
+            color: var(--training-blue);
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .skill-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.4rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .skill-item:last-child {
+            border-bottom: none;
+        }
+
+        .skill-name {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+
+        .skill-level {
+            display: flex;
+            gap: 0.2rem;
+        }
+
+        .skill-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--border-color);
+        }
+
+        .skill-dot.active {
+            background: var(--training-blue);
+        }
+
+        /* Action Section */
+        .action-section {
+            background: var(--bg-card);
+            padding: 2.5rem 1rem;
+            text-align: center;
+        }
+
+        .action-button {
+            display: inline-flex;
+            align-items: center;
+            background: linear-gradient(135deg, var(--training-blue) 0%, var(--training-sky) 100%);
+            color: #1a202c;
+            padding: 0.8rem 1.5rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            margin: 0 0.5rem;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .action-button i {
+            margin-right: 0.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                min-height: 50vh;
+                padding: 1.5rem 1rem;
+            }
+            
+            .header-title {
+                font-size: 2rem;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .header-icon {
+                margin-bottom: 0.5rem;
+            }
+
+            .programs-grid,
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pathway-timeline::before {
+                left: 20px;
+            }
+
+            .pathway-item:nth-child(odd),
+            .pathway-item:nth-child(even) {
+                text-align: left;
+                padding-left: 3rem;
+                padding-right: 0;
+            }
+
+            .pathway-icon {
+                left: 0 !important;
+                right: auto !important;
+            }
+
+            .action-button {
+                margin: 0.5rem;
+                width: calc(100% - 1rem);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .content-section {
+                padding: 1.5rem 0.8rem;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            .program-card, .skill-category {
+                padding: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header with Hero Image -->
+    <header class="header">
+        <div class="header-content">
+            <div class="nav-back">
+                <a href="/" class="back-button">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Home
+                </a>
+            </div>
+
+            <h1 class="header-title">
+                <span class="header-icon">🎓</span>
+                Training Module
+            </h1>
+
+            <p class="header-subtitle">Generational Programs for FM Roles</p>
+            <p class="header-description">
+                Comprehensive training and development programs designed to build facility management expertise across all levels,
+                from entry-level positions to senior leadership roles, ensuring knowledge transfer and professional growth.
+            </p>
+        </div>
+    </header>
+
+    <!-- Training Programs Section -->
+    <section class="content-section">
+        <h2 class="section-title">
+            <i class="fas fa-graduation-cap"></i>
+            Training Programs
+        </h2>
+
+        <div class="programs-grid">
+            <div class="program-card">
+                <span class="program-level">Foundation Level</span>
+                <h3 class="program-title">FM Fundamentals</h3>
+                <div class="program-description">
+                    Essential knowledge and skills for new facility management professionals, covering basic principles, safety protocols, and operational procedures.
+                </div>
+                <ul class="program-features">
+                    <li>Safety protocols and compliance</li>
+                    <li>Basic maintenance procedures</li>
+                    <li>Communication standards</li>
+                    <li>Quality assurance basics</li>
+                </ul>
+                <div class="program-stats">
+                    <div class="program-stat">
+                        <div class="stat-value">40</div>
+                        <div class="stat-label">Hours</div>
+                    </div>
+                    <div class="program-stat">
+                        <div class="stat-value">8</div>
+                        <div class="stat-label">Modules</div>
+                    </div>
+                    <div class="program-stat">
+                        <div class="stat-value">95%</div>
+                        <div class="stat-label">Pass Rate</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="program-card">
+                <span class="program-level">Intermediate Level</span>
+                <h3 class="program-title">Technical Specialization</h3>
+                <div class="program-description">
+                    Advanced technical training for specialized facility management areas including HVAC, electrical systems, and building automation.
+                </div>
+                <ul class="program-features">
+                    <li>HVAC system management</li>
+                    <li>Electrical troubleshooting</li>
+                    <li>Building automation systems</li>
+                    <li>Preventive maintenance planning</li>
+                </ul>
+                <div class="program-stats">
+                    <div class="program-stat">
+                        <div class="stat-value">80</div>
+                        <div class="stat-label">Hours</div>
+                    </div>
+                    <div class="program-stat">
+                        <div class="stat-value">12</div>
+                        <div class="stat-label">Modules</div>
+                    </div>
+                    <div class="program-stat">
+                        <div class="stat-value">87%</div>
+                        <div class="stat-label">Pass Rate</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="program-card">
+                <span class="program-level">Advanced Level</span>
+                <h3 class="program-title">Leadership & Management</h3>
+                <div class="program-description">
+                    Strategic leadership development for facility management supervisors and managers, focusing on team leadership and operational excellence.
+                </div>
+                <ul class="program-features">
+                    <li>Team leadership skills</li>
+                    <li>Budget management</li>
+                    <li>Strategic planning</li>
+                    <li>Performance optimization</li>
+                </ul>
+                <div class="program-stats">
+                    <div class="program-stat">
+                        <div class="stat-value">120</div>
+                        <div class="stat-label">Hours</div>
+                    </div>
+                    <div class="program-stat">
+                        <div class="stat-value">15</div>
+                        <div class="stat-label">Modules</div>
+                    </div>
+                    <div class="program-stat">
+                        <div class="stat-value">92%</div>
+                        <div class="stat-label">Pass Rate</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="program-card">
+                <span class="program-level">Expert Level</span>
+                <h3 class="program-title">Strategic FM Excellence</h3>
+                <div class="program-description">
+                    Executive-level program for senior facility management professionals focusing on strategic planning, innovation, and organizational leadership.
+                </div>
+                <ul class="program-features">
+                    <li>Strategic facility planning</li>
+                    <li>Innovation management</li>
+                    <li>Stakeholder engagement</li>
+                    <li>Change leadership</li>
+                </ul>
+                <div class="program-stats">
+                    <div class="program-stat">
+                        <div class="stat-value">160</div>
+                        <div class="stat-label">Hours</div>
+                    </div>
+                    <div class="program-stat">
+                        <div class="stat-value">20</div>
+                        <div class="stat-label">Modules</div>
+                    </div>
+                    <div class="program-stat">
+                        <div class="stat-value">96%</div>
+                        <div class="stat-label">Pass Rate</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Career Pathways -->
+    <section class="pathways-section">
+        <div class="content-section">
+            <h2 class="section-title">
+                <i class="fas fa-route"></i>
+                Career Development Pathways
+            </h2>
+        </div>
+
+        <div class="pathway-timeline">
+            <div class="pathway-item">
+                <div class="pathway-icon">1</div>
+                <div class="pathway-content">
+                    <h4 class="pathway-title">Facilities Assistant</h4>
+                    <div class="pathway-level">Entry Level • 0-2 Years Experience</div>
+                    <div class="pathway-description">
+                        Foundation role focusing on basic maintenance, safety protocols, and support functions under supervision.
+                    </div>
+                </div>
+            </div>
+
+            <div class="pathway-item">
+                <div class="pathway-icon">2</div>
+                <div class="pathway-content">
+                    <h4 class="pathway-title">Facilities Technician</h4>
+                    <div class="pathway-level">Intermediate Level • 2-5 Years Experience</div>
+                    <div class="pathway-description">
+                        Specialized technical role with expertise in specific systems and independent problem-solving capabilities.
+                    </div>
+                </div>
+            </div>
+
+            <div class="pathway-item">
+                <div class="pathway-icon">3</div>
+                <div class="pathway-content">
+                    <h4 class="pathway-title">Facilities Supervisor</h4>
+                    <div class="pathway-level">Leadership Level • 5-8 Years Experience</div>
+                    <div class="pathway-description">
+                        Team leadership role managing daily operations, coordinating resources, and ensuring service delivery.
+                    </div>
+                </div>
+            </div>
+
+            <div class="pathway-item">
+                <div class="pathway-icon">4</div>
+                <div class="pathway-content">
+                    <h4 class="pathway-title">Facilities Manager</h4>
+                    <div class="pathway-level">Management Level • 8-12 Years Experience</div>
+                    <div class="pathway-description">
+                        Strategic management role overseeing facility operations, budget management, and stakeholder relations.
+                    </div>
+                </div>
+            </div>
+
+            <div class="pathway-item">
+                <div class="pathway-icon">5</div>
+                <div class="pathway-content">
+                    <h4 class="pathway-title">Senior Facilities Director</h4>
+                    <div class="pathway-level">Executive Level • 12+ Years Experience</div>
+                    <div class="pathway-description">
+                        Executive leadership role responsible for strategic planning, innovation, and organizational transformation.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Matrix -->
+    <section class="skills-section">
+        <div class="content-section">
+            <h2 class="section-title">
+                <i class="fas fa-cogs"></i>
+                Core Skills Development
+            </h2>
+        </div>
+
+        <div class="skills-grid">
+            <div class="skill-category">
+                <h4>Technical Skills</h4>
+                <div class="skill-item">
+                    <span class="skill-name">HVAC Systems</span>
+                    <div class="skill-level">
+                        <div class="skill-dot active"></div>
+                        <div class="skill-dot active"></div>
+                        <div class="skill-dot active"></div>
+                        <div class="skill-dot active"></div>
+                        <div class="skill-dot"></div>
+                    </div>
+                </div>
+                <div class="skill-item">
+                    <span class="skill-name">Electrical Systems</span>
+                    <div class="skill-level">
+                        <div class="skill-dot active"></div>
+                        <div class="skill-dot active"></div>
+                        <div class="skill-dot active"></div>
+                        <div class="skill-dot"></div>
+                        <div class="skill-dot"></div>
+                    </div>
+                </div>
+                <div class="skill-item">
+                    <span class="skill-name">Building Automation</span>
+                    <div class="skill-level">
+                        <div class="skill-dot active"></div>
+                        <div class="skill-dot active"></div>
+                        <div class="skill-dot active"></div>
+                        <div class="skill-dot active"></div>
+                        <div class="skill-dot active"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="skill-category">
+                <h4>Management Skills</h4>
+                <div class="skill-item">
+                    <span class="skill-name">Team Leadership</span>
+                    <div class="skill-level">
+                        <div class="skill-dot active"></div>
+                        <div class="skill-dot active"></div>
+                        <div class="skill-dot active"></div>
+                        <div class="skill-dot active"></div>
+                        <div class="skill-dot"></div>
+                    </div>
+                </div>
+                <div class="skill-item">
+                    <span class="skill-name">Budget Management</span>
+                    <div class="skill-level">
+                        <div class="skill-dot active"></div>
+                        <div class="skill-dot active"></div>
+                        <div class="skill-dot active"></div>
+                        <div class="skill-dot"></div>
+                        <div class="skill-dot"></div>
+                    </div>
+                </div>
+                <div class="skill-item">
+                    <span class="skill-name">Strategic Planning</span>
+                    <div class="skill-level">
+                        <div class="skill-dot active"></div>
+                        <div class="skill-dot active"></div>
+                        <div class="skill-dot active"></div>
+                        <div class="skill-dot active"></div>
+                        <div class="skill-dot"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="skill-category">
+                <h4>Soft Skills</h4>
+                <div class="skill-item">
+                    <span class="skill-name">Communication</span>
+                    <div class="skill-level">
+                        <div class="skill-dot active"></div>
+                        <div class="skill-dot active"></div>
+                        <div class="skill-dot active"></div>
+                        <div class="skill-dot active"></div>
+                        <div class="skill-dot active"></div>
+                    </div>
+                </div>
+                <div class="skill-item">
+                    <span class="skill-name">Problem Solving</span>
+                    <div class="skill-level">
+                        <div class="skill-dot active"></div>
+                        <div class="skill-dot active"></div>
+                        <div class="skill-dot active"></div>
+                        <div class="skill-dot active"></div>
+                        <div class="skill-dot"></div>
+                    </div>
+                </div>
+                <div class="skill-item">
+                    <span class="skill-name">Customer Service</span>
+                    <div class="skill-level">
+                        <div class="skill-dot active"></div>
+                        <div class="skill-dot active"></div>
+                        <div class="skill-dot active"></div>
+                        <div class="skill-dot active"></div>
+                        <div class="skill-dot active"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Action Section -->
+    <section class="action-section">
+        <h2 class="section-title">
+            <i class="fas fa-play-circle"></i>
+            Start Your Learning Journey
+        </h2>
+        <p style="margin-bottom: 2rem; color: var(--text-gray); max-width: 600px; margin-left: auto; margin-right: auto;">
+            Begin your professional development with our comprehensive facility management training programs.
+        </p>
+
+        <div>
+            <a href="#" class="action-button">
+                <i class="fas fa-graduation-cap"></i>
+                Enroll Now
+            </a>
+
+            <a href="#" class="action-button" style="background: var(--bg-primary); border: 2px solid var(--training-blue); color: var(--training-blue);">
+                <i class="fas fa-download"></i>
+                Course Catalog
+            </a>
+        </div>
+    </section>
+</body>
+</html>

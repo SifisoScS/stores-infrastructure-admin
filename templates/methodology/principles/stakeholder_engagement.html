@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stakeholder Engagement - Sifiso Methodology Stewardship Principles</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --derivco-blue: #003366;
+            --derivco-teal: #008080;
+            --engagement-purple: #8b5cf6;
+            --engagement-dark: #6d28d9;
+            --text-gray: #4a5568;
+            --primary-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #8b5cf6;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--primary-bg);
+            min-height: 100vh;
+            color: #1a202c;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--engagement-dark) 0%, var(--engagement-purple) 100%);
+            color: #1a202c;
+            position: relative;
+            overflow: hidden;
+            padding: 2rem 0;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.3;
+        }
+
+        .methodology-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .methodology-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(139, 92, 246, 0.2);
+        }
+
+        .principle-card {
+            border-left: 4px solid var(--engagement-dark);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .principle-card:hover {
+            border-left: 4px solid var(--engagement-purple);
+            transform: translateX(5px) scale(1.02);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 2rem;
+            border-left: 2px solid var(--engagement-purple);
+            margin-left: 1rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -0.5rem;
+            top: 0;
+            width: 1rem;
+            height: 1rem;
+            border-radius: 50%;
+            background: var(--engagement-purple);
+        }
+
+        .stat-badge {
+            background: linear-gradient(135deg, var(--engagement-dark) 0%, var(--engagement-purple) 100%);
+            color: #1a202c;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .impact-metric {
+            background: var(--card-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .impact-metric:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(139, 92, 246, 0.2);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-500 { animation-delay: 0.5s; }
+
+
+        .engagement-framework {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .framework-item {
+            background: var(--card-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .framework-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(139, 92, 246, 0.2);
+        }
+
+        .engagement-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--engagement-dark) 0%, var(--engagement-purple) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+        }
+
+        .stakeholder-circle {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            height: 300px;
+            margin: 2rem 0;
+        }
+
+        .stakeholder-group {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            background: var(--card-bg);
+            border: 2px solid var(--engagement-purple);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .stakeholder-group:hover {
+            background: var(--engagement-purple);
+            transform: scale(1.1);
+        }
+
+        .center-hub {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--engagement-dark) 0%, var(--engagement-purple) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b border-purple-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="text-xl font-semibold text-purple-400">Derivco Facilities</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/methodology" class="text-blue-600 hover:text-blue-800 px-3 py-2 rounded-md font-medium flex items-center gap-2">
+                        <i class="fas fa-arrow-left"></i> Back to Methodology
+                    </a>
+                    <a href="/" class="text-purple-300 hover:text-purple-100 px-3 py-2 rounded-md">Home</a>
+                    <a href="/inventory" class="text-purple-300 hover:text-purple-100 px-3 py-2 rounded-md">Inventory</a>
+                    <a href="/methodology" class="bg-purple-600 text-gray-900 px-3 py-2 rounded-md font-medium">Methodology</a>
+                    <a href="/signout/register" class="text-purple-300 hover:text-purple-100 px-3 py-2 rounded-md">Sign-Out</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero-section py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            <div class="mb-6 animate-fade-in-up">
+                <div class="w-24 h-24 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-handshake text-4xl text-purple-300"></i>
+                </div>
+                <h1 class="text-3xl md:text-4xl font-bold mb-4">Stakeholder Engagement</h1>
+                <p class="text-lg md:text-xl opacity-90 mb-6 text-purple-200">Stewardship Principle 3 of The Sifiso Methodology</p>
+                <p class="text-xl max-w-3xl mx-auto text-purple-100">
+                    Meaningful collaboration and communication with all stakeholders to create shared value and lasting partnerships
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <!-- Introduction -->
+        <div class="methodology-card p-8 mb-12 animate-fade-in-up">
+            <h2 class="text-3xl font-bold text-gray-900 mb-6 flex items-center">
+                <i class="fas fa-network-wired text-purple-400 mr-3"></i>
+                The Power of Collaborative Stewardship
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <p class="text-lg text-gray-300 mb-6">
+                        Stakeholder Engagement is the principle that recognizes facilities management as a collaborative endeavor.
+                        It emphasizes building meaningful relationships, fostering transparent communication, and creating shared
+                        value for all parties involved in the facilities ecosystem.
+                    </p>
+
+                    <div class="bg-purple-900 bg-opacity-30 border-l-4 border-purple-500 p-4 rounded-r-lg mb-6">
+                        <h4 class="font-semibold text-purple-300 mb-2">Collaborative Excellence</h4>
+                        <p class="text-purple-200">
+                            "True stewardship extends beyond individual performance to creating an ecosystem where every
+                            stakeholder contributes to and benefits from collective success and shared prosperity."
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg border border-purple-500 border-opacity-30">
+                    <h4 class="font-semibold text-gray-900 mb-4">Engagement Dimensions</h4>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="bg-purple-900 bg-opacity-50 p-2 rounded-lg mr-4">
+                                <i class="fas fa-comments text-purple-400"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-900">Active Communication</h5>
+                                <p class="text-sm text-gray-400">Regular, transparent dialogue with all stakeholders</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <div class="bg-purple-900 bg-opacity-50 p-2 rounded-lg mr-4">
+                                <i class="fas fa-puzzle-piece text-purple-400"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-900">Collaborative Solutions</h5>
+                                <p class="text-sm text-gray-400">Joint problem-solving and shared innovation</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <div class="bg-purple-900 bg-opacity-50 p-2 rounded-lg mr-4">
+                                <i class="fas fa-chart-line text-purple-400"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-900">Shared Value Creation</h5>
+                                <p class="text-sm text-gray-400">Mutual benefits and collective success</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stakeholder Ecosystem -->
+        <div class="methodology-card p-8 mb-12 animate-fade-in-up delay-100">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">
+                <i class="fas fa-users text-purple-400 mr-3"></i>
+                Stakeholder Ecosystem Map
+            </h2>
+
+            <div class="stakeholder-circle">
+                <div class="center-hub">
+                    <span class="text-gray-900 text-sm">FM Team</span>
+                </div>
+
+                <div class="stakeholder-group" style="top: 0; left: 50%; transform: translateX(-50%);">
+                    <span class="text-gray-900">Leadership<br>& Management</span>
+                </div>
+
+                <div class="stakeholder-group" style="top: 25%; right: 0;">
+                    <span class="text-gray-900">Building<br>Occupants</span>
+                </div>
+
+                <div class="stakeholder-group" style="bottom: 25%; right: 0;">
+                    <span class="text-gray-900">Vendors &<br>Suppliers</span>
+                </div>
+
+                <div class="stakeholder-group" style="bottom: 0; left: 50%; transform: translateX(-50%);">
+                    <span class="text-gray-900">Regulatory<br>Bodies</span>
+                </div>
+
+                <div class="stakeholder-group" style="bottom: 25%; left: 0;">
+                    <span class="text-gray-900">Community &<br>Environment</span>
+                </div>
+
+                <div class="stakeholder-group" style="top: 25%; left: 0;">
+                    <span class="text-gray-900">Technology<br>Partners</span>
+                </div>
+            </div>
+
+            <p class="text-center text-gray-400 mt-4">
+                The Facilities Management team sits at the center of a complex stakeholder ecosystem,
+                requiring balanced engagement strategies for each group.
+            </p>
+        </div>
+
+        <!-- Engagement Framework -->
+        <div class="methodology-card p-8 mb-12 animate-fade-in-up delay-200">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">
+                <i class="fas fa-cogs text-purple-400 mr-3"></i>
+                Strategic Engagement Framework
+            </h2>
+
+            <div class="engagement-framework">
+                <div class="framework-item">
+                    <div class="engagement-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 mb-2">Stakeholder Mapping</h4>
+                    <p class="text-sm text-gray-400">Identify, categorize, and prioritize all stakeholder groups</p>
+                </div>
+
+                <div class="framework-item">
+                    <div class="engagement-icon">
+                        <i class="fas fa-bullhorn"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 mb-2">Communication Strategy</h4>
+                    <p class="text-sm text-gray-400">Tailored messaging and channels for each audience</p>
+                </div>
+
+                <div class="framework-item">
+                    <div class="engagement-icon">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 mb-2">Collaborative Processes</h4>
+                    <p class="text-sm text-gray-400">Joint planning, decision-making, and problem-solving</p>
+                </div>
+
+                <div class="framework-item">
+                    <div class="engagement-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 mb-2">Performance Monitoring</h4>
+                    <p class="text-sm text-gray-400">Track engagement effectiveness and relationship health</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Core Concepts -->
+        <div class="mb-12 animate-fade-in-up delay-200">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">
+                <i class="fas fa-lightbulb text-purple-400 mr-3"></i>
+                Core Engagement Concepts
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="principle-card methodology-card p-6">
+                    <div class="w-14 h-14 bg-purple-900 bg-opacity-50 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-microphone text-2xl text-purple-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Engagement Strategies</h3>
+                    <p class="text-gray-400 mb-4">
+                        Developing targeted approaches for meaningful dialogue and collaboration with diverse stakeholder groups.
+                    </p>
+                    <ul class="text-sm text-gray-400 space-y-2">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-purple-400 mr-2 mt-1"></i>
+                            Regular town halls and forums
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-purple-400 mr-2 mt-1"></i>
+                            Stakeholder surveys and feedback
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-purple-400 mr-2 mt-1"></i>
+                            Collaborative planning sessions
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="principle-card methodology-card p-6">
+                    <div class="w-14 h-14 bg-purple-900 bg-opacity-50 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-sync text-2xl text-purple-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Feedback Systems</h3>
+                    <p class="text-gray-400 mb-4">
+                        Establishing robust mechanisms for collecting, analyzing, and acting upon stakeholder input and concerns.
+                    </p>
+                    <ul class="text-sm text-gray-400 space-y-2">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-purple-400 mr-2 mt-1"></i>
+                            Digital feedback platforms
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-purple-400 mr-2 mt-1"></i>
+                            Regular satisfaction surveys
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-purple-400 mr-2 mt-1"></i>
+                            Action plan transparency
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="principle-card methodology-card p-6">
+                    <div class="w-14 h-14 bg-purple-900 bg-opacity-50 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-tools text-2xl text-purple-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Collaboration Tools</h3>
+                    <p class="text-gray-400 mb-4">
+                        Implementing platforms and processes that facilitate seamless collaboration across all stakeholder groups.
+                    </p>
+                    <ul class="text-sm text-gray-400 space-y-2">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-purple-400 mr-2 mt-1"></i>
+                            Project collaboration platforms
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-purple-400 mr-2 mt-1"></i>
+                            Shared documentation systems
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-purple-400 mr-2 mt-1"></i>
+                            Real-time communication channels
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Implementation Guidelines -->
+        <div class="methodology-card p-8 mb-12 animate-fade-in-up delay-300">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8">
+                <i class="fas fa-map-marked-alt text-purple-400 mr-3"></i>
+                Stakeholder Engagement Implementation
+            </h2>
+
+            <div class="space-y-8">
+                <div class="timeline-item">
+                    <div class="flex justify-between items-start mb-2">
+                        <h4 class="font-semibold text-lg">Phase 1: Stakeholder Analysis</h4>
+                        <span class="stat-badge text-xs">Discovery</span>
+                    </div>
+                    <p class="text-gray-400 mb-3">
+                        Comprehensive mapping of all stakeholder groups, their interests, influence levels, and preferred
+                        communication channels. Establish baseline relationship health metrics.
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="bg-purple-900 bg-opacity-50 text-purple-400 text-xs px-2 py-1 rounded">Stakeholder Mapping</span>
+                        <span class="bg-purple-900 bg-opacity-50 text-purple-400 text-xs px-2 py-1 rounded">Influence Analysis</span>
+                        <span class="bg-purple-900 bg-opacity-50 text-purple-400 text-xs px-2 py-1 rounded">Communication Preferences</span>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="flex justify-between items-start mb-2">
+                        <h4 class="font-semibold text-lg">Phase 2: Engagement Strategy Development</h4>
+                        <span class="stat-badge text-xs">Strategy</span>
+                    </div>
+                    <p class="text-gray-400 mb-3">
+                        Create tailored engagement strategies for each stakeholder group, including communication protocols,
+                        meeting schedules, and collaboration frameworks. Define success metrics and feedback loops.
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="bg-purple-900 bg-opacity-50 text-purple-400 text-xs px-2 py-1 rounded">Communication Plans</span>
+                        <span class="bg-purple-900 bg-opacity-50 text-purple-400 text-xs px-2 py-1 rounded">Engagement Calendars</span>
+                        <span class="bg-purple-900 bg-opacity-50 text-purple-400 text-xs px-2 py-1 rounded">Success Metrics</span>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="flex justify-between items-start mb-2">
+                        <h4 class="font-semibold text-lg">Phase 3: Platform & Process Implementation</h4>
+                        <span class="stat-badge text-xs">Implementation</span>
+                    </div>
+                    <p class="text-gray-400 mb-3">
+                        Deploy collaboration tools, establish feedback mechanisms, and implement regular engagement
+                        activities. Train team members on stakeholder management best practices.
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="bg-purple-900 bg-opacity-50 text-purple-400 text-xs px-2 py-1 rounded">Platform Setup</span>
+                        <span class="bg-purple-900 bg-opacity-50 text-purple-400 text-xs px-2 py-1 rounded">Process Training</span>
+                        <span class="bg-purple-900 bg-opacity-50 text-purple-400 text-xs px-2 py-1 rounded">Activity Launch</span>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="flex justify-between items-start mb-2">
+                        <h4 class="font-semibold text-lg">Phase 4: Continuous Improvement</h4>
+                        <span class="stat-badge text-xs">Optimization</span>
+                    </div>
+                    <p class="text-gray-400 mb-3">
+                        Monitor engagement effectiveness, collect stakeholder feedback, and continuously refine
+                        strategies and processes. Celebrate successes and address relationship challenges promptly.
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="bg-purple-900 bg-opacity-50 text-purple-400 text-xs px-2 py-1 rounded">Performance Monitoring</span>
+                        <span class="bg-purple-900 bg-opacity-50 text-purple-400 text-xs px-2 py-1 rounded">Strategy Refinement</span>
+                        <span class="bg-purple-900 bg-opacity-50 text-purple-400 text-xs px-2 py-1 rounded">Relationship Building</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Practical Examples -->
+        <div class="methodology-card p-8 mb-12 animate-fade-in-up delay-400">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8">
+                <i class="fas fa-tools text-purple-400 mr-3"></i>
+                Practical Engagement Examples
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h4 class="font-semibold text-gray-900 mb-4 flex items-center">
+                        <i class="fas fa-users text-purple-400 mr-2"></i>
+                        Internal Stakeholders
+                    </h4>
+                    <ul class="space-y-3 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-arrow-right text-purple-400 mr-2 mt-1"></i>
+                            Monthly leadership briefings on facilities performance and strategic initiatives
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-arrow-right text-purple-400 mr-2 mt-1"></i>
+                            Quarterly occupant satisfaction surveys with action plan follow-ups
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-arrow-right text-purple-400 mr-2 mt-1"></i>
+                            Regular team forums for sharing best practices and addressing challenges
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-arrow-right text-purple-400 mr-2 mt-1"></i>
+                            Cross-functional project teams for major facility improvements
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-gray-900 mb-4 flex items-center">
+                        <i class="fas fa-handshake text-purple-400 mr-2"></i>
+                        External Partnerships
+                    </h4>
+                    <ul class="space-y-3 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-arrow-right text-purple-400 mr-2 mt-1"></i>
+                            Strategic vendor partnership reviews with performance improvement planning
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-arrow-right text-purple-400 mr-2 mt-1"></i>
+                            Community engagement initiatives for environmental and social impact
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-arrow-right text-purple-400 mr-2 mt-1"></i>
+                            Technology partner collaboration for innovation and digital transformation
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-arrow-right text-purple-400 mr-2 mt-1"></i>
+                            Regulatory body proactive communication and compliance partnerships
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success Metrics -->
+        <div class="mb-12 animate-fade-in-up delay-400">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">
+                <i class="fas fa-chart-pie text-purple-400 mr-3"></i>
+                Engagement Success Metrics
+            </h2>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="impact-metric">
+                    <div class="text-3xl font-bold text-purple-400 mb-2">4.6/5</div>
+                    <div class="text-sm font-semibold text-gray-900">Satisfaction Score</div>
+                    <div class="text-xs text-gray-400">Average stakeholder rating</div>
+                </div>
+
+                <div class="impact-metric">
+                    <div class="text-3xl font-bold text-purple-400 mb-2">89%</div>
+                    <div class="text-sm font-semibold text-gray-900">Response Rate</div>
+                    <div class="text-xs text-gray-400">Feedback participation</div>
+                </div>
+
+                <div class="impact-metric">
+                    <div class="text-3xl font-bold text-purple-400 mb-2">73%</div>
+                    <div class="text-sm font-semibold text-gray-900">Issue Resolution</div>
+                    <div class="text-xs text-gray-400">Within target timeframes</div>
+                </div>
+
+                <div class="impact-metric">
+                    <div class="text-3xl font-bold text-purple-400 mb-2">24</div>
+                    <div class="text-sm font-semibold text-gray-900">Active Partnerships</div>
+                    <div class="text-xs text-gray-400">Collaborative relationships</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Steps -->
+        <div class="methodology-card p-8 mb-12 animate-fade-in-up delay-500">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8">
+                <i class="fas fa-rocket text-purple-400 mr-3"></i>
+                Action Steps for Stakeholder Engagement
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h4 class="font-semibold text-gray-900 mb-4">Building Relationships</h4>
+                    <div class="space-y-3">
+                        <div class="flex items-start bg-white p-3 rounded-lg">
+                            <div class="bg-purple-900 bg-opacity-50 p-1 rounded mr-3">
+                                <i class="fas fa-user-plus text-purple-400 text-sm"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-900 text-sm">Stakeholder Mapping</h5>
+                                <p class="text-xs text-gray-400">Create comprehensive stakeholder inventory with contact matrix</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start bg-white p-3 rounded-lg">
+                            <div class="bg-purple-900 bg-opacity-50 p-1 rounded mr-3">
+                                <i class="fas fa-calendar text-purple-400 text-sm"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-900 text-sm">Regular Touchpoints</h5>
+                                <p class="text-xs text-gray-400">Schedule consistent communication and meeting rhythms</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start bg-white p-3 rounded-lg">
+                            <div class="bg-purple-900 bg-opacity-50 p-1 rounded mr-3">
+                                <i class="fas fa-heart text-purple-400 text-sm"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-900 text-sm">Trust Building</h5>
+                                <p class="text-xs text-gray-400">Demonstrate reliability through consistent follow-through</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-gray-900 mb-4">Collaborative Systems</h4>
+                    <div class="space-y-3">
+                        <div class="flex items-start bg-white p-3 rounded-lg">
+                            <div class="bg-purple-900 bg-opacity-50 p-1 rounded mr-3">
+                                <i class="fas fa-comments text-purple-400 text-sm"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-900 text-sm">Communication Platforms</h5>
+                                <p class="text-xs text-gray-400">Implement digital tools for seamless stakeholder interaction</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start bg-white p-3 rounded-lg">
+                            <div class="bg-purple-900 bg-opacity-50 p-1 rounded mr-3">
+                                <i class="fas fa-poll text-purple-400 text-sm"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-900 text-sm">Feedback Mechanisms</h5>
+                                <p class="text-xs text-gray-400">Create systematic ways to collect and act on stakeholder input</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start bg-white p-3 rounded-lg">
+                            <div class="bg-purple-900 bg-opacity-50 p-1 rounded mr-3">
+                                <i class="fas fa-chart-bar text-purple-400 text-sm"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-900 text-sm">Performance Transparency</h5>
+                                <p class="text-xs text-gray-400">Share relevant metrics and progress updates regularly</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Next Steps -->
+        <div class="text-center animate-fade-in-up delay-500">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Ready to Transform Relationships?</h2>
+            <p class="text-lg text-gray-300 mb-8 max-w-3xl mx-auto">
+                Stakeholder Engagement transforms facilities management from a service function to a collaborative
+                partnership that creates shared value for everyone involved in the facilities ecosystem.
+            </p>
+
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="/methodology/principles/innovation-excellence" class="bg-purple-600 hover:bg-purple-700 text-gray-900 font-semibold py-3 px-8 rounded-lg transition duration-300 transform hover:scale-105">
+                    Next: Innovation & Excellence
+                </a>
+                <a href="/methodology" class="border border-purple-500 text-purple-400 hover:bg-purple-900 hover:bg-opacity-30 font-semibold py-3 px-8 rounded-lg transition duration-300 transform hover:scale-105">
+                    Back to Methodology
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-50 border-t border-purple-500 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Stakeholder Engagement</h3>
+                    <p class="text-gray-400">
+                        Stewardship Principle 3 of The Sifiso Methodology - Building meaningful relationships and
+                        collaborative partnerships that create shared value across the entire facilities ecosystem.
+                    </p>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Other Principles</h3>
+                    <ul class="space-y-2">
+                        <li><a href="/methodology/principles/responsibility-ownership" class="text-gray-400 hover:text-purple-400 transition">Responsibility & Ownership</a></li>
+                        <li><a href="/methodology/principles/sustainability-focus" class="text-gray-400 hover:text-purple-400 transition">Sustainability Focus</a></li>
+                        <li><a href="/methodology/principles/innovation-excellence" class="text-gray-400 hover:text-purple-400 transition">Innovation & Excellence</a></li>
+                        <li><a href="/methodology/principles/knowledge-sharing" class="text-gray-400 hover:text-purple-400 transition">Knowledge Sharing</a></li>
+                        <li><a href="/methodology/principles/ethical-leadership" class="text-gray-400 hover:text-purple-400 transition">Ethical Leadership</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Navigation</h3>
+                    <ul class="space-y-2">
+                        <li><a href="/methodology" class="text-gray-400 hover:text-purple-400 transition">Methodology Overview</a></li>
+                        <li><a href="/methodology/pillars/systematic-processes" class="text-gray-400 hover:text-purple-400 transition">Systematic Processes</a></li>
+                        <li><a href="/methodology/pillars/stakeholder-integration" class="text-gray-400 hover:text-purple-400 transition">Stakeholder Integration</a></li>
+                        <li><a href="/methodology/pillars/data-intelligence" class="text-gray-400 hover:text-purple-400 transition">Data Intelligence</a></li>
+                        <li><a href="/methodology/pillars/continuous-innovation" class="text-gray-400 hover:text-purple-400 transition">Continuous Innovation</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-500 text-sm">
+                <p>&copy; 2025 Derivco Facilities Management. All rights reserved. | The Sifiso Methodology - Stakeholder Engagement</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate elements on scroll
+            const animatedElements = document.querySelectorAll('.animate-fade-in-up');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = 1;
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            animatedElements.forEach(el => {
+                el.style.opacity = 0;
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(el);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Intelligence - The Sifiso Methodology</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --derivco-blue: #003366;
+            --derivco-teal: #008080;
+            --derivco-blue-light: rgba(0, 51, 102, 0.1);
+            --derivco-teal-light: rgba(0, 128, 128, 0.1);
+            --stat-green: #00FF99;
+            --text-gray: #4a5568;
+            --primary-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--primary-bg);
+            min-height: 100vh;
+            color: #1a202c;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--derivco-blue) 0%, var(--derivco-teal) 100%);
+            color: #1a202c;
+            position: relative;
+            overflow: hidden;
+            padding: 2rem 0;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.3;
+        }
+
+        .methodology-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .methodology-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 128, 128, 0.2);
+        }
+
+        .sub-pillar-card {
+            border-left: 4px solid var(--derivco-blue);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .sub-pillar-card:hover {
+            border-left: 4px solid var(--derivco-teal);
+            transform: translateX(5px) scale(1.02);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 2rem;
+            border-left: 2px solid var(--derivco-teal);
+            margin-left: 1rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -0.5rem;
+            top: 0;
+            width: 1rem;
+            height: 1rem;
+            border-radius: 50%;
+            background: var(--derivco-teal);
+        }
+
+        .stat-badge {
+            background: linear-gradient(135deg, var(--derivco-blue) 0%, var(--derivco-teal) 100%);
+            color: #1a202c;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .impact-metric {
+            background: var(--card-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .impact-metric:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 128, 128, 0.2);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-500 { animation-delay: 0.5s; }
+
+
+        .process-flow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 2rem 0;
+        }
+
+        .process-step {
+            text-align: center;
+            flex: 1;
+            position: relative;
+        }
+
+        .process-step:not(:last-child)::after {
+            content: '→';
+            position: absolute;
+            right: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--derivco-teal);
+            font-size: 1.5rem;
+        }
+
+        .step-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--derivco-blue) 0%, var(--derivco-teal) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b border-teal-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="text-xl font-semibold text-teal-400">Derivco Facilities</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/methodology" class="text-blue-600 hover:text-blue-800 px-3 py-2 rounded-md font-medium flex items-center gap-2">
+                        <i class="fas fa-arrow-left"></i> Back to Methodology
+                    </a>
+                    <a href="/" class="text-teal-300 hover:text-teal-100 px-3 py-2 rounded-md">Home</a>
+                    <a href="/inventory" class="text-teal-300 hover:text-teal-100 px-3 py-2 rounded-md">Inventory</a>
+                    <a href="/methodology" class="bg-teal-600 text-gray-900 px-3 py-2 rounded-md font-medium">Methodology</a>
+                    <a href="/signout/register" class="text-teal-300 hover:text-teal-100 px-3 py-2 rounded-md">Sign-Out</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero-section py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            <div class="mb-6 animate-fade-in-up">
+                <div class="w-24 h-24 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-chart-bar text-4xl text-teal-400"></i>
+                </div>
+                <h1 class="text-3xl md:text-4xl font-bold mb-4">Data Intelligence</h1>
+                <p class="text-lg md:text-xl opacity-90 mb-6 text-teal-200">Pillar 3 of The Sifiso Methodology</p>
+                <p class="text-xl max-w-3xl mx-auto text-teal-100">
+                    Leveraging data analytics and business intelligence to drive informed decision-making in facility management
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <!-- Introduction -->
+        <div class="methodology-card p-8 mb-12 animate-fade-in-up">
+            <h2 class="text-3xl font-bold text-gray-900 mb-6 flex items-center">
+                <i class="fas fa-brain text-teal-400 mr-3"></i>
+                Introduction to Data Intelligence
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <p class="text-lg text-gray-300 mb-6">
+                        Data Intelligence forms the analytical backbone of The Sifiso Methodology, transforming raw
+                        operational data into actionable insights that drive strategic facility management decisions.
+                        This pillar empowers evidence-based operations and predictive optimization.
+                    </p>
+
+                    <div class="bg-teal-900 bg-opacity-30 border-l-4 border-teal-500 p-4 rounded-r-lg mb-6">
+                        <h4 class="font-semibold text-teal-300 mb-2">The Power of Informed Decisions</h4>
+                        <p class="text-teal-200">
+                            By harnessing data intelligence, we move beyond intuition-based decisions to create
+                            a data-driven culture that anticipates needs, optimizes resources, and delivers
+                            measurable improvements in facilities performance.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg border border-teal-500 border-opacity-30">
+                    <h4 class="font-semibold text-gray-900 mb-4">Key Benefits</h4>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="bg-teal-900 bg-opacity-50 p-2 rounded-lg mr-4">
+                                <i class="fas fa-search text-teal-400"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-900">Predictive Insights</h5>
+                                <p class="text-sm text-gray-400">Anticipate issues before they occur</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <div class="bg-teal-900 bg-opacity-50 p-2 rounded-lg mr-4">
+                                <i class="fas fa-bullseye text-teal-400"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-900">Optimized Operations</h5>
+                                <p class="text-sm text-gray-400">Data-driven resource allocation</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <div class="bg-teal-900 bg-opacity-50 p-2 rounded-lg mr-4">
+                                <i class="fas fa-chart-line text-teal-400"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold text-gray-900">Performance Tracking</h5>
+                                <p class="text-sm text-gray-400">Real-time operational metrics</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Process Flow -->
+        <div class="methodology-card p-8 mb-12 animate-fade-in-up delay-100">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">
+                <i class="fas fa-database text-teal-400 mr-3"></i>
+                Data Intelligence Pipeline
+            </h2>
+
+            <div class="process-flow">
+                <div class="process-step">
+                    <div class="step-icon">
+                        <i class="fas fa-download"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900">Collect</h4>
+                    <p class="text-sm text-gray-400">Gather operational data</p>
+                </div>
+
+                <div class="process-step">
+                    <div class="step-icon">
+                        <i class="fas fa-filter"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900">Process</h4>
+                    <p class="text-sm text-gray-400">Clean and validate</p>
+                </div>
+
+                <div class="process-step">
+                    <div class="step-icon">
+                        <i class="fas fa-microscope"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900">Analyze</h4>
+                    <p class="text-sm text-gray-400">Extract insights</p>
+                </div>
+
+                <div class="process-step">
+                    <div class="step-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900">Visualize</h4>
+                    <p class="text-sm text-gray-400">Create dashboards</p>
+                </div>
+
+                <div class="process-step">
+                    <div class="step-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900">Interpret</h4>
+                    <p class="text-sm text-gray-400">Generate insights</p>
+                </div>
+
+                <div class="process-step">
+                    <div class="step-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900">Act</h4>
+                    <p class="text-sm text-gray-400">Implement decisions</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Core Components -->
+        <div class="mb-12 animate-fade-in-up delay-200">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">
+                <i class="fas fa-puzzle-piece text-teal-400 mr-3"></i>
+                Core Components of Data Intelligence
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="sub-pillar-card methodology-card p-6 cursor-pointer" onclick="navigateToComponent('data-collection')">
+                    <div class="w-14 h-14 bg-teal-900 bg-opacity-50 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-server text-2xl text-teal-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Data Collection & Integration</h3>
+                    <p class="text-gray-400 mb-4">
+                        Comprehensive systems for gathering, integrating, and managing facility data from multiple sources
+                        including IoT sensors, maintenance logs, and operational systems.
+                    </p>
+                    <ul class="text-sm text-gray-400 space-y-2 mb-4">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-teal-400 mr-2 mt-1"></i>
+                            Multi-Source Integration
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-teal-400 mr-2 mt-1"></i>
+                            Real-Time Data Streams
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-teal-400 mr-2 mt-1"></i>
+                            Data Quality Assurance
+                        </li>
+                    </ul>
+                    <div class="mt-4 text-center">
+                        <span class="text-xs text-teal-400 font-semibold">Explore Data Systems →</span>
+                    </div>
+                </div>
+
+                <div class="sub-pillar-card methodology-card p-6 cursor-pointer" onclick="navigateToComponent('analytics-reporting')">
+                    <div class="w-14 h-14 bg-teal-900 bg-opacity-50 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-chart-pie text-2xl text-teal-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Analytics & Reporting</h3>
+                    <p class="text-gray-400 mb-4">
+                        Advanced analytical frameworks that transform raw data into meaningful insights, featuring
+                        automated reporting and customizable dashboards for stakeholder communication.
+                    </p>
+                    <ul class="text-sm text-gray-400 space-y-2 mb-4">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-teal-400 mr-2 mt-1"></i>
+                            Statistical Analysis
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-teal-400 mr-2 mt-1"></i>
+                            Automated Reporting
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-teal-400 mr-2 mt-1"></i>
+                            Interactive Dashboards
+                        </li>
+                    </ul>
+                    <div class="mt-4 text-center">
+                        <span class="text-xs text-teal-400 font-semibold">Explore Analytics Suite →</span>
+                    </div>
+                </div>
+
+                <div class="sub-pillar-card methodology-card p-6 cursor-pointer" onclick="navigateToComponent('predictive-insights')">
+                    <div class="w-14 h-14 bg-teal-900 bg-opacity-50 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-crystal-ball text-2xl text-teal-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Predictive Insights</h3>
+                    <p class="text-gray-400 mb-4">
+                        Machine learning and predictive modeling capabilities that forecast facility needs, optimize
+                        maintenance schedules, and enable proactive decision-making.
+                    </p>
+                    <ul class="text-sm text-gray-400 space-y-2 mb-4">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-teal-400 mr-2 mt-1"></i>
+                            Predictive Modeling
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-teal-400 mr-2 mt-1"></i>
+                            Trend Forecasting
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-teal-400 mr-2 mt-1"></i>
+                            Risk Assessment
+                        </li>
+                    </ul>
+                    <div class="mt-4 text-center">
+                        <span class="text-xs text-teal-400 font-semibold">Explore Predictive Tools →</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Implementation Framework -->
+        <div class="methodology-card p-8 mb-12 animate-fade-in-up delay-300">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8">
+                <i class="fas fa-project-diagram text-teal-400 mr-3"></i>
+                Implementation Strategy
+            </h2>
+
+            <div class="space-y-8">
+                <div class="timeline-item">
+                    <div class="flex justify-between items-start mb-2">
+                        <h4 class="font-semibold text-lg">Phase 1: Data Infrastructure Setup</h4>
+                        <span class="stat-badge text-xs">Weeks 1-3</span>
+                    </div>
+                    <p class="text-gray-400 mb-3">
+                        Establish comprehensive data collection infrastructure, including sensor deployment,
+                        system integrations, and data warehouse architecture for centralized information management.
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">Data Architecture</span>
+                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">IoT Integration</span>
+                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">Quality Framework</span>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="flex justify-between items-start mb-2">
+                        <h4 class="font-semibold text-lg">Phase 2: Analytics Platform Development</h4>
+                        <span class="stat-badge text-xs">Weeks 4-6</span>
+                    </div>
+                    <p class="text-gray-400 mb-3">
+                        Deploy advanced analytics platforms with custom dashboards, automated reporting systems,
+                        and real-time monitoring capabilities tailored to facility management needs.
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">Dashboard Creation</span>
+                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">Report Automation</span>
+                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">KPI Monitoring</span>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="flex justify-between items-start mb-2">
+                        <h4 class="font-semibold text-lg">Phase 3: Predictive Model Implementation</h4>
+                        <span class="stat-badge text-xs">Weeks 7-9</span>
+                    </div>
+                    <p class="text-gray-400 mb-3">
+                        Implement machine learning models for predictive maintenance, resource optimization,
+                        and proactive issue identification based on historical and real-time data patterns.
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">ML Model Training</span>
+                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">Predictive Algorithms</span>
+                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">Validation Testing</span>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="flex justify-between items-start mb-2">
+                        <h4 class="font-semibold text-lg">Phase 4: Intelligence Integration & Optimization</h4>
+                        <span class="stat-badge text-xs">Weeks 10-12</span>
+                    </div>
+                    <p class="text-gray-400 mb-3">
+                        Integrate all intelligence systems into operational workflows, establish feedback loops,
+                        and optimize models based on real-world performance and user feedback.
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">Workflow Integration</span>
+                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">Performance Tuning</span>
+                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">Continuous Learning</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success Metrics -->
+        <div class="mb-12 animate-fade-in-up delay-400">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">
+                <i class="fas fa-chart-line text-teal-400 mr-3"></i>
+                Measurable Impact of Data Intelligence
+            </h2>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="impact-metric">
+                    <div class="text-3xl font-bold text-teal-400 mb-2">67%</div>
+                    <div class="text-sm font-semibold text-gray-900">Predictive Accuracy</div>
+                    <div class="text-xs text-gray-400">For maintenance forecasting</div>
+                </div>
+
+                <div class="impact-metric">
+                    <div class="text-3xl font-bold text-teal-400 mb-2">54%</div>
+                    <div class="text-sm font-semibold text-gray-900">Cost Reduction</div>
+                    <div class="text-xs text-gray-400">Through optimized operations</div>
+                </div>
+
+                <div class="impact-metric">
+                    <div class="text-3xl font-bold text-teal-400 mb-2">92%</div>
+                    <div class="text-sm font-semibold text-gray-900">Data Quality Score</div>
+                    <div class="text-xs text-gray-400">Reliable information foundation</div>
+                </div>
+
+                <div class="impact-metric">
+                    <div class="text-3xl font-bold text-teal-400 mb-2">4.3x</div>
+                    <div class="text-sm font-semibold text-gray-900">Faster Insights</div>
+                    <div class="text-xs text-gray-400">Automated analysis speed</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Case Study -->
+        <div class="methodology-card p-8 mb-12 animate-fade-in-up delay-500">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8">
+                <i class="fas fa-microscope text-teal-400 mr-3"></i>
+                Case Study: Predictive Maintenance Success
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h4 class="font-semibold text-gray-900 mb-4">Before Data Intelligence</h4>
+                    <ul class="space-y-3 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-times-circle text-red-400 mr-2 mt-1"></i>
+                            Reactive maintenance approach only
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-times-circle text-red-400 mr-2 mt-1"></i>
+                            High equipment downtime costs
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-times-circle text-red-400 mr-2 mt-1"></i>
+                            Limited visibility into system health
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-times-circle text-red-400 mr-2 mt-1"></i>
+                            Manual reporting and analysis
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-gray-900 mb-4">After Data Intelligence</h4>
+                    <ul class="space-y-3 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-400 mr-2 mt-1"></i>
+                            Proactive maintenance scheduling
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-400 mr-2 mt-1"></i>
+                            54% reduction in operational costs
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-400 mr-2 mt-1"></i>
+                            Real-time system monitoring
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-400 mr-2 mt-1"></i>
+                            Automated insights and reporting
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-8 bg-teal-900 bg-opacity-30 p-6 rounded-lg border border-teal-500">
+                <h4 class="font-semibold text-teal-300 mb-3">Key Achievement</h4>
+                <p class="text-teal-200">
+                    "Data intelligence transformed our maintenance strategy from reactive to predictive, achieving
+                    67% accuracy in failure forecasting and reducing unplanned downtime by 78%. Our facility
+                    operations are now driven by insights rather than instinct."
+                </p>
+            </div>
+        </div>
+
+        <!-- Next Steps -->
+        <div class="text-center animate-fade-in-up delay-500">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Ready to Harness Your Data?</h2>
+            <p class="text-lg text-gray-300 mb-8 max-w-3xl mx-auto">
+                Data Intelligence empowers you to make informed decisions and optimize facility performance.
+                Explore each component to build your analytical capabilities.
+            </p>
+
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <button onclick="navigateToComponent('data-collection')" class="bg-teal-600 hover:bg-teal-700 text-gray-900 font-semibold py-3 px-8 rounded-lg transition duration-300 transform hover:scale-105">
+                    Explore Data Systems
+                </button>
+                <button onclick="navigateToPillar('continuous-innovation')" class="border border-teal-500 text-teal-400 hover:bg-teal-900 hover:bg-opacity-30 font-semibold py-3 px-8 rounded-lg transition duration-300 transform hover:scale-105">
+                    Next Pillar: Continuous Innovation
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-50 border-t border-teal-500 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-gray-400">
+            <p>Designed by Sifiso Cyprian Shezi</p>
+            <p>Facilities Assistant Level 1 — Derivco Durban | Transforming facility management through innovation</p>
+            <p>&copy; 2025 Derivco Facilities Management System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Navigation functions for components and pillars
+        function navigateToComponent(componentId) {
+            const componentUrls = {
+                'data-collection': '/methodology/pillars/data-intelligence/collection',
+                'analytics-reporting': '/methodology/pillars/data-intelligence/analytics',
+                'predictive-insights': '/methodology/pillars/data-intelligence/predictive'
+            };
+
+            window.location.href = componentUrls[componentId] || '/methodology/pillars/data-intelligence';
+        }
+
+        function navigateToPillar(pillarId) {
+            const pillarUrls = {
+                'systematic-processes': '/methodology/pillars/systematic-processes',
+                'stakeholder-integration': '/methodology/pillars/stakeholder-integration',
+                'data-intelligence': '/methodology/pillars/data-intelligence',
+                'continuous-innovation': '/methodology/pillars/continuous-innovation'
+            };
+
+            window.location.href = pillarUrls[pillarId] || '/methodology';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate elements on scroll
+            const animatedElements = document.querySelectorAll('.animate-fade-in-up');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = 1;
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            animatedElements.forEach(el => {
+                el.style.opacity = 0;
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(el);
+            });
+        });
+    </script>
+</body>
+</html>

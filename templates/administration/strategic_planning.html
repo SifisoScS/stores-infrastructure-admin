@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strategic Planning - Facilities Management Office</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --derivco-blue: rgb(0, 66, 137);
+            --derivco-cyan: rgb(0, 191, 255);
+            --derivco-blue-light: rgba(0, 66, 137, 0.1);
+            --derivco-cyan-light: rgba(0, 191, 255, 0.1);
+            --primary-blue: #003366;
+            --secondary-teal: #008080;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            min-height: 100vh;
+            color: #1a202c;
+        }
+
+        /* Header styling */
+        .page-header {
+            background: linear-gradient(135deg, var(--derivco-blue) 0%, var(--derivco-cyan) 100%);
+            color: white;
+            padding: 2rem 0;
+        }
+
+        /* Card design */
+        .clean-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0, 66, 137, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .clean-card:hover {
+            box-shadow: 0 8px 24px rgba(0, 66, 137, 0.12);
+            transform: translateY(-2px);
+        }
+
+        /* Stat cards */
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 66, 137, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            box-shadow: 0 8px 24px rgba(0, 66, 137, 0.12);
+            transform: translateY(-2px);
+        }
+
+        /* Back button */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Priority levels */
+        .priority-critical { border-left: 4px solid #dc2626; background: rgba(220, 38, 38, 0.05); }
+        .priority-high { border-left: 4px solid #ef4444; background: rgba(239, 68, 68, 0.05); }
+        .priority-medium { border-left: 4px solid #f59e0b; background: rgba(245, 158, 11, 0.05); }
+        .priority-low { border-left: 4px solid #10b981; background: rgba(16, 185, 129, 0.05); }
+
+        /* Status badges */
+        .status-on-track { background: rgba(34, 197, 94, 0.1); color: #22c55e; }
+        .status-at-risk { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+        .status-delayed { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+        .status-planning { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+        .status-completed { background: rgba(156, 163, 175, 0.1); color: #6b7280; }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 16px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Section headers */
+        .section-header {
+            border-bottom: 2px solid var(--derivco-blue);
+            padding-bottom: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--derivco-blue);
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title i {
+            margin-right: 0.75rem;
+            font-size: 1.25rem;
+        }
+
+        /* Action buttons */
+        .action-btn {
+            background: linear-gradient(135deg, var(--derivco-blue) 0%, var(--derivco-cyan) 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 66, 137, 0.3);
+        }
+
+        .action-btn i {
+            margin-right: 0.5rem;
+        }
+
+        /* Project cards */
+        .project-card {
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .project-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 66, 137, 0.08);
+            transform: translateX(5px);
+        }
+
+        /* Progress bars */
+        .progress-bar {
+            background: #e2e8f0;
+            border-radius: 4px;
+            height: 8px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        /* Chart containers */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+
+        /* Team member indicators */
+        .team-member {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+            padding: 0.25rem 0.75rem;
+            border-radius: 16px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Reporting hierarchy */
+        .reporting-chain {
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid #a855f7;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            color: #a855f7;
+            font-weight: 600;
+        }
+
+        /* Live indicators */
+        .live-indicator {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+            padding: 0.25rem 0.75rem;
+            border-radius: 16px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .live-indicator::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="page-header">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <a href="/administration" class="back-btn">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Back to Administration Portal
+            </a>
+
+            <div class="text-center">
+                <h1 class="text-4xl font-bold mb-2">📊 Strategic Planning</h1>
+                <p class="text-xl opacity-90">Facilities Management Office - Neren Kisten, Facilities Manager</p>
+                <p class="text-lg opacity-80 mt-2">Team coordination, operational oversight, strategic initiatives & reporting workflows</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Facilities Manager Dashboard -->
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
+            <div class="stat-card text-center">
+                <div class="text-4xl font-bold text-blue-600 mb-2" id="activeProjects">12</div>
+                <div class="text-gray-600">Active Projects</div>
+                <div class="live-indicator mt-2">
+                    LIVE TRACKING
+                </div>
+            </div>
+            <div class="stat-card text-center">
+                <div class="text-3xl font-bold text-green-600 mb-2" id="teamEfficiency">87.3</div>
+                <div class="text-gray-600">% Team Efficiency</div>
+                <div class="text-sm text-green-600 mt-1">
+                    <i class="fas fa-arrow-up mr-1"></i>+5% This Week
+                </div>
+            </div>
+            <div class="stat-card text-center">
+                <div class="text-3xl font-bold text-orange-600 mb-2" id="budgetUtilization">73</div>
+                <div class="text-gray-600">% Budget Used</div>
+                <div class="text-sm text-orange-600 mt-1">
+                    <i class="fas fa-chart-line mr-1"></i>On Target
+                </div>
+            </div>
+            <div class="stat-card text-center">
+                <div class="text-3xl font-bold text-purple-600 mb-2" id="kpiScore">4.2</div>
+                <div class="text-gray-600">KPI Score /5</div>
+                <div class="text-sm text-purple-600 mt-1">
+                    <i class="fas fa-star mr-1"></i>Exceeding
+                </div>
+            </div>
+            <div class="stat-card text-center">
+                <div class="text-3xl font-bold text-teal-600 mb-2" id="teamMembers">10</div>
+                <div class="text-gray-600">Team Members</div>
+                <div class="reporting-chain mt-1">
+                    Reports to Aidan
+                </div>
+            </div>
+        </div>
+
+        <!-- Strategic Initiatives Dashboard -->
+        <div class="clean-card p-6 mb-8">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-bullseye"></i>
+                    Strategic Initiatives & Project Portfolio
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Current Strategic Projects -->
+                <div class="clean-card p-4">
+                    <h3 class="font-semibold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-rocket text-blue-600 mr-2"></i>
+                        Current Strategic Projects
+                    </h3>
+                    <div class="space-y-3 max-h-64 overflow-y-auto">
+                        <div class="project-card priority-critical">
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <div class="font-medium">Preventive Maintenance Program 2025</div>
+                                    <div class="text-sm text-gray-600">Annual maintenance scheduling & optimization</div>
+                                </div>
+                                <span class="status-badge status-on-track">ON TRACK</span>
+                            </div>
+                            <div class="flex flex-wrap mb-2">
+                                <span class="team-member">John Mthembu</span>
+                                <span class="team-member">Elton Mzila</span>
+                                <span class="team-member">Sifiso Shezi</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill bg-blue-500" style="width: 68%"></div>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Q1 2025 Target: 75%</span>
+                                <span class="text-blue-600 font-medium">68% Complete</span>
+                            </div>
+                        </div>
+
+                        <div class="project-card priority-high">
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <div class="font-medium">Energy Efficiency Initiative</div>
+                                    <div class="text-sm text-gray-600">LED retrofitting & HVAC optimization</div>
+                                </div>
+                                <span class="status-badge status-at-risk">AT RISK</span>
+                            </div>
+                            <div class="flex flex-wrap mb-2">
+                                <span class="team-member">Elton Mzila</span>
+                                <span class="team-member">Kanthen Nair</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill bg-orange-500" style="width: 45%"></div>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Budget constraint delays</span>
+                                <span class="text-orange-600 font-medium">45% Complete</span>
+                            </div>
+                        </div>
+
+                        <div class="project-card priority-medium">
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <div class="font-medium">Team Skills Development Program</div>
+                                    <div class="text-sm text-gray-600">Technical certification & training</div>
+                                </div>
+                                <span class="status-badge status-planning">PLANNING</span>
+                            </div>
+                            <div class="flex flex-wrap mb-2">
+                                <span class="team-member">All Team</span>
+                                <span class="team-member">Brindley Harrington</span>
+                            </div>
+                            <div class="text-sm text-gray-600">Next milestone: Training schedule approval</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Team Performance & Coordination -->
+                <div class="clean-card p-4">
+                    <h3 class="font-semibold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-users text-green-600 mr-2"></i>
+                        Team Performance & Coordination
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="p-3 border border-gray-200 rounded">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-medium">Facilities Team Performance</span>
+                                <span class="text-green-600 font-bold">87.3%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill bg-green-500" style="width: 87.3%"></div>
+                            </div>
+                            <div class="text-xs text-gray-600 mt-1">
+                                Top performers: Sifiso Shezi, John Mthembu, Elton Mzila
+                            </div>
+                        </div>
+
+                        <div class="p-3 border border-gray-200 rounded">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-medium">Work Order Completion Rate</span>
+                                <span class="text-blue-600 font-bold">94.2%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill bg-blue-500" style="width: 94.2%"></div>
+                            </div>
+                            <div class="text-xs text-gray-600 mt-1">
+                                SLA target: 90% | Current: Exceeding expectations
+                            </div>
+                        </div>
+
+                        <div class="p-3 border border-gray-200 rounded">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-medium">Team Utilization</span>
+                                <span class="text-purple-600 font-bold">78%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill bg-purple-500" style="width: 78%"></div>
+                            </div>
+                            <div class="text-xs text-gray-600 mt-1">
+                                Optimal range: 70-85% | Status: Optimal
+                            </div>
+                        </div>
+
+                        <div class="p-3 border border-gray-200 rounded">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-medium">Training Compliance</span>
+                                <span class="text-orange-600 font-bold">82%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill bg-orange-500" style="width: 82%"></div>
+                            </div>
+                            <div class="text-xs text-gray-600 mt-1">
+                                3 team members due for safety recertification
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Operational Excellence Metrics -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Strategic KPI Tracking -->
+            <div class="clean-card p-6">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-chart-line"></i>
+                        Strategic KPI Tracking
+                    </h2>
+                </div>
+                <div class="chart-container">
+                    <canvas id="kpiChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Resource Allocation Analysis -->
+            <div class="clean-card p-6">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-chart-pie"></i>
+                        Resource Allocation Analysis
+                    </h2>
+                </div>
+                <div class="chart-container">
+                    <canvas id="resourceChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Daily Operations Management -->
+        <div class="clean-card p-6 mb-8">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-clipboard-check"></i>
+                    Daily Operations Management
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Today's Priorities -->
+                <div class="clean-card p-4">
+                    <h3 class="font-semibold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-flag text-red-600 mr-2"></i>
+                        Today's Priorities
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="border-l-4 border-red-500 pl-3 py-2">
+                            <div class="font-medium text-sm">HVAC System Inspection</div>
+                            <div class="text-xs text-gray-600">Conference Room A - Elton Mzila assigned</div>
+                            <div class="text-xs text-red-600 mt-1">🚨 Critical - Complete by 17:00</div>
+                        </div>
+                        <div class="border-l-4 border-orange-500 pl-3 py-2">
+                            <div class="font-medium text-sm">Weekly Team Meeting</div>
+                            <div class="text-xs text-gray-600">Performance review & project updates</div>
+                            <div class="text-xs text-orange-600 mt-1">📅 14:30 - Conference Room B</div>
+                        </div>
+                        <div class="border-l-4 border-blue-500 pl-3 py-2">
+                            <div class="font-medium text-sm">Monthly Report to Aidan</div>
+                            <div class="text-xs text-gray-600">KPI summary & budget review</div>
+                            <div class="text-xs text-blue-600 mt-1">📊 Due: Tomorrow 09:00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Team Task Assignments -->
+                <div class="clean-card p-4">
+                    <h3 class="font-semibold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-tasks text-blue-600 mr-2"></i>
+                        Team Task Assignments
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="p-2 rounded border">
+                            <div class="font-medium text-sm">John Mthembu</div>
+                            <div class="text-xs text-gray-600 mb-1">Plumbing maintenance - Floor 2</div>
+                            <div class="flex justify-between text-xs">
+                                <span class="text-blue-600">In Progress</span>
+                                <span class="text-gray-500">Est. 2hrs</span>
+                            </div>
+                        </div>
+
+                        <div class="p-2 rounded border">
+                            <div class="font-medium text-sm">Sifiso Shezi</div>
+                            <div class="text-xs text-gray-600 mb-1">Electrical panel inspection - Server Room</div>
+                            <div class="flex justify-between text-xs">
+                                <span class="text-orange-600">Pending</span>
+                                <span class="text-gray-500">Tomorrow AM</span>
+                            </div>
+                        </div>
+
+                        <div class="p-2 rounded border">
+                            <div class="font-medium text-sm">Brindley Harrington</div>
+                            <div class="text-xs text-gray-600 mb-1">Team supervision & QC checks</div>
+                            <div class="flex justify-between text-xs">
+                                <span class="text-green-600">Ongoing</span>
+                                <span class="text-gray-500">Daily</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reporting & Communication -->
+                <div class="clean-card p-4">
+                    <h3 class="font-semibold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-comments text-purple-600 mr-2"></i>
+                        Reporting & Communication
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="p-3 bg-purple-50 rounded border border-purple-200">
+                            <div class="font-medium text-sm">Weekly Report to Aidan Harris</div>
+                            <div class="text-xs text-gray-600 mb-2">Estate Manager - Durban Office</div>
+                            <div class="flex justify-between text-xs">
+                                <span class="text-purple-600">Draft Ready</span>
+                                <span class="text-gray-500">Due: Friday</span>
+                            </div>
+                        </div>
+
+                        <div class="p-3 bg-blue-50 rounded border border-blue-200">
+                            <div class="font-medium text-sm">Team Performance Dashboard</div>
+                            <div class="text-xs text-gray-600 mb-2">Monthly metrics & KPI tracking</div>
+                            <div class="flex justify-between text-xs">
+                                <span class="text-blue-600">Updated Daily</span>
+                                <span class="text-gray-500">Live Data</span>
+                            </div>
+                        </div>
+
+                        <div class="p-3 bg-green-50 rounded border border-green-200">
+                            <div class="font-medium text-sm">Safety Incident Reports</div>
+                            <div class="text-xs text-gray-600 mb-2">Zero incidents this month</div>
+                            <div class="flex justify-between text-xs">
+                                <span class="text-green-600">Excellent Record</span>
+                                <span class="text-gray-500">30 days</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Budget & Resource Management -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Budget Tracking -->
+            <div class="clean-card p-6">
+                <h3 class="font-semibold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-calculator text-green-600 mr-2"></i>
+                    Monthly Budget Tracking
+                </h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center p-3 bg-green-50 rounded">
+                        <div>
+                            <div class="font-medium text-sm">Materials & Supplies</div>
+                            <div class="text-xs text-gray-600">R 45,200 / R 65,000</div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-green-600 font-bold">69.5%</div>
+                            <div class="text-xs text-gray-500">Under Budget</div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center p-3 bg-blue-50 rounded">
+                        <div>
+                            <div class="font-medium text-sm">Contractor Services</div>
+                            <div class="text-xs text-gray-600">R 28,400 / R 35,000</div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-blue-600 font-bold">81.1%</div>
+                            <div class="text-xs text-gray-500">On Track</div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center p-3 bg-orange-50 rounded">
+                        <div>
+                            <div class="font-medium text-sm">Emergency Repairs</div>
+                            <div class="text-xs text-gray-600">R 12,800 / R 15,000</div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-orange-600 font-bold">85.3%</div>
+                            <div class="text-xs text-gray-500">High Usage</div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 p-3 bg-gray-50 rounded">
+                        <div class="flex justify-between items-center">
+                            <span class="font-medium">Total Budget Utilization</span>
+                            <span class="text-lg font-bold text-blue-600">73.2%</span>
+                        </div>
+                        <div class="progress-bar mt-2">
+                            <div class="progress-fill bg-blue-500" style="width: 73.2%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Strategic Planning Calendar -->
+            <div class="clean-card p-6">
+                <h3 class="font-semibold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-calendar-alt text-purple-600 mr-2"></i>
+                    Strategic Planning Calendar
+                </h3>
+                <div class="space-y-3">
+                    <div class="border-l-4 border-purple-500 pl-3 py-2">
+                        <div class="font-medium text-sm">Q1 Strategic Review</div>
+                        <div class="text-xs text-gray-600">Quarterly performance assessment</div>
+                        <div class="text-xs text-purple-600 mt-1">📅 March 28 - With Aidan Harris</div>
+                    </div>
+
+                    <div class="border-l-4 border-blue-500 pl-3 py-2">
+                        <div class="font-medium text-sm">Annual Budget Planning</div>
+                        <div class="text-xs text-gray-600">2025 facilities budget proposal</div>
+                        <div class="text-xs text-blue-600 mt-1">📅 February 15 - Submit to Aidan</div>
+                    </div>
+
+                    <div class="border-l-4 border-green-500 pl-3 py-2">
+                        <div class="font-medium text-sm">Team Development Workshop</div>
+                        <div class="text-xs text-gray-600">Skills enhancement program</div>
+                        <div class="text-xs text-green-600 mt-1">📅 Next Week - All team members</div>
+                    </div>
+
+                    <div class="border-l-4 border-orange-500 pl-3 py-2">
+                        <div class="font-medium text-sm">Preventive Maintenance Review</div>
+                        <div class="text-xs text-gray-600">Annual PM schedule optimization</div>
+                        <div class="text-xs text-orange-600 mt-1">📅 January 30 - Team leads meeting</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Daily Operational Tasks & Team Coordination -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Today's Operational Tasks -->
+            <div class="clean-card p-6">
+                <h3 class="font-semibold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-clipboard-list text-blue-600 mr-2"></i>
+                    Today's Operational Tasks
+                </h3>
+                <div class="space-y-3">
+                    <div class="p-3 bg-red-50 rounded border-l-4 border-red-500">
+                        <div class="flex justify-between items-center mb-2">
+                            <div>
+                                <div class="font-medium text-sm">HVAC System Critical Alert</div>
+                                <div class="text-xs text-gray-600">Conference Room A - Elton Mzila on-site</div>
+                            </div>
+                            <button class="text-red-600 hover:bg-red-100 px-2 py-1 rounded text-xs" onclick="coordinateEmergencyResponse()">
+                                Coordinate
+                            </button>
+                        </div>
+                        <div class="text-xs text-red-600">
+                            • Priority: Critical • ETA: 15 minutes • Backup team on standby
+                        </div>
+                    </div>
+
+                    <div class="p-3 bg-blue-50 rounded border-l-4 border-blue-500">
+                        <div class="flex justify-between items-center mb-2">
+                            <div>
+                                <div class="font-medium text-sm">Daily Team Standup</div>
+                                <div class="text-xs text-gray-600">10 team members • Morning briefing</div>
+                            </div>
+                            <button class="text-blue-600 hover:bg-blue-100 px-2 py-1 rounded text-xs" onclick="startTeamStandup()">
+                                Start Meeting
+                            </button>
+                        </div>
+                        <div class="text-xs text-blue-600">
+                            • Review yesterday's work • Today's assignments • Resource allocation
+                        </div>
+                    </div>
+
+                    <div class="p-3 bg-green-50 rounded border-l-4 border-green-500">
+                        <div class="flex justify-between items-center mb-2">
+                            <div>
+                                <div class="font-medium text-sm">Work Order Reviews</div>
+                                <div class="text-xs text-gray-600">Quality control & progress tracking</div>
+                            </div>
+                            <button class="text-green-600 hover:bg-green-100 px-2 py-1 rounded text-xs" onclick="reviewWorkOrders()">
+                                Review
+                            </button>
+                        </div>
+                        <div class="text-xs text-green-600">
+                            • 8 active orders • 3 completed yesterday • 2 quality issues resolved
+                        </div>
+                    </div>
+
+                    <div class="p-3 bg-purple-50 rounded border-l-4 border-purple-500">
+                        <div class="flex justify-between items-center mb-2">
+                            <div>
+                                <div class="font-medium text-sm">Report to Aidan Harris</div>
+                                <div class="text-xs text-gray-600">Weekly facilities performance summary</div>
+                            </div>
+                            <button class="text-purple-600 hover:bg-purple-100 px-2 py-1 rounded text-xs" onclick="prepareStatusReport()">
+                                Prepare
+                            </button>
+                        </div>
+                        <div class="text-xs text-purple-600">
+                            • Team performance • Budget utilization • Project updates • Issues
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Member Activities -->
+            <div class="clean-card p-6">
+                <h3 class="font-semibold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-users text-green-600 mr-2"></i>
+                    Team Member Activities
+                </h3>
+                <div class="space-y-3">
+                    <div class="flex items-center p-3 bg-gray-50 rounded border-l-4 border-blue-500">
+                        <i class="fas fa-user-circle text-blue-600 mr-3 text-lg"></i>
+                        <div class="flex-1">
+                            <div class="font-medium text-gray-800">Sifiso Shezi (F1001)</div>
+                            <div class="text-sm text-gray-600">Electrical panel inspection • Server Room</div>
+                        </div>
+                        <button class="text-blue-600 hover:bg-blue-100 px-3 py-1 rounded text-sm" onclick="trackProgress('sifiso')">
+                            Track
+                        </button>
+                    </div>
+
+                    <div class="flex items-center p-3 bg-gray-50 rounded border-l-4 border-green-500">
+                        <i class="fas fa-user-circle text-green-600 mr-3 text-lg"></i>
+                        <div class="flex-1">
+                            <div class="font-medium text-gray-800">John Mthembu (F1002)</div>
+                            <div class="text-sm text-gray-600">Plumbing maintenance • Floor 2 kitchen</div>
+                        </div>
+                        <button class="text-green-600 hover:bg-green-100 px-3 py-1 rounded text-sm" onclick="trackProgress('john')">
+                            Track
+                        </button>
+                    </div>
+
+                    <div class="flex items-center p-3 bg-gray-50 rounded border-l-4 border-red-500">
+                        <i class="fas fa-user-circle text-red-600 mr-3 text-lg"></i>
+                        <div class="flex-1">
+                            <div class="font-medium text-gray-800">Elton Mzila (HVAC Specialist)</div>
+                            <div class="text-sm text-gray-600">Critical HVAC repair • Conference Room A</div>
+                        </div>
+                        <button class="text-red-600 hover:bg-red-100 px-3 py-1 rounded text-sm" onclick="trackProgress('elton')">
+                            Monitor
+                        </button>
+                    </div>
+
+                    <div class="flex items-center p-3 bg-gray-50 rounded border-l-4 border-purple-500">
+                        <i class="fas fa-user-circle text-purple-600 mr-3 text-lg"></i>
+                        <div class="flex-1">
+                            <div class="font-medium text-gray-800">Brindley Harrington (Supervisor)</div>
+                            <div class="text-sm text-gray-600">Team oversight • Quality control checks</div>
+                        </div>
+                        <button class="text-purple-600 hover:bg-purple-100 px-3 py-1 rounded text-sm" onclick="trackProgress('brindley')">
+                            Coordinate
+                        </button>
+                    </div>
+
+                    <div class="flex items-center p-3 bg-gray-50 rounded border-l-4 border-orange-500">
+                        <i class="fas fa-user-circle text-orange-600 mr-3 text-lg"></i>
+                        <div class="flex-1">
+                            <div class="font-medium text-gray-800">Kanthen Nair (Tech Specialist)</div>
+                            <div class="text-sm text-gray-600">Camera system maintenance • Access control</div>
+                        </div>
+                        <button class="text-orange-600 hover:bg-orange-100 px-3 py-1 rounded text-sm" onclick="trackProgress('kanthen')">
+                            Support
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Daily Office Activities & Communications -->
+        <div class="clean-card p-6 mb-8">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-desktop"></i>
+                    Daily Office Activities & Communications
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div class="flex items-center p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+                    <i class="fas fa-envelope text-blue-600 mr-3 text-xl"></i>
+                    <div class="flex-1">
+                        <div class="font-semibold text-gray-800">Outlook Email</div>
+                        <div class="text-sm text-gray-600">12 unread • 3 from Aidan Harris</div>
+                        <button class="text-blue-600 hover:underline text-sm mt-1" onclick="openOutlook()">
+                            Open Inbox
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex items-center p-4 bg-green-50 rounded-lg border-l-4 border-green-500">
+                    <i class="fas fa-calendar text-green-600 mr-3 text-xl"></i>
+                    <div class="flex-1">
+                        <div class="font-semibold text-gray-800">Scheduled Meetings</div>
+                        <div class="text-sm text-gray-600">4 today • Next: 14:30 SAST</div>
+                        <button class="text-green-600 hover:underline text-sm mt-1" onclick="viewCalendar()">
+                            View Schedule
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex items-center p-4 bg-purple-50 rounded-lg border-l-4 border-purple-500">
+                    <i class="fab fa-microsoft text-purple-600 mr-3 text-xl"></i>
+                    <div class="flex-1">
+                        <div class="font-semibold text-gray-800">Teams Meetings</div>
+                        <div class="text-sm text-gray-600">2 scheduled • Aidan check-in at 17:00</div>
+                        <button class="text-purple-600 hover:underline text-sm mt-1" onclick="joinTeamsCall()">
+                            Join Teams
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex items-center p-4 bg-orange-50 rounded-lg border-l-4 border-orange-500">
+                    <i class="fas fa-phone text-orange-600 mr-3 text-xl"></i>
+                    <div class="flex-1">
+                        <div class="font-semibold text-gray-800">Vendor Calls</div>
+                        <div class="text-sm text-gray-600">LivClean check-in • CSG coordination</div>
+                        <button class="text-orange-600 hover:underline text-sm mt-1" onclick="manageVendorCalls()">
+                            Schedule
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex items-center p-4 bg-teal-50 rounded-lg border-l-4 border-teal-500">
+                    <i class="fas fa-file-alt text-teal-600 mr-3 text-xl"></i>
+                    <div class="flex-1">
+                        <div class="font-semibold text-gray-800">Daily Reports</div>
+                        <div class="text-sm text-gray-600">Generate for Aidan • Submit by 16:00</div>
+                        <button class="text-teal-600 hover:underline text-sm mt-1" onclick="generateDailyReport()">
+                            Generate
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex items-center p-4 bg-red-50 rounded-lg border-l-4 border-red-500">
+                    <i class="fas fa-exclamation-triangle text-red-600 mr-3 text-xl"></i>
+                    <div class="flex-1">
+                        <div class="font-semibold text-gray-800">Priority Alerts</div>
+                        <div class="text-sm text-gray-600">1 critical • HVAC system failure</div>
+                        <button class="text-red-600 hover:underline text-sm mt-1" onclick="manageAlerts()">
+                            View Alerts
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions Panel -->
+        <div class="clean-card p-6">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-bolt"></i>
+                    Strategic Management Actions
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <button class="action-btn" onclick="teamDashboard()">
+                    <i class="fas fa-users"></i>
+                    Team Dashboard
+                </button>
+                <button class="action-btn bg-green-600" onclick="createProject()">
+                    <i class="fas fa-plus"></i>
+                    New Project
+                </button>
+                <button class="action-btn bg-purple-600" onclick="generateReport()">
+                    <i class="fas fa-chart-bar"></i>
+                    Generate Report
+                </button>
+                <button class="action-btn bg-orange-600" onclick="budgetReview()">
+                    <i class="fas fa-calculator"></i>
+                    Budget Review
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Real-time data simulation
+        function updateStrategicData() {
+            // Simulate real-time updates for strategic metrics
+            const efficiency = document.getElementById('teamEfficiency');
+            const baseEfficiency = 87.3;
+            const efficiencyVariation = Math.random() * 2 - 1;
+            efficiency.textContent = Math.max(80, Math.min(95, baseEfficiency + efficiencyVariation)).toFixed(1);
+
+            // Update budget utilization
+            const budget = document.getElementById('budgetUtilization');
+            const baseBudget = 73;
+            const budgetVariation = Math.floor(Math.random() * 6) - 3;
+            budget.textContent = Math.max(65, Math.min(85, baseBudget + budgetVariation));
+
+            // Update KPI score
+            const kpi = document.getElementById('kpiScore');
+            const baseKPI = 4.2;
+            const kpiVariation = Math.random() * 0.4 - 0.2;
+            kpi.textContent = Math.max(3.5, Math.min(5.0, baseKPI + kpiVariation)).toFixed(1);
+        }
+
+        // Initialize charts
+        function initializeCharts() {
+            // Strategic KPI Tracking Chart
+            const kpiCtx = document.getElementById('kpiChart').getContext('2d');
+            new Chart(kpiCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'This Week'],
+                    datasets: [{
+                        label: 'Team Performance',
+                        data: [82, 85, 88, 87, 87.3],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        fill: true
+                    }, {
+                        label: 'Budget Efficiency',
+                        data: [65, 68, 71, 73, 73],
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        fill: false
+                    }, {
+                        label: 'KPI Score',
+                        data: [3.8, 4.0, 4.1, 4.2, 4.2],
+                        borderColor: '#8b5cf6',
+                        backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                        fill: false,
+                        yAxisID: 'y1'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            min: 0,
+                            max: 5,
+                            grid: {
+                                drawOnChartArea: false,
+                            },
+                        }
+                    }
+                }
+            });
+
+            // Resource Allocation Chart
+            const resourceCtx = document.getElementById('resourceChart').getContext('2d');
+            new Chart(resourceCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['HVAC Systems', 'Electrical', 'Plumbing', 'General Maintenance', 'Emergency Repairs', 'Preventive'],
+                    datasets: [{
+                        data: [28, 22, 18, 15, 12, 5],
+                        backgroundColor: [
+                            '#ef4444',
+                            '#f59e0b',
+                            '#3b82f6',
+                            '#10b981',
+                            '#8b5cf6',
+                            '#06b6d4'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Quick action functions
+        function teamDashboard() {
+            alert('Opening Team Performance Dashboard...');
+        }
+
+        function createProject() {
+            alert('Creating new strategic project...');
+        }
+
+        function generateReport() {
+            alert('Generating strategic planning report...');
+        }
+
+        function budgetReview() {
+            alert('Opening budget review interface...');
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCharts();
+
+            // Update real-time data every 30 seconds
+            setInterval(updateStrategicData, 30000);
+        });
+
+        console.log('Strategic Planning - Facilities Management Office initialized');
+    </script>
+</body>
+</html>

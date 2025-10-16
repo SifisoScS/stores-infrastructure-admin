@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+
+{% block title %}{{ store.name }} - Store Details{% endblock %}
+
+{% block content %}
+<div class="store-detail">
+    <div class="breadcrumb">
+        <a href="/"><i class="fas fa-home"></i> Dashboard</a>
+        <span class="separator">/</span>
+        <span class="current">{{ store.name }}</span>
+    </div>
+
+    <div class="store-detail-header">
+        <div class="store-title">
+            <h2><i class="fas fa-store"></i> {{ store.name }}</h2>
+            <span class="status-badge {{ store.status.lower() }}">{{ store.status }}</span>
+        </div>
+    </div>
+
+    <div class="detail-grid">
+        <div class="detail-card">
+            <h3><i class="fas fa-info-circle"></i> General Information</h3>
+            <div class="detail-content">
+                <div class="detail-item">
+                    <span class="label">Store Name:</span>
+                    <span class="value">{{ store.name }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Location:</span>
+                    <span class="value">{{ store.location }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Manager:</span>
+                    <span class="value">{{ store.manager }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Status:</span>
+                    <span class="value">
+                        <span class="status-indicator {{ store.status.lower() }}">
+                            {{ store.status }}
+                        </span>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="detail-card">
+            <h3><i class="fas fa-tools"></i> Infrastructure Status</h3>
+            <div class="detail-content">
+                <div class="infrastructure-grid">
+                    <div class="infra-item">
+                        <div class="infra-header">
+                            <i class="fas fa-bolt"></i>
+                            <h4>Power System</h4>
+                        </div>
+                        <div class="infra-status">
+                            <span class="status-indicator {{ 'operational' if store.infrastructure.power == 'Operational' else 'maintenance' }}">
+                                <i class="fas {{ 'fa-check-circle' if store.infrastructure.power == 'Operational' else 'fa-exclamation-triangle' }}"></i>
+                                {{ store.infrastructure.power }}
+                            </span>
+                        </div>
+                        <div class="infra-actions">
+                            <button class="btn btn-sm btn-secondary" onclick="showMaintenanceLog('power')">
+                                <i class="fas fa-history"></i> View Log
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="infra-item">
+                        <div class="infra-header">
+                            <i class="fas fa-network-wired"></i>
+                            <h4>Network</h4>
+                        </div>
+                        <div class="infra-status">
+                            <span class="status-indicator {{ 'operational' if store.infrastructure.network == 'Operational' else 'maintenance' }}">
+                                <i class="fas {{ 'fa-check-circle' if store.infrastructure.network == 'Operational' else 'fa-exclamation-triangle' }}"></i>
+                                {{ store.infrastructure.network }}
+                            </span>
+                        </div>
+                        <div class="infra-actions">
+                            <button class="btn btn-sm btn-secondary" onclick="showMaintenanceLog('network')">
+                                <i class="fas fa-history"></i> View Log
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="infra-item">
+                        <div class="infra-header">
+                            <i class="fas fa-wind"></i>
+                            <h4>HVAC System</h4>
+                        </div>
+                        <div class="infra-status">
+                            <span class="status-indicator {{ 'operational' if store.infrastructure.hvac == 'Operational' else 'maintenance' }}">
+                                <i class="fas {{ 'fa-check-circle' if store.infrastructure.hvac == 'Operational' else 'fa-exclamation-triangle' }}"></i>
+                                {{ store.infrastructure.hvac }}
+                            </span>
+                        </div>
+                        <div class="infra-actions">
+                            <button class="btn btn-sm btn-secondary" onclick="showMaintenanceLog('hvac')">
+                                <i class="fas fa-history"></i> View Log
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="actions-section">
+        <div class="action-buttons">
+            <button class="btn btn-primary" onclick="scheduleMaintenace()">
+                <i class="fas fa-calendar-plus"></i> Schedule Maintenance
+            </button>
+            <button class="btn btn-secondary" onclick="generateReport()">
+                <i class="fas fa-file-alt"></i> Generate Report
+            </button>
+            <button class="btn btn-info" onclick="viewHistory()">
+                <i class="fas fa-history"></i> View History
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for maintenance logs -->
+<div id="maintenanceModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitle">Maintenance Log</h3>
+            <span class="close" onclick="closeModal()">&times;</span>
+        </div>
+        <div class="modal-body" id="modalBody">
+            <!-- Content will be loaded dynamically -->
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function showMaintenanceLog(system) {
+    const modal = document.getElementById('maintenanceModal');
+    const title = document.getElementById('modalTitle');
+    const body = document.getElementById('modalBody');
+    
+    title.textContent = `${system.toUpperCase()} Maintenance Log - {{ store.name }}`;
+    
+    // Sample maintenance log data
+    const logs = {
+        power: [
+            { date: '2025-08-20', action: 'Routine inspection', status: 'Completed' },
+            { date: '2025-08-15', action: 'UPS battery check', status: 'Completed' }
+        ],
+        network: [
+            { date: '2025-08-22', action: 'Switch firmware update', status: 'Completed' },
+            { date: '2025-08-18', action: 'Cable inspection', status: 'Completed' }
+        ],
+        hvac: [
+            { date: '2025-08-25', action: 'Filter replacement needed', status: 'Pending' },
+            { date: '2025-08-10', action: 'Temperature calibration', status: 'Completed' }
+        ]
+    };
+    
+    const logEntries = logs[system] || [];
+    let logHtml = '<div class="maintenance-log">';
+    
+    if (logEntries.length === 0) {
+        logHtml += '<p>No maintenance records found.</p>';
+    } else {
+        logEntries.forEach(log => {
+            logHtml += `
+                <div class="log-entry">
+                    <div class="log-date">${log.date}</div>
+                    <div class="log-action">${log.action}</div>
+                    <div class="log-status ${log.status.toLowerCase()}">${log.status}</div>
+                </div>
+            `;
+        });
+    }
+    
+    logHtml += '</div>';
+    body.innerHTML = logHtml;
+    modal.style.display = 'block';
+}
+
+function closeModal() {
+    document.getElementById('maintenanceModal').style.display = 'none';
+}
+
+function scheduleMaintenace() {
+    alert('Maintenance scheduling feature - to be implemented');
+}
+
+function generateReport() {
+    alert('Report generation feature - to be implemented');
+}
+
+function viewHistory() {
+    alert('History view feature - to be implemented');
+}
+
+// Close modal when clicking outside of it
+window.onclick = function(event) {
+    const modal = document.getElementById('maintenanceModal');
+    if (event.target === modal) {
+        modal.style.display = 'none';
+    }
+}
+</script>
+{% endblock %}
