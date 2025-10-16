@@ -9,30 +9,77 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --derivco-blue: #003366;
-            --derivco-teal: #008080;
-            --derivco-blue-light: rgba(0, 51, 102, 0.1);
-            --derivco-teal-light: rgba(0, 128, 128, 0.1);
-            --stat-green: #00FF99;
-            --text-gray: #4a5568;
-            --primary-bg: #f8fafc;
-            --card-bg: #ffffff;
-            --border-color: #e2e8f0;
+            --derivco-blue: #004289;
+            --derivco-cyan: #00bfff;
+            --derivco-teal: #00d4aa;
+            --derivco-light: #f8fafc;
+            --derivco-gray: #64748b;
+            --text-primary: #1a202c;
+            --text-secondary: #4a5568;
+            --success: #059669;
+            --warning: #d97706;
+            --border-light: #e2e8f0;
+            --shadow-light: rgba(0, 66, 137, 0.08);
+            --shadow-hover: rgba(0, 66, 137, 0.15);
+            --gradient-primary: linear-gradient(135deg, #004289 0%, #00bfff 100%);
+            --gradient-secondary: linear-gradient(135deg, #00bfff 0%, #00d4aa 100%);
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.2);
         }
         
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--primary-bg);
+            background-color: var(--derivco-light);
             min-height: 100vh;
-            color: #1a202c;
+            color: var(--text-primary);
+            overflow-x: hidden;
         }
         
+        /* Premium Navigation */
+        .nav-back {
+            position: fixed;
+            top: 1.5rem;
+            right: 2rem;
+            z-index: 100;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            background: white;
+            color: var(--derivco-blue);
+            padding: 0.85rem 1.5rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-light);
+            box-shadow: 0 6px 20px rgba(0, 66, 137, 0.12);
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+
+        .back-button:hover {
+            background: var(--derivco-blue);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 66, 137, 0.2);
+        }
+
+        .back-button i {
+            margin-right: 0.5rem;
+        }
+        
+        /* Premium Hero Section */
         .hero-section {
-            background: linear-gradient(135deg, var(--derivco-blue) 0%, var(--derivco-teal) 100%);
-            color: #1a202c;
+            background: linear-gradient(135deg, var(--derivco-blue) 0%, var(--derivco-cyan) 100%);
+            color: white;
             position: relative;
             overflow: hidden;
-            padding: 2rem 0;
+            padding: 8rem 0 4rem;
+            border-radius: 0 0 24px 24px;
+            box-shadow: 0 10px 30px rgba(0, 66, 137, 0.15);
         }
         
         .hero-section::before {
@@ -46,18 +93,37 @@
             opacity: 0.3;
         }
         
+        /* Premium Cards */
         .methodology-card {
-            background: var(--card-bg);
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
+            background: white;
+            border-radius: 16px;
+            border: 1px solid var(--border-light);
+            box-shadow: 0 6px 20px var(--shadow-light);
+            transition: all 0.4s ease;
             overflow: hidden;
+            position: relative;
+        }
+        
+        .methodology-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+        
+        .methodology-card:hover::before {
+            transform: scaleX(1);
         }
         
         .methodology-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 25px -5px rgba(0, 128, 128, 0.2);
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px var(--shadow-hover);
         }
         
         .pillar-card {
@@ -67,13 +133,13 @@
         }
         
         .pillar-card:hover {
-            border-left: 4px solid var(--derivco-teal);
+            border-left: 4px solid var(--derivco-cyan);
             transform: translateX(5px) scale(1.02);
         }
 
         .stewardship-btn {
             border: none;
-            background: var(--card-bg);
+            background: white;
             color: inherit;
             cursor: pointer;
             display: block;
@@ -89,7 +155,7 @@
         .timeline-item {
             position: relative;
             padding-left: 2rem;
-            border-left: 2px solid var(--derivco-teal);
+            border-left: 2px solid var(--derivco-cyan);
             margin-left: 1rem;
         }
         
@@ -101,12 +167,12 @@
             width: 1rem;
             height: 1rem;
             border-radius: 50%;
-            background: var(--derivco-teal);
+            background: var(--derivco-cyan);
         }
         
         .stat-badge {
-            background: linear-gradient(135deg, var(--derivco-blue) 0%, var(--derivco-teal) 100%);
-            color: #1a202c;
+            background: var(--gradient-primary);
+            color: white;
             padding: 0.5rem 1rem;
             border-radius: 20px;
             font-weight: 600;
@@ -114,36 +180,62 @@
         }
         
         .impact-metric {
-            background: var(--card-bg);
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
+            background: white;
+            border-radius: 16px;
+            border: 1px solid var(--border-light);
             padding: 1.5rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 6px 20px var(--shadow-light);
             text-align: center;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .impact-metric::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+        
+        .impact-metric:hover::before {
+            transform: scaleX(1);
         }
         
         .impact-metric:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 15px -3px rgba(0, 128, 128, 0.2);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 28px var(--shadow-hover);
         }
         
         .framework-diagram {
-            background: var(--card-bg);
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
+            background: white;
+            border-radius: 16px;
+            border: 1px solid var(--border-light);
             padding: 2rem;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 6px 20px var(--shadow-light);
         }
         
         .phase-node {
-            background: linear-gradient(135deg, var(--derivco-blue) 0%, var(--derivco-teal) 100%);
-            color: #1a202c;
-            padding: 1rem;
-            border-radius: 8px;
+            background: var(--gradient-primary);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
             text-align: center;
             position: relative;
             margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(0, 66, 137, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .phase-node:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 66, 137, 0.3);
         }
         
         .phase-node::after {
@@ -154,12 +246,12 @@
             transform: translateX(-50%);
             width: 2px;
             height: 1rem;
-            background: var(--derivco-teal);
+            background: var(--derivco-cyan);
         }
         
         .phase-connector {
             height: 2px;
-            background: var(--derivco-teal);
+            background: var(--derivco-cyan);
             position: relative;
             margin: 2rem 0;
         }
@@ -169,14 +261,14 @@
             position: absolute;
             right: -1rem;
             top: -0.75rem;
-            color: var(--derivco-teal);
+            color: var(--derivco-cyan);
             font-size: 1.5rem;
         }
         
         @keyframes fadeInUp {
             from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(30px);
             }
             to {
                 opacity: 1;
@@ -185,7 +277,7 @@
         }
         
         .animate-fade-in-up {
-            animation: fadeInUp 0.6s ease-out forwards;
+            animation: fadeInUp 0.6s ease forwards;
         }
         
         .delay-100 { animation-delay: 0.1s; }
@@ -194,45 +286,229 @@
         .delay-400 { animation-delay: 0.4s; }
         .delay-500 { animation-delay: 0.5s; }
 
+        /* Premium Section Headers */
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            font-weight: 800;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-header h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--gradient-primary);
+            border-radius: 2px;
+        }
+
+        .section-header p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Premium Navigation Bar */
+        .premium-nav {
+            background: white;
+            box-shadow: 0 4px 20px rgba(0, 66, 137, 0.1);
+            border-bottom: 1px solid var(--border-light);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px;
+        }
+
+        .nav-links a:hover {
+            color: var(--derivco-blue);
+            background: rgba(0, 66, 137, 0.05);
+        }
+
+        .nav-links a.active {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        /* Hero Quote */
+        .hero-quote {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            border-left: 4px solid white;
+            padding: 1.75rem;
+            border-radius: 16px;
+            margin-top: 2.5rem;
+            font-style: italic;
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 2.5rem auto 0;
+            color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Service Icons */
+        .service-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--gradient-primary);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            color: white;
+            font-size: 1.6rem;
+            transition: all 0.3s ease;
+        }
+
+        .pillar-card:hover .service-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        /* Feature Tags */
+        .feature-tag {
+            background: var(--derivco-light);
+            color: var(--derivco-blue);
+            padding: 0.45rem 0.9rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: 1px solid var(--border-light);
+            transition: all 0.3s ease;
+        }
+
+        .pillar-card:hover .feature-tag {
+            background: var(--derivco-blue);
+            color: white;
+        }
+
+        /* Premium Footer */
+        .premium-footer {
+            background: var(--gradient-primary);
+            text-align: center;
+            padding: 3rem 2rem;
+            margin-top: 3rem;
+            color: white;
+            font-size: 0.95rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .premium-footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, white 0%, rgba(255,255,255,0.5) 50%, white 100%);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 6rem 0 3rem;
+            }
+            
+            .section-header h2 {
+                font-size: 2rem;
+            }
+            
+            .nav-back {
+                top: 1rem;
+                right: 1rem;
+            }
+
+            .back-button {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .section-header h2 {
+                font-size: 1.8rem;
+            }
+            
+            .hero-quote {
+                padding: 1.25rem;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="bg-white shadow-sm border-b border-teal-500">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
+    <!-- Premium Navigation -->
+    <nav class="premium-nav">
+        <div class="nav-container">
+            <div class="flex justify-between items-center h-16">
                 <div class="flex items-center">
-                    <a href="/" class="text-xl font-semibold text-teal-400">Derivco Facilities</a>
+                    <a href="/" class="text-xl font-bold text-blue-600">Derivco Facilities</a>
                 </div>
-                <div class="flex items-center space-x-4">
-                    <a href="javascript:void(0)" onclick="goBack()" class="text-blue-600 hover:text-blue-800 px-3 py-2 rounded-md font-medium flex items-center gap-2">
-                        <i class="fas fa-arrow-left"></i> Back
+                <div class="nav-links flex items-center space-x-2">
+                    <a href="/" class="flex items-center gap-2">
+                        <i class="fas fa-home"></i> Home
                     </a>
-                    <a href="/" class="text-teal-300 hover:text-teal-100 px-3 py-2 rounded-md">Home</a>
-                    <a href="/inventory" class="text-teal-300 hover:text-teal-100 px-3 py-2 rounded-md">Inventory</a>
-                    <a href="/methodology" class="bg-teal-600 text-gray-900 px-3 py-2 rounded-md font-medium">Methodology</a>
-                    <a href="/signout/register" class="text-teal-300 hover:text-teal-100 px-3 py-2 rounded-md">Sign-Out</a>
+                    <a href="/inventory" class="flex items-center gap-2">
+                        <i class="fas fa-boxes"></i> Inventory
+                    </a>
+                    <a href="/methodology" class="active flex items-center gap-2">
+                        <i class="fas fa-brain"></i> Methodology
+                    </a>
+                    <a href="/signout/register" class="flex items-center gap-2">
+                        <i class="fas fa-sign-in-alt"></i> Sign-Out
+                    </a>
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <div class="hero-section py-12">
+    <!-- Navigation Back Button -->
+    <div class="nav-back">
+        <a href="javascript:void(0)" class="back-button" id="backButton">
+            <i class="fas fa-arrow-left"></i> Back
+        </a>
+    </div>
+
+    <!-- Premium Hero Section -->
+    <div class="hero-section">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
             <div class="mb-6 animate-fade-in-up">
-                <i class="fas fa-brain text-5xl mb-4 opacity-90 text-teal-400"></i>
-                <h1 class="text-3xl md:text-4xl font-bold mb-4">The Sifiso Methodology</h1>
-                <p class="text-lg md:text-xl opacity-90 mb-6 text-teal-200">A Revolutionary Framework for Facilities Management Excellence</p>
+                <i class="fas fa-brain text-5xl mb-4 opacity-90"></i>
+                <h1 class="text-4xl md:text-5xl font-bold mb-4">The Sifiso Methodology</h1>
+                <p class="text-xl md:text-2xl opacity-90 mb-6">A Revolutionary Framework for Facilities Management Excellence</p>
                 
                 <!-- Quote Section -->
-                <div class="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-xl p-6 max-w-4xl mx-auto border border-teal-500">
-                    <blockquote class="text-lg italic mb-4 text-gray-900">
+                <div class="hero-quote">
+                    <blockquote class="text-lg italic mb-4">
                         "Stewardship in facility management ensures sustainable spaces, aligning resources with purpose. 
                         True innovation comes not from authority, but from understanding needs and crafting solutions that 
                         transform operations and perceptions."
                     </blockquote>
-                    <footer class="text-sm opacity-90 text-teal-300">
+                    <footer class="text-sm opacity-90">
                         — Sifiso Cyprian Shezi, Facilities Assistant Level 1
                     </footer>
                 </div>
@@ -245,21 +521,21 @@
         <!-- Core Philosophy -->
         <div class="methodology-card p-8 mb-12 animate-fade-in-up">
             <h2 class="text-3xl font-bold text-gray-900 mb-6 flex items-center">
-                <i class="fas fa-compass text-teal-400 mr-3"></i>
+                <i class="fas fa-compass text-blue-500 mr-3"></i>
                 Core Philosophy
             </h2>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
-                    <p class="text-lg text-gray-300 mb-6">
+                    <p class="text-lg text-gray-700 mb-6">
                         The Sifiso Methodology represents a paradigm shift in facilities management, 
                         demonstrating that transformative change doesn't require seniority—it requires 
                         vision, systematic thinking, and unwavering commitment to excellence.
                     </p>
                     
-                    <div class="bg-teal-900 bg-opacity-30 border-l-4 border-teal-500 p-4 rounded-r-lg mb-6">
-                        <h4 class="font-semibold text-teal-300 mb-2">The Level 1 Revolution</h4>
-                        <p class="text-teal-200">
+                    <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg mb-6">
+                        <h4 class="font-semibold text-blue-700 mb-2">The Level 1 Revolution</h4>
+                        <p class="text-blue-600">
                             While traditionally change is expected from leadership, this methodology proves that 
                             insight and innovation can emerge from any level when coupled with deep understanding 
                             of operational realities and customer needs.
@@ -267,36 +543,36 @@
                     </div>
                 </div>
                 
-                <div class="bg-white p-6 rounded-lg border border-teal-500 border-opacity-30">
+                <div class="bg-white p-6 rounded-lg border border-blue-200">
                     <h4 class="font-semibold text-gray-900 mb-4">Methodology Foundations</h4>
                     <div class="space-y-4">
                         <div class="flex items-start">
-                            <div class="bg-teal-900 bg-opacity-50 p-2 rounded-lg mr-4">
-                                <i class="fas fa-lightbulb text-teal-400"></i>
+                            <div class="bg-blue-100 p-2 rounded-lg mr-4">
+                                <i class="fas fa-lightbulb text-blue-500"></i>
                             </div>
                             <div>
                                 <h5 class="font-semibold text-gray-900">Systems Thinking</h5>
-                                <p class="text-sm text-gray-400">Viewing facilities as interconnected ecosystems</p>
+                                <p class="text-sm text-gray-600">Viewing facilities as interconnected ecosystems</p>
                             </div>
                         </div>
                         
                         <div class="flex items-start">
-                            <div class="bg-teal-900 bg-opacity-50 p-2 rounded-lg mr-4">
-                                <i class="fas fa-hands-helping text-teal-400"></i>
+                            <div class="bg-blue-100 p-2 rounded-lg mr-4">
+                                <i class="fas fa-hands-helping text-blue-500"></i>
                             </div>
                             <div>
                                 <h5 class="font-semibold text-gray-900">Stakeholder Centricity</h5>
-                                <p class="text-sm text-gray-400">Aligning solutions with user needs and expectations</p>
+                                <p class="text-sm text-gray-600">Aligning solutions with user needs and expectations</p>
                             </div>
                         </div>
                         
                         <div class="flex items-start">
-                            <div class="bg-teal-900 bg-opacity-50 p-2 rounded-lg mr-4">
-                                <i class="fas fa-chart-line text-teal-400"></i>
+                            <div class="bg-blue-100 p-2 rounded-lg mr-4">
+                                <i class="fas fa-chart-line text-blue-500"></i>
                             </div>
                             <div>
                                 <h5 class="font-semibold text-gray-900">Data-Driven Decisions</h5>
-                                <p class="text-sm text-gray-400">Leveraging analytics for continuous improvement</p>
+                                <p class="text-sm text-gray-600">Leveraging analytics for continuous improvement</p>
                             </div>
                         </div>
                     </div>
@@ -306,121 +582,124 @@
 
         <!-- The Four Pillars -->
         <div class="mb-12 animate-fade-in-up delay-100">
-            <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">
-                <i class="fas fa-layer-group text-teal-400 mr-3"></i>
-                The Four Pillars of Excellence
-            </h2>
+            <div class="section-header">
+                <h2>
+                    <i class="fas fa-layer-group text-blue-500 mr-3"></i>
+                    The Four Pillars of Excellence
+                </h2>
+                <p>Foundational principles driving facilities management transformation</p>
+            </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div class="pillar-card methodology-card p-6 cursor-pointer" onclick="navigateToPillar('systematic-processes')">
-                    <div class="w-14 h-14 bg-teal-900 bg-opacity-50 rounded-xl flex items-center justify-center mb-4">
-                        <i class="fas fa-cogs text-2xl text-teal-400"></i>
+                    <div class="service-icon">
+                        <i class="fas fa-cogs"></i>
                     </div>
                     <h3 class="text-xl font-bold text-gray-900 mb-3">Systematic Processes</h3>
-                    <p class="text-gray-400 mb-4">
+                    <p class="text-gray-600 mb-4">
                         Implementing structured, repeatable procedures that ensure consistency and reliability 
                         across all facilities operations.
                     </p>
-                    <ul class="text-sm text-gray-400 space-y-2">
+                    <ul class="text-sm text-gray-600 space-y-2">
                         <li class="flex items-start">
-                            <i class="fas fa-check-circle text-teal-400 mr-2 mt-1"></i>
+                            <i class="fas fa-check-circle text-blue-500 mr-2 mt-1"></i>
                             Standard Operating Procedures
                         </li>
                         <li class="flex items-start">
-                            <i class="fas fa-check-circle text-teal-400 mr-2 mt-1"></i>
+                            <i class="fas fa-check-circle text-blue-500 mr-2 mt-1"></i>
                             Workflow Optimization
                         </li>
                         <li class="flex items-start">
-                            <i class="fas fa-check-circle text-teal-400 mr-2 mt-1"></i>
+                            <i class="fas fa-check-circle text-blue-500 mr-2 mt-1"></i>
                             Quality Control Systems
                         </li>
                     </ul>
                     <div class="mt-4 text-center">
-                        <span class="text-xs text-teal-400 font-semibold">Click to explore →</span>
+                        <span class="text-xs text-blue-500 font-semibold">Click to explore →</span>
                     </div>
                 </div>
                 
                 <div class="pillar-card methodology-card p-6 cursor-pointer" onclick="navigateToPillar('stakeholder-integration')">
-                    <div class="w-14 h-14 bg-teal-900 bg-opacity-50 rounded-xl flex items-center justify-center mb-4">
-                        <i class="fas fa-users text-2xl text-teal-400"></i>
+                    <div class="service-icon">
+                        <i class="fas fa-users"></i>
                     </div>
                     <h3 class="text-xl font-bold text-gray-900 mb-3">Stakeholder Integration</h3>
-                    <p class="text-gray-400 mb-4">
+                    <p class="text-gray-600 mb-4">
                         Creating seamless interfaces between facilities services and all stakeholders, 
                         from employees to leadership.
                     </p>
-                    <ul class="text-sm text-gray-400 space-y-2">
+                    <ul class="text-sm text-gray-600 space-y-2">
                         <li class="flex items-start">
-                            <i class="fas fa-check-circle text-teal-400 mr-2 mt-1"></i>
+                            <i class="fas fa-check-circle text-blue-500 mr-2 mt-1"></i>
                             Transparent Communication
                         </li>
                         <li class="flex items-start">
-                            <i class="fas fa-check-circle text-teal-400 mr-2 mt-1"></i>
+                            <i class="fas fa-check-circle text-blue-500 mr-2 mt-1"></i>
                             Needs Assessment
                         </li>
                         <li class="flex items-start">
-                            <i class="fas fa-check-circle text-teal-400 mr-2 mt-1"></i>
+                            <i class="fas fa-check-circle text-blue-500 mr-2 mt-1"></i>
                             Feedback Mechanisms
                         </li>
                     </ul>
                     <div class="mt-4 text-center">
-                        <span class="text-xs text-teal-400 font-semibold">Click to explore →</span>
+                        <span class="text-xs text-blue-500 font-semibold">Click to explore →</span>
                     </div>
                 </div>
                 
                 <div class="pillar-card methodology-card p-6 cursor-pointer" onclick="navigateToPillar('data-intelligence')">
-                    <div class="w-14 h-14 bg-teal-900 bg-opacity-50 rounded-xl flex items-center justify-center mb-4">
-                        <i class="fas fa-chart-bar text-2xl text-teal-400"></i>
+                    <div class="service-icon">
+                        <i class="fas fa-chart-bar"></i>
                     </div>
                     <h3 class="text-xl font-bold text-gray-900 mb-3">Data Intelligence</h3>
-                    <p class="text-gray-400 mb-4">
+                    <p class="text-gray-600 mb-4">
                         Leveraging analytics and monitoring to drive decisions, predict needs, and 
                         demonstrate value through metrics.
                     </p>
-                    <ul class="text-sm text-gray-400 space-y-2">
+                    <ul class="text-sm text-gray-600 space-y-2">
                         <li class="flex items-start">
-                            <i class="fas fa-check-circle text-teal-400 mr-2 mt-1"></i>
+                            <i class="fas fa-check-circle text-blue-500 mr-2 mt-1"></i>
                             Performance Metrics
                         </li>
                         <li class="flex items-start">
-                            <i class="fas fa-check-circle text-teal-400 mr-2 mt-1"></i>
+                            <i class="fas fa-check-circle text-blue-500 mr-2 mt-1"></i>
                             Predictive Analytics
                         </li>
                         <li class="flex items-start">
-                            <i class="fas fa-check-circle text-teal-400 mr-2 mt-1"></i>
+                            <i class="fas fa-check-circle text-blue-500 mr-2 mt-1"></i>
                             ROI Measurement
                         </li>
                     </ul>
                     <div class="mt-4 text-center">
-                        <span class="text-xs text-teal-400 font-semibold">Click to explore →</span>
+                        <span class="text-xs text-blue-500 font-semibold">Click to explore →</span>
                     </div>
                 </div>
                 
                 <div class="pillar-card methodology-card p-6 cursor-pointer" onclick="navigateToPillar('continuous-innovation')">
-                    <div class="w-14 h-14 bg-teal-900 bg-opacity-50 rounded-xl flex items-center justify-center mb-4">
-                        <i class="fas fa-rocket text-2xl text-teal-400"></i>
+                    <div class="service-icon">
+                        <i class="fas fa-rocket"></i>
                     </div>
                     <h3 class="text-xl font-bold text-gray-900 mb-3">Continuous Innovation</h3>
-                    <p class="text-gray-400 mb-4">
+                    <p class="text-gray-600 mb-4">
                         Fostering a culture of improvement and adaptation to changing needs and 
                         emerging technologies.
                     </p>
-                    <ul class="text-sm text-gray-400 space-y-2">
+                    <ul class="text-sm text-gray-600 space-y-2">
                         <li class="flex items-start">
-                            <i class="fas fa-check-circle text-teal-400 mr-2 mt-1"></i>
+                            <i class="fas fa-check-circle text-blue-500 mr-2 mt-1"></i>
                             Process Evolution
                         </li>
                         <li class="flex items-start">
-                            <i class="fas fa-check-circle text-teal-400 mr-2 mt-1"></i>
+                            <i class="fas fa-check-circle text-blue-500 mr-2 mt-1"></i>
                             Technology Adoption
                         </li>
                         <li class="flex items-start">
-                            <i class="fas fa-check-circle text-teal-400 mr-2 mt-1"></i>
+                            <i class="fas fa-check-circle text-blue-500 mr-2 mt-1"></i>
                             Future-Proofing
                         </li>
                     </ul>
                     <div class="mt-4 text-center">
-                        <span class="text-xs text-teal-400 font-semibold">Click to explore →</span>
+                        <span class="text-xs text-blue-500 font-semibold">Click to explore →</span>
                     </div>
                 </div>
             </div>
@@ -428,13 +707,16 @@
 
         <!-- Core Stewardship Principles -->
         <div class="mb-12 animate-fade-in-up delay-150">
-            <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">
-                <i class="fas fa-heart text-teal-400 mr-3"></i>
-                Core Stewardship Principles
-            </h2>
+            <div class="section-header">
+                <h2>
+                    <i class="fas fa-heart text-blue-500 mr-3"></i>
+                    Core Stewardship Principles
+                </h2>
+                <p>Guiding values for sustainable facilities management excellence</p>
+            </div>
             
-            <div class="bg-gradient-to-r from-slate-700 to-teal-900 p-6 rounded-xl border border-teal-500 border-opacity-30 mb-8">
-                <p class="text-center text-gray-300 mb-6 italic">
+            <div class="bg-gradient-to-r from-blue-700 to-cyan-600 p-6 rounded-xl border border-blue-300 mb-8">
+                <p class="text-center text-white mb-6 italic">
                     "Stewardship in facility management ensures sustainable spaces, aligning resources with purpose. 
                     True innovation comes not from authority, but from understanding needs and crafting solutions."
                 </p>
@@ -442,90 +724,90 @@
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <button class="stewardship-btn methodology-card p-6 text-left transition-all duration-300 hover:scale-105" onclick="navigateToPrinciple('responsibility-ownership')">
-                    <div class="w-14 h-14 bg-teal-900 bg-opacity-50 rounded-xl flex items-center justify-center mb-4">
-                        <i class="fas fa-shield-alt text-2xl text-teal-400"></i>
+                    <div class="service-icon">
+                        <i class="fas fa-shield-alt"></i>
                     </div>
                     <h3 class="text-lg font-bold text-gray-900 mb-3">Responsibility & Ownership</h3>
-                    <p class="text-gray-400 text-sm mb-4">
+                    <p class="text-gray-600 text-sm mb-4">
                         Taking full accountability for facility outcomes and fostering a culture of personal ownership 
                         across all levels of operation.
                     </p>
-                    <div class="flex items-center text-teal-400 font-semibold text-sm">
+                    <div class="flex items-center text-blue-500 font-semibold text-sm">
                         <span>Explore Principle</span>
                         <i class="fas fa-arrow-right ml-2"></i>
                     </div>
                 </button>
                 
                 <button class="stewardship-btn methodology-card p-6 text-left transition-all duration-300 hover:scale-105" onclick="navigateToPrinciple('sustainability-focus')">
-                    <div class="w-14 h-14 bg-teal-900 bg-opacity-50 rounded-xl flex items-center justify-center mb-4">
-                        <i class="fas fa-leaf text-2xl text-teal-400"></i>
+                    <div class="service-icon">
+                        <i class="fas fa-leaf"></i>
                     </div>
                     <h3 class="text-lg font-bold text-gray-900 mb-3">Sustainability Focus</h3>
-                    <p class="text-gray-400 text-sm mb-4">
+                    <p class="text-gray-600 text-sm mb-4">
                         Implementing environmentally conscious practices and long-term resource management 
                         strategies for future generations.
                     </p>
-                    <div class="flex items-center text-teal-400 font-semibold text-sm">
+                    <div class="flex items-center text-blue-500 font-semibold text-sm">
                         <span>Explore Principle</span>
                         <i class="fas fa-arrow-right ml-2"></i>
                     </div>
                 </button>
                 
                 <button class="stewardship-btn methodology-card p-6 text-left transition-all duration-300 hover:scale-105" onclick="navigateToPrinciple('stakeholder-engagement')">
-                    <div class="w-14 h-14 bg-teal-900 bg-opacity-50 rounded-xl flex items-center justify-center mb-4">
-                        <i class="fas fa-handshake text-2xl text-teal-400"></i>
+                    <div class="service-icon">
+                        <i class="fas fa-handshake"></i>
                     </div>
                     <h3 class="text-lg font-bold text-gray-900 mb-3">Stakeholder Engagement</h3>
-                    <p class="text-gray-400 text-sm mb-4">
+                    <p class="text-gray-600 text-sm mb-4">
                         Building meaningful relationships and collaborative partnerships with all facility 
                         users, vendors, and decision-makers.
                     </p>
-                    <div class="flex items-center text-teal-400 font-semibold text-sm">
+                    <div class="flex items-center text-blue-500 font-semibold text-sm">
                         <span>Explore Principle</span>
                         <i class="fas fa-arrow-right ml-2"></i>
                     </div>
                 </button>
                 
                 <button class="stewardship-btn methodology-card p-6 text-left transition-all duration-300 hover:scale-105" onclick="navigateToPrinciple('innovation-excellence')">
-                    <div class="w-14 h-14 bg-teal-900 bg-opacity-50 rounded-xl flex items-center justify-center mb-4">
-                        <i class="fas fa-star text-2xl text-teal-400"></i>
+                    <div class="service-icon">
+                        <i class="fas fa-star"></i>
                     </div>
                     <h3 class="text-lg font-bold text-gray-900 mb-3">Innovation & Excellence</h3>
-                    <p class="text-gray-400 text-sm mb-4">
+                    <p class="text-gray-600 text-sm mb-4">
                         Pursuing continuous improvement and breakthrough solutions while maintaining 
                         the highest standards of service delivery.
                     </p>
-                    <div class="flex items-center text-teal-400 font-semibold text-sm">
+                    <div class="flex items-center text-blue-500 font-semibold text-sm">
                         <span>Explore Principle</span>
                         <i class="fas fa-arrow-right ml-2"></i>
                     </div>
                 </button>
                 
                 <button class="stewardship-btn methodology-card p-6 text-left transition-all duration-300 hover:scale-105" onclick="navigateToPrinciple('knowledge-sharing')">
-                    <div class="w-14 h-14 bg-teal-900 bg-opacity-50 rounded-xl flex items-center justify-center mb-4">
-                        <i class="fas fa-book text-2xl text-teal-400"></i>
+                    <div class="service-icon">
+                        <i class="fas fa-book"></i>
                     </div>
                     <h3 class="text-lg font-bold text-gray-900 mb-3">Knowledge Sharing</h3>
-                    <p class="text-gray-400 text-sm mb-4">
+                    <p class="text-gray-600 text-sm mb-4">
                         Fostering a culture of continuous learning and transparent information exchange 
                         across the organization.
                     </p>
-                    <div class="flex items-center text-teal-400 font-semibold text-sm">
+                    <div class="flex items-center text-blue-500 font-semibold text-sm">
                         <span>Explore Principle</span>
                         <i class="fas fa-arrow-right ml-2"></i>
                     </div>
                 </button>
                 
                 <button class="stewardship-btn methodology-card p-6 text-left transition-all duration-300 hover:scale-105" onclick="navigateToPrinciple('ethical-leadership')">
-                    <div class="w-14 h-14 bg-teal-900 bg-opacity-50 rounded-xl flex items-center justify-center mb-4">
-                        <i class="fas fa-gavel text-2xl text-teal-400"></i>
+                    <div class="service-icon">
+                        <i class="fas fa-gavel"></i>
                     </div>
                     <h3 class="text-lg font-bold text-gray-900 mb-3">Ethical Leadership</h3>
-                    <p class="text-gray-400 text-sm mb-4">
+                    <p class="text-gray-600 text-sm mb-4">
                         Guiding facility management practices with integrity, fairness, and moral principles 
                         at all decision-making levels.
                     </p>
-                    <div class="flex items-center text-teal-400 font-semibold text-sm">
+                    <div class="flex items-center text-blue-500 font-semibold text-sm">
                         <span>Explore Principle</span>
                         <i class="fas fa-arrow-right ml-2"></i>
                     </div>
@@ -535,10 +817,13 @@
 
         <!-- Methodology Framework -->
         <div class="methodology-card p-8 mb-12 animate-fade-in-up delay-200">
-            <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">
-                <i class="fas fa-project-diagram text-teal-400 mr-3"></i>
-                Implementation Framework
-            </h2>
+            <div class="section-header">
+                <h2>
+                    <i class="fas fa-project-diagram text-blue-500 mr-3"></i>
+                    Implementation Framework
+                </h2>
+                <p>Structured approach for methodology deployment and continuous improvement</p>
+            </div>
             
             <div class="framework-diagram">
                 <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-start">
@@ -586,32 +871,32 @@
                         <h4 class="font-semibold text-gray-900 mb-4">ISO Alignment</h4>
                         <div class="space-y-4">
                             <div class="flex items-start">
-                                <div class="bg-teal-900 bg-opacity-50 p-2 rounded-lg mr-4">
-                                    <i class="fas fa-certificate text-teal-400"></i>
+                                <div class="bg-blue-100 p-2 rounded-lg mr-4">
+                                    <i class="fas fa-certificate text-blue-500"></i>
                                 </div>
                                 <div>
                                     <h5 class="font-semibold text-gray-900">ISO 9001:2015</h5>
-                                    <p class="text-sm text-gray-400">Quality Management Systems</p>
+                                    <p class="text-sm text-gray-600">Quality Management Systems</p>
                                 </div>
                             </div>
                             
                             <div class="flex items-start">
-                                <div class="bg-teal-900 bg-opacity-50 p-2 rounded-lg mr-4">
-                                    <i class="fas fa-certificate text-teal-400"></i>
+                                <div class="bg-blue-100 p-2 rounded-lg mr-4">
+                                    <i class="fas fa-certificate text-blue-500"></i>
                                 </div>
                                 <div>
                                     <h5 class="font-semibold text-gray-900">ISO 14001:2015</h5>
-                                    <p class="text-sm text-gray-400">Environmental Management</p>
+                                    <p class="text-sm text-gray-600">Environmental Management</p>
                                 </div>
                             </div>
                             
                             <div class="flex items-start">
-                                <div class="bg-teal-900 bg-opacity-50 p-2 rounded-lg mr-4">
-                                    <i class="fas fa-certificate text-teal-400"></i>
+                                <div class="bg-blue-100 p-2 rounded-lg mr-4">
+                                    <i class="fas fa-certificate text-blue-500"></i>
                                 </div>
                                 <div>
                                     <h5 class="font-semibold text-gray-900">ISO 41001:2018</h5>
-                                    <p class="text-sm text-gray-400">Facilities Management</p>
+                                    <p class="text-sm text-gray-600">Facilities Management</p>
                                 </div>
                             </div>
                         </div>
@@ -621,32 +906,32 @@
                         <h4 class="font-semibold text-gray-900 mb-4">IFMA Competencies</h4>
                         <div class="space-y-4">
                             <div class="flex items-start">
-                                <div class="bg-teal-900 bg-opacity-50 p-2 rounded-lg mr-4">
-                                    <i class="fas fa-toolbox text-teal-400"></i>
+                                <div class="bg-blue-100 p-2 rounded-lg mr-4">
+                                    <i class="fas fa-toolbox text-blue-500"></i>
                                 </div>
                                 <div>
                                     <h5 class="font-semibold text-gray-900">Operations & Maintenance</h5>
-                                    <p class="text-sm text-gray-400">Core facilities expertise</p>
+                                    <p class="text-sm text-gray-600">Core facilities expertise</p>
                                 </div>
                             </div>
                             
                             <div class="flex items-start">
-                                <div class="bg-teal-900 bg-opacity-50 p-2 rounded-lg mr-4">
-                                    <i class="fas fa-project-diagram text-teal-400"></i>
+                                <div class="bg-blue-100 p-2 rounded-lg mr-4">
+                                    <i class="fas fa-project-diagram text-blue-500"></i>
                                 </div>
                                 <div>
                                     <h5 class="font-semibold text-gray-900">Project Management</h5>
-                                    <p class="text-sm text-gray-400">Strategic implementation</p>
+                                    <p class="text-sm text-gray-600">Strategic implementation</p>
                                 </div>
                             </div>
                             
                             <div class="flex items-start">
-                                <div class="bg-teal-900 bg-opacity-50 p-2 rounded-lg mr-4">
-                                    <i class="fas fa-handshake text-teal-400"></i>
+                                <div class="bg-blue-100 p-2 rounded-lg mr-4">
+                                    <i class="fas fa-handshake text-blue-500"></i>
                                 </div>
                                 <div>
                                     <h5 class="font-semibold text-gray-900">Leadership & Strategy</h5>
-                                    <p class="text-sm text-gray-400">Visionary guidance</p>
+                                    <p class="text-sm text-gray-600">Visionary guidance</p>
                                 </div>
                             </div>
                         </div>
@@ -657,199 +942,205 @@
 
         <!-- Impact Metrics -->
         <div class="mb-12 animate-fade-in-up delay-300">
-            <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">
-                <i class="fas fa-chart-line text-teal-400 mr-3"></i>
-                Measurable Impact
-            </h2>
+            <div class="section-header">
+                <h2>
+                    <i class="fas fa-chart-line text-blue-500 mr-3"></i>
+                    Measurable Impact
+                </h2>
+                <p>Quantifiable results achieved through methodology implementation</p>
+            </div>
             
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
                 <div class="impact-metric">
-                    <div class="text-3xl font-bold text-teal-400 mb-2">96%</div>
+                    <div class="text-3xl font-bold text-blue-500 mb-2">96%</div>
                     <div class="text-sm font-semibold text-gray-900">Inventory Accuracy</div>
-                    <div class="text-xs text-gray-400">From 78% baseline</div>
+                    <div class="text-xs text-gray-600">From 78% baseline</div>
                 </div>
                 
                 <div class="impact-metric">
-                    <div class="text-3xl font-bold text-teal-400 mb-2">4.9/5</div>
+                    <div class="text-3xl font-bold text-blue-500 mb-2">4.9/5</div>
                     <div class="text-sm font-semibold text-gray-900">Satisfaction Rating</div>
-                    <div class="text-xs text-gray-400">Customer feedback</div>
+                    <div class="text-xs text-gray-600">Customer feedback</div>
                 </div>
                 
                 <div class="impact-metric">
-                    <div class="text-3xl font-bold text-teal-400 mb-2">63%</div>
+                    <div class="text-3xl font-bold text-blue-500 mb-2">63%</div>
                     <div class="text-sm font-semibold text-gray-900">Time Savings</div>
-                    <div class="text-xs text-gray-400">Process efficiency</div>
+                    <div class="text-xs text-gray-600">Process efficiency</div>
                 </div>
                 
                 <div class="impact-metric">
-                    <div class="text-3xl font-bold text-teal-400 mb-2">R15.4K</div>
+                    <div class="text-3xl font-bold text-blue-500 mb-2">R15.4K</div>
                     <div class="text-sm font-semibold text-gray-900">Cost Avoidance</div>
-                    <div class="text-xs text-gray-400">Monthly savings</div>
+                    <div class="text-xs text-gray-600">Monthly savings</div>
                 </div>
             </div>
         </div>
 
         <!-- Professional Credentials Section -->
         <div class="methodology-card p-8 mb-12 animate-fade-in-up delay-300">
-            <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">
-                <i class="fas fa-user-graduate text-teal-400 mr-3"></i>
-                Methodology Developer: Professional Foundation
-            </h2>
+            <div class="section-header">
+                <h2>
+                    <i class="fas fa-user-graduate text-blue-500 mr-3"></i>
+                    Methodology Developer: Professional Foundation
+                </h2>
+                <p>The expertise and experience behind the Sifiso Methodology</p>
+            </div>
             
-            <div class="bg-gradient-to-r from-teal-900 to-blue-900 p-6 rounded-xl mb-8 border border-teal-500 border-opacity-30">
+            <div class="bg-gradient-to-r from-blue-700 to-cyan-600 p-6 rounded-xl mb-8 border border-blue-300">
                 <div class="text-center mb-6">
-                    <h3 class="text-2xl font-bold text-gray-900">Sifiso Cyprian Shezi</h3>
-                    <p class="text-lg text-teal-400 font-semibold">Facilities Assistant Level 1 — Derivco Durban</p>
-                    <p class="text-gray-400 italic">"7 Years of Continuous Learning & Innovation in Facilities Management"</p>
+                    <h3 class="text-2xl font-bold text-white">Sifiso Cyprian Shezi</h3>
+                    <p class="text-lg text-blue-100 font-semibold">Facilities Assistant Level 1 — Derivco Durban</p>
+                    <p class="text-white italic">"7 Years of Continuous Learning & Innovation in Facilities Management"</p>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <!-- Experience & Foundation -->
                 <div class="space-y-6">
-                    <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-teal-500">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-blue-500">
                         <h4 class="font-bold text-lg text-gray-900 mb-3 flex items-center">
-                            <i class="fas fa-building mr-2 text-teal-400"></i>
+                            <i class="fas fa-building mr-2 text-blue-500"></i>
                             Professional Experience
                         </h4>
                         <div class="space-y-3">
                             <div class="flex justify-between items-center">
                                 <span class="font-semibold text-gray-900">Derivco Durban</span>
-                                <span class="text-sm bg-teal-900 text-teal-400 px-2 py-1 rounded">2018 - Present</span>
+                                <span class="text-sm bg-blue-100 text-blue-700 px-2 py-1 rounded">2018 - Present</span>
                             </div>
-                            <p class="text-gray-400">7 years of hands-on facilities management experience, evolving from operational execution to strategic methodology development</p>
-                            <div class="bg-teal-900 bg-opacity-30 p-3 rounded-lg">
-                                <p class="text-sm text-teal-300"><strong>Key Achievement:</strong> Transformed basic facilities operations into a comprehensive, data-driven management system while maintaining frontline service delivery</p>
+                            <p class="text-gray-600">7 years of hands-on facilities management experience, evolving from operational execution to strategic methodology development</p>
+                            <div class="bg-blue-50 p-3 rounded-lg">
+                                <p class="text-sm text-blue-700"><strong>Key Achievement:</strong> Transformed basic facilities operations into a comprehensive, data-driven management system while maintaining frontline service delivery</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-teal-500">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-blue-500">
                         <h4 class="font-bold text-lg text-gray-900 mb-3 flex items-center">
-                            <i class="fas fa-hammer mr-2 text-teal-400"></i>
+                            <i class="fas fa-hammer mr-2 text-blue-500"></i>
                             Technical Foundation
                         </h4>
                         <div class="space-y-3">
                             <div class="flex justify-between items-center">
                                 <span class="font-semibold text-gray-900">College Certification - Carpentry</span>
-                                <span class="text-sm bg-teal-900 text-teal-400 px-2 py-1 rounded">2019</span>
+                                <span class="text-sm bg-blue-100 text-blue-700 px-2 py-1 rounded">2019</span>
                             </div>
-                            <p class="text-gray-400">Comprehensive understanding of building systems, construction principles, and hands-on technical problem-solving</p>
+                            <p class="text-gray-600">Comprehensive understanding of building systems, construction principles, and hands-on technical problem-solving</p>
                         </div>
                     </div>
 
-                    <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-teal-500">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-blue-500">
                         <h4 class="font-bold text-lg text-gray-900 mb-3 flex items-center">
-                            <i class="fas fa-laptop-code mr-2 text-teal-400"></i>
+                            <i class="fas fa-laptop-code mr-2 text-blue-500"></i>
                             Digital Transformation
                         </h4>
                         <div class="space-y-3">
                             <div class="flex justify-between items-center">
                                 <span class="font-semibold text-gray-900">Higher Certificate in IT</span>
-                                <span class="text-sm bg-teal-900 text-teal-400 px-2 py-1 rounded">2020</span>
+                                <span class="text-sm bg-blue-100 text-blue-700 px-2 py-1 rounded">2020</span>
                             </div>
-                            <p class="text-gray-400">Bridge between traditional facilities management and modern digital solutions</p>
+                            <p class="text-gray-600">Bridge between traditional facilities management and modern digital solutions</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- Certifications & Recognition -->
                 <div class="space-y-6">
-                    <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-teal-500">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-blue-500">
                         <h4 class="font-bold text-lg text-gray-900 mb-3 flex items-center">
-                            <i class="fas fa-certificate mr-2 text-teal-400"></i>
+                            <i class="fas fa-certificate mr-2 text-blue-500"></i>
                             Professional Certifications
                         </h4>
                         <div class="grid grid-cols-2 gap-3 text-sm">
-                            <div class="bg-teal-900 bg-opacity-30 p-2 rounded">
-                                <strong class="text-teal-400">580</strong> LinkedIn Learning
+                            <div class="bg-blue-50 p-2 rounded">
+                                <strong class="text-blue-700">580</strong> LinkedIn Learning
                             </div>
-                            <div class="bg-teal-900 bg-opacity-30 p-2 rounded">
-                                <strong class="text-teal-400">120</strong> PluralSight Badges
+                            <div class="bg-blue-50 p-2 rounded">
+                                <strong class="text-blue-700">120</strong> PluralSight Badges
                             </div>
-                            <div class="bg-teal-900 bg-opacity-30 p-2 rounded">
-                                <strong class="text-teal-400">80</strong> Udemy Certifications
+                            <div class="bg-blue-50 p-2 rounded">
+                                <strong class="text-blue-700">80</strong> Udemy Certifications
                             </div>
-                            <div class="bg-teal-900 bg-opacity-30 p-2 rounded">
-                                <strong class="text-teal-400">ISTQB</strong> IT Academy 2021
+                            <div class="bg-blue-50 p-2 rounded">
+                                <strong class="text-blue-700">ISTQB</strong> IT Academy 2021
                             </div>
                         </div>
-                        <div class="mt-3 text-xs text-gray-400">
+                        <div class="mt-3 text-xs text-gray-600">
                             <strong>Range:</strong> Microsoft Office Suite to CompTIA A+, Software Development, SDET, Cloud Engineering
                         </div>
                     </div>
 
-                    <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-teal-500">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-blue-500">
                         <h4 class="font-bold text-lg text-gray-900 mb-3 flex items-center">
-                            <i class="fas fa-globe mr-2 text-teal-400"></i>
+                            <i class="fas fa-globe mr-2 text-blue-500"></i>
                             International Recognition
                         </h4>
                         <div class="space-y-3">
-                            <div class="bg-teal-900 bg-opacity-30 p-3 rounded-lg">
+                            <div class="bg-blue-50 p-3 rounded-lg">
                                 <div class="flex justify-between items-center mb-2">
                                     <span class="font-semibold text-gray-900">Google Africa Developer Scholarship</span>
-                                    <span class="text-xs bg-teal-900 text-teal-400 px-2 py-1 rounded">2022-2023</span>
+                                    <span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">2022-2023</span>
                                 </div>
-                                <p class="text-sm text-teal-300">Selected to represent South Africa in Google Cloud Engineer Path</p>
+                                <p class="text-sm text-blue-700">Selected to represent South Africa in Google Cloud Engineer Path</p>
                             </div>
                             <div class="grid grid-cols-1 gap-2 text-sm">
-                                <div class="bg-teal-900 bg-opacity-30 p-2 rounded flex justify-between">
+                                <div class="bg-blue-50 p-2 rounded flex justify-between">
                                     <span class="text-gray-900">Google IT Support (Coursera)</span>
-                                    <span class="text-xs text-teal-400">2022</span>
+                                    <span class="text-xs text-blue-700">2022</span>
                                 </div>
-                                <div class="bg-teal-900 bg-opacity-30 p-2 rounded flex justify-between">
+                                <div class="bg-blue-50 p-2 rounded flex justify-between">
                                     <span class="text-gray-900">Google IT Automation (Coursera)</span>
-                                    <span class="text-xs text-teal-400">2023-2024</span>
+                                    <span class="text-xs text-blue-700">2023-2024</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-teal-500">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-blue-500">
                         <h4 class="font-bold text-lg text-gray-900 mb-3 flex items-center">
-                            <i class="fas fa-building-columns mr-2 text-teal-400"></i>
+                            <i class="fas fa-building-columns mr-2 text-blue-500"></i>
                             Specialized FM Education
                         </h4>
-                        <div class="bg-teal-900 bg-opacity-30 p-3 rounded-lg">
+                        <div class="bg-blue-50 p-3 rounded-lg">
                             <div class="flex justify-between items-center mb-2">
                                 <span class="font-semibold text-gray-900">Facilities Planning and Management</span>
-                                <span class="text-xs bg-teal-900 text-teal-400 px-2 py-1 rounded">Career Excel Academy</span>
+                                <span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">Career Excel Academy</span>
                             </div>
-                            <p class="text-sm text-teal-300">Formal facilities management methodologies and strategic planning</p>
+                            <p class="text-sm text-blue-700">Formal facilities management methodologies and strategic planning</p>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Unique Value Proposition -->
-            <div class="mt-8 bg-gradient-to-r from-slate-700 to-teal-900 p-6 rounded-xl border border-teal-500 border-opacity-30">
-                <h4 class="font-bold text-lg text-gray-900 mb-4 text-center">The Convergence Advantage</h4>
+            <div class="mt-8 bg-gradient-to-r from-blue-700 to-cyan-600 p-6 rounded-xl border border-blue-300">
+                <h4 class="font-bold text-lg text-white mb-4 text-center">The Convergence Advantage</h4>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-                    <div class="bg-gray-100 p-4 rounded-lg shadow-sm">
-                        <div class="w-12 h-12 bg-teal-900 bg-opacity-50 rounded-full flex items-center justify-center mx-auto mb-3">
-                            <i class="fas fa-tools text-teal-400"></i>
+                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-tools text-blue-500"></i>
                         </div>
                         <h5 class="font-semibold text-gray-900">Hands-On Expertise</h5>
-                        <p class="text-sm text-gray-400 mt-1">7 years frontline experience + technical carpentry background</p>
+                        <p class="text-sm text-gray-600 mt-1">7 years frontline experience + technical carpentry background</p>
                     </div>
-                    <div class="bg-gray-100 p-4 rounded-lg shadow-sm">
-                        <div class="w-12 h-12 bg-teal-900 bg-opacity-50 rounded-full flex items-center justify-center mx-auto mb-3">
-                            <i class="fas fa-code text-teal-400"></i>
+                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-code text-blue-500"></i>
                         </div>
                         <h5 class="font-semibold text-gray-900">Technology Integration</h5>
-                        <p class="text-sm text-gray-400 mt-1">800+ certifications spanning IT, Cloud, and Software Development</p>
+                        <p class="text-sm text-gray-600 mt-1">800+ certifications spanning IT, Cloud, and Software Development</p>
                     </div>
-                    <div class="bg-gray-100 p-4 rounded-lg shadow-sm">
-                        <div class="w-12 h-12 bg-teal-900 bg-opacity-50 rounded-full flex items-center justify-center mx-auto mb-3">
-                            <i class="fas fa-graduation-cap text-teal-400"></i>
+                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-graduation-cap text-blue-500"></i>
                         </div>
                         <h5 class="font-semibold text-gray-900">Continuous Learning</h5>
-                        <p class="text-sm text-gray-400 mt-1">International recognition + specialized FM education</p>
+                        <p class="text-sm text-gray-600 mt-1">International recognition + specialized FM education</p>
                     </div>
                 </div>
                 
                 <div class="mt-6 text-center">
-                    <p class="text-gray-300 font-medium">
+                    <p class="text-white font-medium">
                         "This methodology emerges from the unique intersection of operational experience, technical expertise, 
                         and cutting-edge digital skills - creating solutions that are both practically viable and technologically advanced."
                     </p>
@@ -860,7 +1151,7 @@
         <!-- Learning Evolution Timeline -->
         <div class="methodology-card p-8 mb-12 animate-fade-in-up delay-350">
             <h2 class="text-3xl font-bold text-gray-900 mb-8">
-                <i class="fas fa-road text-teal-400 mr-3"></i>
+                <i class="fas fa-road text-blue-500 mr-3"></i>
                 Methodology Evolution Journey
             </h2>
             
@@ -870,14 +1161,14 @@
                         <h4 class="font-semibold text-lg">Operational Foundation</h4>
                         <span class="stat-badge text-xs">2018-2019</span>
                     </div>
-                    <p class="text-gray-400 mb-3">
+                    <p class="text-gray-600 mb-3">
                         Established deep understanding of facilities operations through hands-on experience. 
                         Earned carpentry certification to strengthen technical building systems knowledge.
                     </p>
                     <div class="flex flex-wrap gap-2">
-                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">Frontline Operations</span>
-                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">Technical Skills</span>
-                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">Problem Identification</span>
+                        <span class="feature-tag">Frontline Operations</span>
+                        <span class="feature-tag">Technical Skills</span>
+                        <span class="feature-tag">Problem Identification</span>
                     </div>
                 </div>
                 
@@ -886,14 +1177,14 @@
                         <h4 class="font-semibold text-lg">Digital Transformation Awareness</h4>
                         <span class="stat-badge text-xs">2020</span>
                     </div>
-                    <p class="text-gray-400 mb-3">
+                    <p class="text-gray-600 mb-3">
                         Completed Higher Certificate in IT, recognizing the potential for technology to revolutionize 
                         traditional facilities management processes.
                     </p>
                     <div class="flex flex-wrap gap-2">
-                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">IT Foundation</span>
-                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">Process Digitization</span>
-                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">System Thinking</span>
+                        <span class="feature-tag">IT Foundation</span>
+                        <span class="feature-tag">Process Digitization</span>
+                        <span class="feature-tag">System Thinking</span>
                     </div>
                 </div>
                 
@@ -902,14 +1193,14 @@
                         <h4 class="font-semibold text-lg">Quality & Testing Methodologies</h4>
                         <span class="stat-badge text-xs">2021-2022</span>
                     </div>
-                    <p class="text-gray-400 mb-3">
+                    <p class="text-gray-600 mb-3">
                         Acquired ISTQB certification and extensive Google IT Support training. Learned systematic 
                         approaches to quality assurance and testing that would later inform methodology development.
                     </p>
                     <div class="flex flex-wrap gap-2">
-                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">Quality Assurance</span>
-                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">Testing Protocols</span>
-                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">Google Recognition</span>
+                        <span class="feature-tag">Quality Assurance</span>
+                        <span class="feature-tag">Testing Protocols</span>
+                        <span class="feature-tag">Google Recognition</span>
                     </div>
                 </div>
                 
@@ -918,14 +1209,14 @@
                         <h4 class="font-semibold text-lg">Cloud & Automation Integration</h4>
                         <span class="stat-badge text-xs">2022-2024</span>
                     </div>
-                    <p class="text-gray-400 mb-3">
+                    <p class="text-gray-600 mb-3">
                         Selected for Google Africa Developer Scholarship representing South Africa. Mastered cloud 
                         engineering and automation principles that enable scalable, efficient facilities management.
                     </p>
                     <div class="flex flex-wrap gap-2">
-                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">Cloud Architecture</span>
-                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">Process Automation</span>
-                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">International Recognition</span>
+                        <span class="feature-tag">Cloud Architecture</span>
+                        <span class="feature-tag">Process Automation</span>
+                        <span class="feature-tag">International Recognition</span>
                     </div>
                 </div>
                 
@@ -934,14 +1225,14 @@
                         <h4 class="font-semibold text-lg">Methodology Synthesis</h4>
                         <span class="stat-badge text-xs">2025</span>
                     </div>
-                    <p class="text-gray-400 mb-3">
+                    <p class="text-gray-600 mb-3">
                         Integrated 800+ certifications, 7 years operational experience, and formal FM education into 
                         a comprehensive methodology that transforms facilities management through systematic innovation.
                     </p>
                     <div class="flex flex-wrap gap-2">
-                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">Methodology Creation</span>
-                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">System Implementation</span>
-                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">Proven Results</span>
+                        <span class="feature-tag">Methodology Creation</span>
+                        <span class="feature-tag">System Implementation</span>
+                        <span class="feature-tag">Proven Results</span>
                     </div>
                 </div>
             </div>
@@ -950,7 +1241,7 @@
         <!-- Implementation Timeline -->
         <div class="methodology-card p-8 mb-12 animate-fade-in-up delay-400">
             <h2 class="text-3xl font-bold text-gray-900 mb-8">
-                <i class="fas fa-history text-teal-400 mr-3"></i>
+                <i class="fas fa-history text-blue-500 mr-3"></i>
                 Methodology Implementation Timeline
             </h2>
             
@@ -960,14 +1251,14 @@
                         <h4 class="font-semibold text-lg">Assessment Phase</h4>
                         <span class="stat-badge text-xs">Week 1-2</span>
                     </div>
-                    <p class="text-gray-400 mb-3">
+                    <p class="text-gray-600 mb-3">
                         Comprehensive analysis of existing facilities processes, pain points, and stakeholder needs.
                         Established baseline metrics for all key performance indicators.
                     </p>
                     <div class="flex flex-wrap gap-2">
-                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">Stakeholder Interviews</span>
-                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">Process Mapping</span>
-                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">Gap Analysis</span>
+                        <span class="feature-tag">Stakeholder Interviews</span>
+                        <span class="feature-tag">Process Mapping</span>
+                        <span class="feature-tag">Gap Analysis</span>
                     </div>
                 </div>
                 
@@ -976,14 +1267,14 @@
                         <h4 class="font-semibold text-lg">System Design</h4>
                         <span class="stat-badge text-xs">Week 3-4</span>
                     </div>
-                    <p class="text-gray-400 mb-3">
+                    <p class="text-gray-600 mb-3">
                         Architecture of integrated facilities management system incorporating inventory control,
                         maintenance scheduling, and stakeholder communication platforms.
                     </p>
                     <div class="flex flex-wrap gap-2">
-                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">SOP Development</span>
-                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">Workflow Design</span>
-                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">System Integration</span>
+                        <span class="feature-tag">SOP Development</span>
+                        <span class="feature-tag">Workflow Design</span>
+                        <span class="feature-tag">System Integration</span>
                     </div>
                 </div>
                 
@@ -992,14 +1283,14 @@
                         <h4 class="font-semibold text-lg">Implementation</h4>
                         <span class="stat-badge text-xs">Week 5-8</span>
                     </div>
-                    <p class="text-gray-400 mb-3">
+                    <p class="text-gray-600 mb-3">
                         Deployment of facilities management system with parallel running of old and new processes.
                         Comprehensive team training and change management initiatives.
                     </p>
                     <div class="flex flex-wrap gap-2">
-                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">System Deployment</span>
-                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">Training Sessions</span>
-                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">Change Management</span>
+                        <span class="feature-tag">System Deployment</span>
+                        <span class="feature-tag">Training Sessions</span>
+                        <span class="feature-tag">Change Management</span>
                     </div>
                 </div>
                 
@@ -1008,14 +1299,14 @@
                         <h4 class="font-semibold text-lg">Optimization</h4>
                         <span class="stat-badge text-xs">Ongoing</span>
                     </div>
-                    <p class="text-gray-400 mb-3">
+                    <p class="text-gray-600 mb-3">
                         Continuous improvement based on performance data and stakeholder feedback.
                         Expansion of system capabilities and integration with additional business functions.
                     </p>
                     <div class="flex flex-wrap gap-2">
-                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">Performance Review</span>
-                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">Process Refinement</span>
-                        <span class="bg-teal-900 bg-opacity-50 text-teal-400 text-xs px-2 py-1 rounded">System Enhancement</span>
+                        <span class="feature-tag">Performance Review</span>
+                        <span class="feature-tag">Process Refinement</span>
+                        <span class="feature-tag">System Enhancement</span>
                     </div>
                 </div>
             </div>
@@ -1023,32 +1314,32 @@
 
         <!-- Methodology Application Statement -->
         <div class="text-center animate-fade-in-up delay-500">
-            <div class="bg-gradient-to-r from-teal-900 to-blue-900 p-8 rounded-xl max-w-4xl mx-auto border border-teal-500 border-opacity-30">
-                <h3 class="text-2xl font-bold text-gray-900 mb-4">Methodology Availability</h3>
-                <p class="text-gray-300 mb-6">
+            <div class="bg-gradient-to-r from-blue-700 to-cyan-600 p-8 rounded-xl max-w-4xl mx-auto border border-blue-300">
+                <h3 class="text-2xl font-bold text-white mb-4">Methodology Availability</h3>
+                <p class="text-blue-100 mb-6">
                     The Sifiso Methodology has been successfully implemented at Derivco Durban, demonstrating that 
                     systematic innovation can emerge from any organizational level when supported by deep expertise 
                     and commitment to excellence. This framework is available for adaptation across other Derivco 
                     facilities or similar organizations seeking to transform their facilities management operations.
                 </p>
                 
-                <div class="bg-white p-4 rounded-lg shadow-sm border border-teal-500 border-opacity-30">
-                    <p class="text-sm text-gray-300 italic">
+                <div class="bg-white p-4 rounded-lg shadow-sm border border-blue-300">
+                    <p class="text-sm text-gray-700 italic">
                         "Innovation in facilities management isn't about position or authority—it's about understanding 
                         operational realities, embracing continuous learning, and systematically applying proven methodologies 
                         to create measurable value for organizations and stakeholders."
                     </p>
-                    <p class="text-xs text-gray-400 mt-2">— Core Principle of The Sifiso Methodology</p>
+                    <p class="text-xs text-gray-500 mt-2">— Core Principle of The Sifiso Methodology</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <footer class="bg-gray-50 border-t border-teal-500 mt-12 py-8">
+    <footer class="premium-footer">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p class="text-gray-400">Designed by Sifiso Cyprian Shezi</p>
-            <p class="text-gray-400 mt-2">Facilities Assistant Level 1 — Derivco Durban | Transforming facility management through innovation</p>
-            <p class="text-gray-500 mt-4">&copy; 2025 Derivco Facilities Management System. All rights reserved.</p>
+            <p class="text-white">Designed by Sifiso Cyprian Shezi</p>
+            <p class="text-blue-100 mt-2">Facilities Assistant Level 1 — Derivco Durban | Transforming facility management through innovation</p>
+            <p class="text-blue-200 mt-4">&copy; 2025 Derivco Facilities Management System. All rights reserved.</p>
         </div>
     </footer>
 
@@ -1098,14 +1389,14 @@
                 observer.observe(el);
             });
 
-            // Back button functionality (moved to navigation bar)
-            window.goBack = function() {
+            // Back button functionality
+            document.getElementById('backButton').addEventListener('click', function() {
                 if (window.history.length > 1) {
                     window.history.back();
                 } else {
                     window.location.href = '/';
                 }
-            };
+            });
         });
     </script>
 </body>

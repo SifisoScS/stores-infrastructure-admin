@@ -3,24 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Concierge Services - Office Experience</title>
+    <title>Concierge Services - Premium Office Experience</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #3b82f6;
-            --primary-dark: #2563eb;
-            --secondary: #10b981;
-            --warning: #f59e0b;
+            --derivco-blue: #004289;
+            --derivco-cyan: #00bfff;
+            --derivco-teal: #00d4aa;
+            --derivco-light: #f8fafc;
+            --derivco-gray: #64748b;
+            --text-primary: #1a202c;
+            --text-secondary: #4a5568;
+            --success: #059669;
+            --warning: #d97706;
             --danger: #ef4444;
-            --info: #06b6d4;
-            --light: #f8fafc;
-            --dark: #f8fafc;
-            --office-beige: #f5f1e6;
-            --office-blue: #1e3a5f;
-            --office-green: #2e5e4e;
-            --wood: #8b5a2b;
-            --carpet: #4a6572;
+            --border-light: #e2e8f0;
+            --shadow-light: rgba(0, 66, 137, 0.08);
+            --shadow-hover: rgba(0, 66, 137, 0.15);
+            --gradient-primary: linear-gradient(135deg, #004289 0%, #00bfff 100%);
+            --gradient-secondary: linear-gradient(135deg, #00bfff 0%, #00d4aa 100%);
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.2);
         }
 
         * {
@@ -31,742 +35,883 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #1e3a5f 0%, #2e5e4e 100%);
-            color: #333;
+            background: var(--derivco-light);
+            color: var(--text-primary);
             min-height: 100vh;
             overflow-x: hidden;
         }
 
-        .office-container {
-            min-height: 100vh;
-            background: 
-                radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.05) 0%, transparent 50%),
-                linear-gradient(135deg, #1e3a5f 0%, #2e5e4e 100%);
-            position: relative;
-            padding: 20px;
+        /* Premium Navigation */
+        .nav-back {
+            position: fixed;
+            top: 1.5rem;
+            right: 2rem;
+            z-index: 100;
         }
 
-        /* Office Background Elements */
-        .office-background {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .wall {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 30%;
-            background: var(--office-beige);
-            box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
-        }
-
-        .carpet {
-            position: absolute;
-            bottom: 0;
-            left: 10%;
-            width: 80%;
-            height: 20%;
-            background: var(--carpet);
-            border-radius: 10px 10px 0 0;
-            box-shadow: 0 -5px 15px rgba(0,0,0,0.2);
-        }
-
-        .window {
-            position: absolute;
-            top: 15%;
-            right: 10%;
-            width: 200px;
-            height: 150px;
-            background: linear-gradient(135deg, #87CEEB 0%, #4682B4 100%);
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(255,255,255,0.3);
-            border: 5px solid var(--wood);
-        }
-
-        .window::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 50%;
-            width: 5px;
-            height: 100%;
-            background: var(--wood);
-        }
-
-        .window::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 50%;
-            width: 100%;
-            height: 5px;
-            background: var(--wood);
-        }
-
-        .plant {
-            position: absolute;
-            bottom: 20%;
-            left: 15%;
-            width: 80px;
-            height: 120px;
-            background: #2e5e4e;
-            border-radius: 40px 40px 0 0;
-            z-index: 1;
-        }
-
-        .plant::after {
-            content: '';
-            position: absolute;
-            top: -30px;
-            left: 10px;
-            width: 60px;
-            height: 80px;
-            background: #2e5e4e;
-            border-radius: 50%;
-        }
-
-        /* Office Furniture */
-        .desk {
-            position: absolute;
-            bottom: 20%;
-            left: 25%;
-            width: 300px;
-            height: 150px;
-            background: var(--wood);
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            z-index: 2;
-        }
-
-        .desk::before {
-            content: '';
-            position: absolute;
-            bottom: -20px;
-            left: 20px;
-            width: 50px;
-            height: 20px;
-            background: var(--wood);
-        }
-
-        .desk::after {
-            content: '';
-            position: absolute;
-            bottom: -20px;
-            right: 20px;
-            width: 50px;
-            height: 20px;
-            background: var(--wood);
-        }
-
-        .computer {
-            position: absolute;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 180px;
-            height: 100px;
-            background: #333;
-            border-radius: 5px;
-            z-index: 3;
-        }
-
-        .computer-screen {
-            position: absolute;
-            top: 5px;
-            left: 5px;
-            width: 170px;
-            height: 90px;
-            background: #f8fafc;
-            border-radius: 3px;
-            overflow: hidden;
-        }
-
-        .screen-content {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, #0a192f 0%, #172a45 100%);
-            display: flex;
+        .back-button {
+            display: inline-flex;
             align-items: center;
-            justify-content: center;
-            color: #64ffda;
-            font-size: 12px;
-            font-weight: bold;
+            background: white;
+            color: var(--derivco-blue);
+            padding: 0.85rem 1.5rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-light);
+            box-shadow: 0 6px 20px rgba(0, 66, 137, 0.12);
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            z-index: 100;
         }
 
-        /* Main Content */
-        .office-content {
+        .back-button:hover {
+            background: var(--derivco-blue);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 66, 137, 0.2);
+        }
+
+        .back-button i {
+            margin-right: 0.5rem;
+        }
+
+        /* Premium Hero Section */
+        .hero-section {
+            background: var(--gradient-primary);
+            color: white;
             position: relative;
-            z-index: 10;
+            overflow: hidden;
+            padding: 8rem 0 4rem;
+            border-radius: 0 0 24px 24px;
+            box-shadow: 0 10px 30px rgba(0, 66, 137, 0.15);
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.3;
+        }
+
+        .hero-content {
             max-width: 1200px;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-            backdrop-filter: blur(10px);
-        }
-
-        .office-header {
-            background: linear-gradient(135deg, var(--office-blue) 0%, var(--office-green) 100%);
-            color: #1a202c;
-            padding: 30px;
-            text-align: center;
+            padding: 0 1.5rem;
             position: relative;
-            overflow: hidden;
+            z-index: 10;
         }
 
-        .office-header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><path d="M0,0 L100,100 M100,0 L0,100" stroke="white" stroke-width="1"/></svg>');
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1.1;
+            text-align: center;
         }
 
-        .office-title {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-        }
-
-        .office-subtitle {
-            font-size: 1.2rem;
+        .hero-subtitle {
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-bottom: 2rem;
+            text-align: center;
             opacity: 0.9;
-            margin-bottom: 20px;
         }
 
         .specialist-card {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            padding: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            border-radius: 16px;
+            padding: 1.5rem;
             display: inline-flex;
             align-items: center;
-            gap: 15px;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            gap: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin: 0 auto;
+            display: flex;
+            max-width: 500px;
         }
 
         .specialist-avatar {
-            width: 70px;
-            height: 70px;
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
             background: white;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 30px;
-            color: var(--office-blue);
+            font-size: 2rem;
+            color: var(--derivco-blue);
         }
 
         .specialist-info h3 {
-            margin-bottom: 5px;
-            font-size: 1.3rem;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
         }
 
         .specialist-info p {
-            margin-bottom: 10px;
+            margin-bottom: 0.75rem;
             opacity: 0.9;
         }
 
         .status-badge {
             display: inline-block;
-            padding: 5px 15px;
-            background: var(--secondary);
+            padding: 0.5rem 1rem;
+            background: rgba(5, 150, 105, 0.2);
             border-radius: 20px;
             font-size: 0.9rem;
             font-weight: 600;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
-        /* Office Grid Layout */
-        .office-grid {
+        /* Main Content Layout */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        /* Section Headers */
+        .section-header {
+            margin-bottom: 2rem;
+        }
+
+        .section-header h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section-header p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+        }
+
+        /* Service Grid */
+        .services-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            padding: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
         }
 
-        .office-room {
+        .service-card {
             background: white;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .office-room:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-        }
-
-        .room-header {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: #1a202c;
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .room-header i {
-            font-size: 1.5rem;
-        }
-
-        .room-content {
-            padding: 20px;
-        }
-
-        /* Service Buttons */
-        .service-buttons {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
-
-        .service-button {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px 10px;
-            background: #f8fafc;
-            border-radius: 8px;
-            text-align: center;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 6px 20px var(--shadow-light);
             transition: all 0.3s ease;
             cursor: pointer;
-            border: 2px solid transparent;
+            border: 1px solid var(--border-light);
+            position: relative;
+            overflow: hidden;
         }
 
-        .service-button:hover {
-            background: white;
-            border-color: var(--primary);
-            transform: scale(1.05);
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
         }
 
-        .service-button i {
-            font-size: 2rem;
-            margin-bottom: 10px;
-            color: var(--primary);
+        .service-card:hover::before {
+            transform: scaleX(1);
         }
 
-        .service-button h4 {
-            margin-bottom: 5px;
-            font-size: 1rem;
+        .service-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px var(--shadow-hover);
         }
 
-        .service-button p {
-            font-size: 0.8rem;
-            color: #64748b;
+        .service-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--gradient-primary);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            color: white;
+            font-size: 1.6rem;
+            transition: all 0.3s ease;
+        }
+
+        .service-card:hover .service-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .service-content h3 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        .service-content p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .service-arrow {
+            color: var(--derivco-cyan);
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .service-card:hover .service-arrow {
+            transform: translateX(6px);
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 3rem;
         }
 
         /* Request Table */
+        .request-table-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 6px 20px var(--shadow-light);
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+        }
+
+        .table-header {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .table-header i {
+            font-size: 1.5rem;
+        }
+
+        .table-header h3 {
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
         .request-table {
             width: 100%;
             border-collapse: collapse;
         }
 
         .request-table th {
-            background: #f1f5f9;
-            padding: 15px;
+            background: #f8fafc;
+            padding: 1.25rem 1.5rem;
             text-align: left;
             font-weight: 600;
-            color: var(--dark);
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border-light);
         }
 
         .request-table td {
-            padding: 15px;
-            border-bottom: 1px solid #e2e8f0;
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border-light);
         }
 
         .request-table tr:last-child td {
             border-bottom: none;
         }
 
+        .request-table tr:hover {
+            background: #f8fafc;
+        }
+
         .badge {
-            padding: 5px 10px;
+            padding: 0.5rem 1rem;
             border-radius: 20px;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             font-weight: 600;
         }
 
-        .badge-primary { background: rgba(59, 130, 246, 0.1); color: var(--primary); }
-        .badge-success { background: rgba(16, 185, 129, 0.1); color: var(--secondary); }
-        .badge-warning { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
-        .badge-danger { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+        .badge-success { background: rgba(5, 150, 105, 0.1); color: var(--success); }
+        .badge-warning { background: rgba(217, 119, 6, 0.1); color: var(--warning); }
+        .badge-primary { background: rgba(0, 66, 137, 0.1); color: var(--derivco-blue); }
 
-        /* Metrics */
-        .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
+        /* Metrics Sidebar */
+        .metrics-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
         }
 
         .metric-card {
-            background: #f8fafc;
-            padding: 15px;
-            border-radius: 8px;
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 6px 20px var(--shadow-light);
+            border: 1px solid var(--border-light);
             text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 28px var(--shadow-hover);
         }
 
         .metric-value {
-            font-size: 1.8rem;
+            font-size: 2.5rem;
             font-weight: 700;
-            color: var(--dark);
-            margin: 10px 0;
+            color: var(--derivco-blue);
+            margin: 0.5rem 0;
         }
 
         .metric-label {
-            font-size: 0.9rem;
-            color: #64748b;
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
         }
 
-        /* Team Status */
+        .metric-trend {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .trend-up { color: var(--success); }
+        .trend-down { color: var(--danger); }
+        .trend-neutral { color: var(--warning); }
+
+        /* Team Section */
+        .team-section {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 6px 20px var(--shadow-light);
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+            margin-bottom: 3rem;
+        }
+
         .team-grid {
             display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            padding: 1.5rem;
         }
 
         .team-member {
             display: flex;
             align-items: center;
-            gap: 15px;
-            padding: 15px;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .team-member:hover {
             background: #f8fafc;
-            border-radius: 8px;
+            transform: translateY(-3px);
         }
 
         .member-avatar {
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
             background: #e2e8f0;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.5rem;
-            color: #94a3b8;
+            color: var(--derivco-gray);
+        }
+
+        .member-info {
+            flex: 1;
+        }
+
+        .member-info h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .member-info p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
         }
 
         .member-status {
-            margin-left: auto;
-            padding: 5px 10px;
+            padding: 0.4rem 0.8rem;
             border-radius: 20px;
             font-size: 0.8rem;
             font-weight: 600;
         }
 
-        .status-available { background: rgba(16, 185, 129, 0.1); color: var(--secondary); }
-        .status-busy { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
-        .status-away { background: rgba(6, 182, 212, 0.1); color: var(--info); }
+        .status-available { background: rgba(5, 150, 105, 0.1); color: var(--success); }
+        .status-busy { background: rgba(217, 119, 6, 0.1); color: var(--warning); }
+        .status-away { background: rgba(0, 191, 255, 0.1); color: var(--derivco-cyan); }
+
+        /* Emergency Contacts */
+        .emergency-contacts {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 6px 20px var(--shadow-light);
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+            margin-bottom: 3rem;
+        }
+
+        .contacts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            padding: 1.5rem;
+        }
+
+        .contact-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 1.5rem;
+            background: #f8fafc;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .contact-item:hover {
+            background: white;
+            box-shadow: 0 5px 15px var(--shadow-light);
+            transform: translateY(-3px);
+        }
+
+        .contact-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            color: white;
+            font-size: 1.25rem;
+        }
+
+        .contact-item h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-item p {
+            font-size: 1rem;
+            color: var(--derivco-blue);
+            font-weight: 700;
+        }
 
         /* Footer */
-        .office-footer {
-            background: var(--dark);
-            color: #1a202c;
+        .premium-footer {
+            background: var(--gradient-primary);
             text-align: center;
-            padding: 20px;
-            margin-top: 30px;
+            padding: 3rem 2rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .premium-footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, white 0%, rgba(255,255,255,0.5) 50%, white 100%);
+        }
+
+        .premium-footer p {
+            margin: 0.75rem 0;
+            line-height: 1.6;
+        }
+
+        .premium-footer p:first-child {
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .premium-footer p:last-child {
+            opacity: 0.8;
+            font-size: 0.9rem;
+            margin-top: 1.5rem;
         }
 
         /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        .office-room {
-            animation: fadeIn 0.5s ease-out;
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s ease forwards;
         }
 
-        .office-room:nth-child(1) { animation-delay: 0.1s; }
-        .office-room:nth-child(2) { animation-delay: 0.2s; }
-        .office-room:nth-child(3) { animation-delay: 0.3s; }
-        .office-room:nth-child(4) { animation-delay: 0.4s; }
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-500 { animation-delay: 0.5s; }
 
         /* Responsive Design */
         @media (max-width: 1024px) {
-            .office-grid {
+            .dashboard-grid {
                 grid-template-columns: 1fr;
             }
             
-            .service-buttons {
-                grid-template-columns: repeat(2, 1fr);
+            .hero-title {
+                font-size: 3rem;
             }
         }
 
         @media (max-width: 768px) {
-            .office-title {
-                font-size: 2rem;
+            .hero-title {
+                font-size: 2.5rem;
             }
             
-            .service-buttons {
-                grid-template-columns: 1fr;
-            }
-            
-            .metrics-grid {
-                grid-template-columns: 1fr;
+            .hero-subtitle {
+                font-size: 1.2rem;
             }
             
             .specialist-card {
                 flex-direction: column;
                 text-align: center;
             }
+            
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-back {
+                top: 1rem;
+                right: 1rem;
+            }
+
+            .back-button {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .section-header h2 {
+                font-size: 1.7rem;
+            }
+            
+            .contacts-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="office-container">
-        <!-- Office Background Elements -->
-        <div class="office-background">
-            <div class="wall"></div>
-            <div class="carpet"></div>
-            <div class="window"></div>
-            <div class="plant"></div>
-            <div class="desk">
-                <div class="computer">
-                    <div class="computer-screen">
-                        <div class="screen-content">Concierge Services Active</div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <!-- Navigation Back Button -->
+    <div class="nav-back">
+        <a href="javascript:void(0)" class="back-button" id="backButton">
+            <i class="fas fa-arrow-left"></i> Back
+        </a>
+    </div>
 
-        <!-- Main Office Content -->
-        <div class="office-content">
-            <div class="office-header">
-                <!-- Back Navigation Button -->
-                <div style="position: absolute; top: 20px; left: 20px;">
-                    <a href="/" style="color: #1a202c; text-decoration: none; display: flex; align-items: center; gap: 10px; background: rgba(255, 255, 255, 0.2); padding: 10px 15px; border-radius: 20px; transition: all 0.3s ease;">
-                        <i class="fas fa-arrow-left"></i>
-                        <span>Back to Home</span>
-                    </a>
+    <!-- Premium Hero Section -->
+    <div class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title animate-fade-in-up">
+                <i class="fas fa-concierge-bell"></i> Concierge Services
+            </h1>
+            <p class="hero-subtitle animate-fade-in-up delay-100">Premium Office Experience & Support</p>
+            
+            <div class="specialist-card animate-fade-in-up delay-200">
+                <div class="specialist-avatar">
+                    <i class="fas fa-user-tie"></i>
                 </div>
-
-                <h1 class="office-title">
-                    <i class="fas fa-concierge-bell"></i> Concierge Services
-                </h1>
-                <p class="office-subtitle">Your Virtual Office Experience</p>
-                
-                <div class="specialist-card">
-                    <div class="specialist-avatar">
-                        <i class="fas fa-user-tie"></i>
-                    </div>
-                    <div class="specialist-info">
-                        <h3>Livania Achary</h3>
-                        <p>Concierge Service Specialist</p>
-                        <span class="status-badge">Available</span>
-                    </div>
+                <div class="specialist-info">
+                    <h3>Livania Achary</h3>
+                    <p>Concierge Service Specialist</p>
+                    <span class="status-badge">Available</span>
                 </div>
-            </div>
-
-            <div class="office-grid">
-                <!-- Service Desk Room -->
-                <div class="office-room">
-                    <div class="room-header">
-                        <i class="fas fa-user-tie"></i>
-                        <h2>Service Desk</h2>
-                    </div>
-                    <div class="room-content">
-                        <div class="service-buttons">
-                            <div class="service-button" onclick="openServiceModal('new-request')">
-                                <i class="fas fa-plus"></i>
-                                <h4>New Request</h4>
-                                <p>Submit a new service request</p>
-                            </div>
-                            <div class="service-button" onclick="openServiceModal('vehicle-reg')">
-                                <i class="fas fa-car"></i>
-                                <h4>Vehicle Registration</h4>
-                                <p>Register or update vehicle info</p>
-                            </div>
-                            <div class="service-button" onclick="openServiceModal('meeting-room')">
-                                <i class="fas fa-calendar"></i>
-                                <h4>Book Meeting Room</h4>
-                                <p>Reserve a meeting space</p>
-                            </div>
-                            <div class="service-button" onclick="openServiceModal('maintenance')">
-                                <i class="fas fa-tools"></i>
-                                <h4>Maintenance Request</h4>
-                                <p>Report facility issues</p>
-                            </div>
-                        </div>
-                        
-                        <div style="margin-top: 20px;">
-                            <h4>Emergency Contacts</h4>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
-                                <div style="padding: 10px; background: #f1f5f9; border-radius: 5px;">
-                                    <strong>Security</strong><br>Ext. 911
-                                </div>
-                                <div style="padding: 10px; background: #f1f5f9; border-radius: 5px;">
-                                    <strong>Maintenance</strong><br>Ext. 2233
-                                </div>
-                                <div style="padding: 10px; background: #f1f5f9; border-radius: 5px;">
-                                    <strong>IT Support</strong><br>Ext. 4455
-                                </div>
-                                <div style="padding: 10px; background: #f1f5f9; border-radius: 5px;">
-                                    <strong>Facilities</strong><br>Ext. 5577
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Service Status Room -->
-                <div class="office-room">
-                    <div class="room-header">
-                        <i class="fas fa-clipboard-list"></i>
-                        <h2>Service Status</h2>
-                    </div>
-                    <div class="room-content">
-                        <table class="request-table">
-                            <thead>
-                                <tr>
-                                    <th>Request #</th>
-                                    <th>Type</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><strong>CR-2025-001</strong></td>
-                                    <td>Vehicle Registration</td>
-                                    <td><span class="badge badge-success">Completed</span></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>CR-2025-002</strong></td>
-                                    <td>Meeting Room Booking</td>
-                                    <td><span class="badge badge-warning">In Progress</span></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>CR-2025-003</strong></td>
-                                    <td>Maintenance Request</td>
-                                    <td><span class="badge badge-primary">Assigned</span></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>CR-2025-004</strong></td>
-                                    <td>VIP Services</td>
-                                    <td><span class="badge badge-warning">In Progress</span></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Performance Metrics Room -->
-                <div class="office-room">
-                    <div class="room-header">
-                        <i class="fas fa-chart-line"></i>
-                        <h2>Performance Metrics</h2>
-                    </div>
-                    <div class="room-content">
-                        <div class="metrics-grid">
-                            <div class="metric-card">
-                                <div class="metric-value">1.2 hours</div>
-                                <div class="metric-label">Avg. Response Time</div>
-                                <div style="color: var(--secondary); font-size: 0.8rem;">
-                                    <i class="fas fa-arrow-down"></i> 15% faster
-                                </div>
-                            </div>
-                            <div class="metric-card">
-                                <div class="metric-value">92%</div>
-                                <div class="metric-label">Resolution Rate</div>
-                                <div style="color: var(--secondary); font-size: 0.8rem;">
-                                    <i class="fas fa-arrow-up"></i> 5% improvement
-                                </div>
-                            </div>
-                            <div class="metric-card">
-                                <div class="metric-value">4.7/5</div>
-                                <div class="metric-label">Satisfaction Score</div>
-                                <div style="color: var(--warning); font-size: 0.8rem;">
-                                    <i class="fas fa-minus"></i> Stable
-                                </div>
-                            </div>
-                            <div class="metric-card">
-                                <div class="metric-value">89%</div>
-                                <div class="metric-label">Completion Rate</div>
-                                <div style="color: var(--secondary); font-size: 0.8rem;">
-                                    <i class="fas fa-arrow-up"></i> 7% improvement
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Team Room -->
-                <div class="office-room">
-                    <div class="room-header">
-                        <i class="fas fa-users"></i>
-                        <h2>Team Availability</h2>
-                    </div>
-                    <div class="room-content">
-                        <div class="team-grid">
-                            <div class="team-member">
-                                <div class="member-avatar">
-                                    <i class="fas fa-user-tie"></i>
-                                </div>
-                                <div>
-                                    <h4>Livania Achary</h4>
-                                    <p>Concierge Specialist</p>
-                                </div>
-                                <span class="member-status status-available">Available</span>
-                            </div>
-                            <div class="team-member">
-                                <div class="member-avatar">
-                                    <i class="fas fa-user-cog"></i>
-                                </div>
-                                <div>
-                                    <h4>Sifiso Shezi</h4>
-                                    <p>Facilities Support</p>
-                                </div>
-                                <span class="member-status status-available">Available</span>
-                            </div>
-                            <div class="team-member">
-                                <div class="member-avatar">
-                                    <i class="fas fa-user"></i>
-                                </div>
-                                <div>
-                                    <h4>Team Member 2</h4>
-                                    <p>Concierge Support</p>
-                                </div>
-                                <span class="member-status status-busy">Busy</span>
-                            </div>
-                            <div class="team-member">
-                                <div class="member-avatar">
-                                    <i class="fas fa-user"></i>
-                                </div>
-                                <div>
-                                    <h4>Team Member 3</h4>
-                                    <p>Admin Support</p>
-                                </div>
-                                <span class="member-status status-away">On Break</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="office-footer">
-                <p>Designed by Sifiso Cyprian Shezi</p>
-                <p>Facilities Assistant Level 1 — Derivco Durban | Transforming facility management through innovation</p>
-                <p>&copy; 2025 Derivco Facilities Management System. All rights reserved.</p>
             </div>
         </div>
     </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Services Section -->
+        <div class="section-header animate-fade-in-up delay-100">
+            <h2><i class="fas fa-handshake"></i> Request Services</h2>
+            <p>Quick access to all concierge services and support</p>
+        </div>
+
+        <div class="services-grid">
+            <div class="service-card animate-fade-in-up delay-200" onclick="openServiceModal('new-request')">
+                <div class="service-icon">
+                    <i class="fas fa-plus"></i>
+                </div>
+                <div class="service-content">
+                    <h3>New Request</h3>
+                    <p>Submit a new service request for any office needs or assistance</p>
+                    <div class="service-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="service-card animate-fade-in-up delay-300" onclick="openServiceModal('vehicle-reg')">
+                <div class="service-icon">
+                    <i class="fas fa-car"></i>
+                </div>
+                <div class="service-content">
+                    <h3>Vehicle Registration</h3>
+                    <p>Register or update vehicle information for parking and access</p>
+                    <div class="service-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="service-card animate-fade-in-up delay-400" onclick="openServiceModal('meeting-room')">
+                <div class="service-icon">
+                    <i class="fas fa-calendar"></i>
+                </div>
+                <div class="service-content">
+                    <h3>Book Meeting Room</h3>
+                    <p>Reserve meeting spaces and arrange for equipment setup</p>
+                    <div class="service-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="service-card animate-fade-in-up delay-500" onclick="openServiceModal('maintenance')">
+                <div class="service-icon">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <div class="service-content">
+                    <h3>Maintenance Request</h3>
+                    <p>Report facility issues or request maintenance services</p>
+                    <div class="service-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div class="dashboard-grid">
+            <!-- Request Status -->
+            <div class="request-table-container animate-fade-in-up delay-200">
+                <div class="table-header">
+                    <i class="fas fa-clipboard-list"></i>
+                    <h3>Service Request Status</h3>
+                </div>
+                <table class="request-table">
+                    <thead>
+                        <tr>
+                            <th>Request #</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>CR-2025-001</strong></td>
+                            <td>Vehicle Registration</td>
+                            <td><span class="badge badge-success">Completed</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>CR-2025-002</strong></td>
+                            <td>Meeting Room Booking</td>
+                            <td><span class="badge badge-warning">In Progress</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>CR-2025-003</strong></td>
+                            <td>Maintenance Request</td>
+                            <td><span class="badge badge-primary">Assigned</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>CR-2025-004</strong></td>
+                            <td>VIP Services</td>
+                            <td><span class="badge badge-warning">In Progress</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>CR-2025-005</strong></td>
+                            <td>Catering Request</td>
+                            <td><span class="badge badge-success">Completed</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Performance Metrics -->
+            <div class="metrics-sidebar">
+                <div class="metric-card animate-fade-in-up delay-300">
+                    <div class="metric-value">1.2 hours</div>
+                    <div class="metric-label">Avg. Response Time</div>
+                    <div class="metric-trend trend-up">
+                        <i class="fas fa-arrow-down"></i> 15% faster
+                    </div>
+                </div>
+
+                <div class="metric-card animate-fade-in-up delay-400">
+                    <div class="metric-value">92%</div>
+                    <div class="metric-label">Resolution Rate</div>
+                    <div class="metric-trend trend-up">
+                        <i class="fas fa-arrow-up"></i> 5% improvement
+                    </div>
+                </div>
+
+                <div class="metric-card animate-fade-in-up delay-500">
+                    <div class="metric-value">4.7/5</div>
+                    <div class="metric-label">Satisfaction Score</div>
+                    <div class="metric-trend trend-neutral">
+                        <i class="fas fa-minus"></i> Stable
+                    </div>
+                </div>
+
+                <div class="metric-card animate-fade-in-up delay-600">
+                    <div class="metric-value">89%</div>
+                    <div class="metric-label">Completion Rate</div>
+                    <div class="metric-trend trend-up">
+                        <i class="fas fa-arrow-up"></i> 7% improvement
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Team Section -->
+        <div class="team-section animate-fade-in-up delay-300">
+            <div class="table-header">
+                <i class="fas fa-users"></i>
+                <h3>Team Availability</h3>
+            </div>
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="member-avatar">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <div class="member-info">
+                        <h4>Livania Achary</h4>
+                        <p>Concierge Specialist</p>
+                    </div>
+                    <span class="member-status status-available">Available</span>
+                </div>
+
+                <div class="team-member">
+                    <div class="member-avatar">
+                        <i class="fas fa-user-cog"></i>
+                    </div>
+                    <div class="member-info">
+                        <h4>Sifiso Shezi</h4>
+                        <p>Facilities Support</p>
+                    </div>
+                    <span class="member-status status-available">Available</span>
+                </div>
+
+                <div class="team-member">
+                    <div class="member-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="member-info">
+                        <h4>Team Member 2</h4>
+                        <p>Concierge Support</p>
+                    </div>
+                    <span class="member-status status-busy">Busy</span>
+                </div>
+
+                <div class="team-member">
+                    <div class="member-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="member-info">
+                        <h4>Team Member 3</h4>
+                        <p>Admin Support</p>
+                    </div>
+                    <span class="member-status status-away">On Break</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Emergency Contacts -->
+        <div class="emergency-contacts animate-fade-in-up delay-400">
+            <div class="table-header">
+                <i class="fas fa-phone-alt"></i>
+                <h3>Emergency Contacts</h3>
+            </div>
+            <div class="contacts-grid">
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h4>Security</h4>
+                    <p>Ext. 911</p>
+                </div>
+
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <h4>Maintenance</h4>
+                    <p>Ext. 2233</p>
+                </div>
+
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-laptop"></i>
+                    </div>
+                    <h4>IT Support</h4>
+                    <p>Ext. 4455</p>
+                </div>
+
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <h4>Facilities</h4>
+                    <p>Ext. 5577</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="premium-footer">
+        <p>Designed by Sifiso Cyprian Shezi</p>
+        <p>Facilities Assistant Level 1 — Derivco Durban | Transforming facility management through innovation</p>
+        <p>&copy; 2025 Derivco Facilities Management System. All rights reserved.</p>
+    </footer>
 
     <script>
         // Function to handle service button clicks
@@ -782,6 +927,15 @@
             alert(`Opening ${serviceNames[serviceType]} form...`);
             console.log(`Service selected: ${serviceType}`);
         }
+
+        // Back button functionality
+        document.getElementById('backButton').addEventListener('click', function() {
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                window.location.href = '/';
+            }
+        });
 
         // Simulate live updates
         setInterval(() => {
@@ -801,6 +955,24 @@
                 }
             });
         }, 5000);
+
+        // Add fade-in animation to elements as they come into view
+        const fadeElements = document.querySelectorAll('.animate-fade-in-up');
+        const fadeObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = 1;
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        });
+
+        fadeElements.forEach(el => {
+            el.style.opacity = 0;
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            fadeObserver.observe(el);
+        });
     </script>
 </body>
 </html>

@@ -8,61 +8,67 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         :root {
-            --primary: #0061a8;
-            --secondary: #6c757d;
-            --success: #198754;
-            --info: #0dcaf0;
-            --warning: #ffc107;
-            --danger: #dc3545;
-            --light: #f8f9fa;
-            --dark: #212529;
-            --gradient: linear-gradient(135deg, #0061a8 0%, #003f6c 100%);
-            --tv-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            --derivco-blue: #004289;
+            --derivco-cyan: #00bfff;
+            --derivco-teal: #00d4aa;
+            --derivco-light: #f8fafc;
+            --derivco-gray: #64748b;
+            --text-primary: #1a202c;
+            --text-secondary: #4a5568;
+            --success: #059669;
+            --warning: #d97706;
+            --danger: #ef4444;
+            --border-light: #e2e8f0;
+            --shadow-light: rgba(0, 66, 137, 0.08);
+            --shadow-hover: rgba(0, 66, 137, 0.15);
+            --gradient-primary: linear-gradient(135deg, #004289 0%, #00bfff 100%);
+            --gradient-secondary: linear-gradient(135deg, #00bfff 0%, #00d4aa 100%);
         }
         
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #0f1419;
-            color: #e0e0e0;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--derivco-light);
+            color: var(--text-primary);
             overflow-x: hidden;
         }
         
         .card {
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px var(--shadow-light);
             margin-bottom: 20px;
-            border: none;
-            background-color: #1e2a3a;
-            color: #e0e0e0;
+            border: 1px solid var(--border-light);
+            background-color: white;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            box-shadow: 0 6px 20px var(--shadow-hover);
+            transform: translateY(-2px);
         }
         
         .bg-gradient-info {
-            background: var(--gradient);
-        }
-        
-        .bg-tv {
-            background: var(--tv-gradient);
-            border: 1px solid #2a3a4a;
+            background: var(--gradient-primary);
         }
         
         .nav-tabs .nav-link {
             border: none;
             border-bottom: 3px solid transparent;
-            color: var(--secondary);
+            color: var(--text-secondary);
             font-weight: 500;
             padding: 12px 20px;
             background-color: transparent;
         }
         
         .nav-tabs .nav-link.active {
-            border-bottom: 3px solid var(--primary);
-            color: var(--primary);
+            border-bottom: 3px solid var(--derivco-blue);
+            color: var(--derivco-blue);
             background: transparent;
         }
         
         .nav-tabs .nav-link:hover {
             border-color: transparent;
-            background-color: rgba(0, 97, 168, 0.1);
+            background-color: rgba(0, 66, 137, 0.05);
         }
         
         .stats-card {
@@ -79,8 +85,8 @@
         }
         
         .news-item:hover {
-            border-left: 3px solid var(--primary);
-            background-color: #253144;
+            border-left: 3px solid var(--derivco-blue);
+            background-color: #f8fafc;
         }
         
         .training-program {
@@ -88,7 +94,7 @@
         }
         
         .training-program:hover {
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 6px 12px var(--shadow-hover);
         }
         
         .tab-content {
@@ -105,8 +111,8 @@
         }
         
         .charter-content h5 {
-            color: var(--primary);
-            border-bottom: 2px solid var(--primary);
+            color: var(--derivco-blue);
+            border-bottom: 2px solid var(--derivco-blue);
             padding-bottom: 8px;
             margin: 25px 0 15px;
         }
@@ -117,30 +123,30 @@
         
         .progress {
             height: 8px;
-            background-color: #2a3a4a;
+            background-color: #e2e8f0;
         }
         
-        /* TV Interface Styles */
+        /* TV Interface Styles - Light Theme */
         .tv-container {
             position: relative;
             border-radius: 15px;
             overflow: hidden;
-            box-shadow: 0 0 30px rgba(0, 97, 168, 0.3);
-            background: #0a0f1a;
-            border: 2px solid #2a3a4a;
+            box-shadow: 0 0 30px rgba(0, 66, 137, 0.1);
+            background: white;
+            border: 2px solid var(--border-light);
         }
         
         .tv-screen {
             position: relative;
-            background: #0a0f1a;
+            background: white;
             min-height: 500px;
             overflow: hidden;
         }
         
         .tv-header {
-            background: rgba(10, 15, 26, 0.9);
+            background: var(--gradient-primary);
             padding: 15px 20px;
-            border-bottom: 1px solid #2a3a4a;
+            border-bottom: 1px solid var(--border-light);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -149,12 +155,12 @@
         .tv-channel {
             font-size: 1.2rem;
             font-weight: bold;
-            color: var(--primary);
+            color: white;
         }
         
         .tv-time {
             font-size: 0.9rem;
-            color: #8a9ba8;
+            color: rgba(255, 255, 255, 0.8);
         }
         
         .tv-content {
@@ -164,18 +170,18 @@
         }
         
         .tv-controls {
-            background: rgba(10, 15, 26, 0.9);
+            background: white;
             padding: 15px 20px;
-            border-top: 1px solid #2a3a4a;
+            border-top: 1px solid var(--border-light);
             display: flex;
             justify-content: center;
             gap: 10px;
         }
         
         .channel-btn {
-            background: #1e2a3a;
-            border: 1px solid #2a3a4a;
-            color: #8a9ba8;
+            background: white;
+            border: 1px solid var(--border-light);
+            color: var(--text-secondary);
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -186,14 +192,15 @@
         }
         
         .channel-btn.active {
-            background: var(--primary);
+            background: var(--derivco-blue);
             color: white;
-            border-color: var(--primary);
+            border-color: var(--derivco-blue);
         }
         
         .channel-btn:hover {
-            background: #2a3a4a;
+            background: var(--derivco-blue);
             color: white;
+            border-color: var(--derivco-blue);
         }
         
         .tv-content-area {
@@ -212,9 +219,9 @@
         
         /* News Ticker */
         .news-ticker {
-            background: rgba(0, 97, 168, 0.2);
-            border-top: 1px solid #2a3a4a;
-            border-bottom: 1px solid #2a3a4a;
+            background: rgba(0, 66, 137, 0.05);
+            border-top: 1px solid var(--border-light);
+            border-bottom: 1px solid var(--border-light);
             padding: 10px 0;
             overflow: hidden;
             position: relative;
@@ -234,7 +241,7 @@
         .ticker-item {
             display: inline-block;
             margin-right: 50px;
-            color: #8a9ba8;
+            color: var(--text-secondary);
         }
         
         .ticker-item .badge {
@@ -243,29 +250,30 @@
         
         /* Global News Styles */
         .global-news-item {
-            background: #1e2a3a;
+            background: white;
             border-radius: 8px;
             padding: 15px;
             margin-bottom: 15px;
-            border-left: 4px solid var(--primary);
+            border-left: 4px solid var(--derivco-blue);
             transition: all 0.3s;
+            box-shadow: 0 2px 8px var(--shadow-light);
         }
         
         .global-news-item:hover {
             transform: translateX(5px);
-            background: #253144;
+            background: #f8fafc;
         }
         
         .news-source {
             font-size: 0.8rem;
-            color: #8a9ba8;
+            color: var(--text-secondary);
             margin-bottom: 5px;
         }
         
         .news-region {
             display: inline-block;
             padding: 2px 8px;
-            background: #2a3a4a;
+            background: #e2e8f0;
             border-radius: 4px;
             font-size: 0.7rem;
             margin-right: 5px;
@@ -277,6 +285,7 @@
             border-radius: 10px;
             padding: 15px;
             text-align: center;
+            color: white;
         }
         
         .weather-icon {
@@ -299,10 +308,11 @@
         .market-data {
             display: flex;
             justify-content: space-between;
-            background: #1e2a3a;
+            background: white;
             border-radius: 8px;
             padding: 10px 15px;
             margin-bottom: 10px;
+            box-shadow: 0 2px 8px var(--shadow-light);
         }
         
         .market-item {
@@ -324,14 +334,150 @@
         
         /* Video Player */
         .video-placeholder {
-            background: #0a0f1a;
+            background: #f8fafc;
             height: 200px;
             border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #8a9ba8;
+            color: var(--text-secondary);
             margin-bottom: 15px;
+        }
+        
+        /* Section Headers */
+        .section-header {
+            margin-bottom: 1.5rem;
+        }
+        
+        .section-header h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .section-header p {
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Premium Navigation */
+        .nav-back {
+            position: fixed;
+            top: 1.5rem;
+            right: 2rem;
+            z-index: 100;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            background: white;
+            color: var(--derivco-blue);
+            padding: 0.85rem 1.5rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-light);
+            box-shadow: 0 6px 20px rgba(0, 66, 137, 0.12);
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+
+        .back-button:hover {
+            background: var(--derivco-blue);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 66, 137, 0.2);
+        }
+
+        .back-button i {
+            margin-right: 0.5rem;
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            background: var(--gradient-primary);
+            color: white;
+            position: relative;
+            overflow: hidden;
+            padding: 6rem 0 3rem;
+            border-radius: 0 0 24px 24px;
+            box-shadow: 0 10px 30px rgba(0, 66, 137, 0.15);
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.3;
+        }
+        
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1.1;
+            text-align: center;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.3rem;
+            font-weight: 500;
+            margin-bottom: 2rem;
+            text-align: center;
+            opacity: 0.9;
+        }
+        
+        /* Premium Footer */
+        .premium-footer {
+            background: var(--gradient-primary);
+            text-align: center;
+            padding: 3rem 2rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            margin-top: 3rem;
+        }
+
+        .premium-footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, white 0%, rgba(255,255,255,0.5) 50%, white 100%);
+        }
+
+        .premium-footer p {
+            margin: 0.75rem 0;
+            line-height: 1.6;
+        }
+
+        .premium-footer p:first-child {
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .premium-footer p:last-child {
+            opacity: 0.8;
+            font-size: 0.9rem;
+            margin-top: 1.5rem;
         }
         
         /* Responsive Adjustments */
@@ -344,44 +490,56 @@
                 width: 35px;
                 height: 35px;
             }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .nav-back {
+                top: 1rem;
+                right: 1rem;
+            }
+
+            .back-button {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.9rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .section-header h2 {
+                font-size: 1.5rem;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container-fluid py-4">
-        <!-- Header -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card bg-gradient-info text-white">
-                    <div class="card-body p-4">
-                        <!-- Breadcrumb -->
-                        <nav aria-label="breadcrumb" class="mb-3">
-                            <ol class="breadcrumb mb-0" style="background: transparent;">
-                                <li class="breadcrumb-item">
-                                    <a href="/" class="text-white-50 text-decoration-none">
-                                        <i class="fas fa-home"></i> Home
-                                    </a>
-                                </li>
-                                <li class="breadcrumb-item active text-white" aria-current="page">
-                                    Facilities Intelligence Hub
-                                </li>
-                            </ol>
-                        </nav>
-                        
-                        <div class="d-flex align-items-center">
-                            <div class="me-3">
-                                <i class="fas fa-satellite-dish fa-3x opacity-75"></i>
-                            </div>
-                            <div>
-                                <h1 class="card-title h2 mb-2">Facilities Intelligence Hub</h1>
-                                <p class="card-text h5 mb-0 opacity-90">Global News & Trends in Facility Management - Your Window to the World</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <!-- Navigation Back Button -->
+    <div class="nav-back">
+        <a href="javascript:void(0)" class="back-button" id="backButton">
+            <i class="fas fa-arrow-left"></i> Back
+        </a>
+    </div>
 
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title animate-fade-in-up">
+                <i class="fas fa-satellite-dish"></i> Facilities Intelligence Hub
+            </h1>
+            <p class="hero-subtitle animate-fade-in-up delay-100">Global News & Trends in Facility Management - Your Window to the World</p>
+        </div>
+    </div>
+
+    <div class="container-fluid py-4">
         <!-- TV Interface -->
         <div class="row mb-4">
             <div class="col-12">
@@ -456,7 +614,7 @@
                                             <div class="mt-2 small">Humidity: 65% • Wind: 15 km/h</div>
                                         </div>
                                         
-                                        <div class="card bg-tv mb-4">
+                                        <div class="card mb-4">
                                             <div class="card-header">
                                                 <h6><i class="fas fa-chart-line me-2"></i>FM Market Indicators</h6>
                                             </div>
@@ -476,7 +634,7 @@
                                             </div>
                                         </div>
                                         
-                                        <div class="card bg-tv">
+                                        <div class="card">
                                             <div class="card-header">
                                                 <h6><i class="fas fa-play-circle me-2"></i>Featured Video</h6>
                                             </div>
@@ -499,7 +657,7 @@
                                 
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <div class="card bg-tv h-100">
+                                        <div class="card h-100">
                                             <div class="card-header">
                                                 <h5>AI & Machine Learning</h5>
                                             </div>
@@ -532,7 +690,7 @@
                                     </div>
                                     
                                     <div class="col-md-6">
-                                        <div class="card bg-tv h-100">
+                                        <div class="card h-100">
                                             <div class="card-header">
                                                 <h5>IoT & Smart Buildings</h5>
                                             </div>
@@ -567,7 +725,7 @@
                                 
                                 <div class="row mt-4">
                                     <div class="col-12">
-                                        <div class="card bg-tv">
+                                        <div class="card">
                                             <div class="card-header">
                                                 <h5>Upcoming Tech Events</h5>
                                             </div>
@@ -613,7 +771,7 @@
                                 
                                 <div class="row">
                                     <div class="col-md-8">
-                                        <div class="card bg-tv mb-4">
+                                        <div class="card mb-4">
                                             <div class="card-header">
                                                 <h5>Global Sustainability Initiatives</h5>
                                             </div>
@@ -659,7 +817,7 @@
                                     </div>
                                     
                                     <div class="col-md-4">
-                                        <div class="card bg-tv mb-4">
+                                        <div class="card mb-4">
                                             <div class="card-header">
                                                 <h6>Sustainability Leaders</h6>
                                             </div>
@@ -674,7 +832,7 @@
                                             </div>
                                         </div>
                                         
-                                        <div class="card bg-tv">
+                                        <div class="card">
                                             <div class="card-header">
                                                 <h6>Green Certifications</h6>
                                             </div>
@@ -705,7 +863,7 @@
                                 
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <div class="card bg-tv h-100">
+                                        <div class="card h-100">
                                             <div class="card-header">
                                                 <h5>Upcoming Webinars</h5>
                                             </div>
@@ -741,7 +899,7 @@
                                     </div>
                                     
                                     <div class="col-md-6">
-                                        <div class="card bg-tv h-100">
+                                        <div class="card h-100">
                                             <div class="card-header">
                                                 <h5>Certification Programs</h5>
                                             </div>
@@ -776,7 +934,7 @@
                                 
                                 <div class="row mt-4">
                                     <div class="col-12">
-                                        <div class="card bg-tv">
+                                        <div class="card">
                                             <div class="card-header">
                                                 <h5>Recommended Learning Paths</h5>
                                             </div>
@@ -944,7 +1102,7 @@
                                     </div>
 
                                     <div class="col-md-4">
-                                        <div class="card bg-light">
+                                        <div class="card">
                                             <div class="card-header">
                                                 <h6><i class="fas fa-bullhorn me-2"></i>AI Insights & Announcements</h6>
                                             </div>
@@ -1557,14 +1715,14 @@
                 // Draw background circle
                 ctx.beginPath();
                 ctx.arc(60, 60, 50, 0, Math.PI * 2, false);
-                ctx.strokeStyle = '#2a3a4a';
+                ctx.strokeStyle = '#e2e8f0';
                 ctx.lineWidth = 8;
                 ctx.stroke();
                 
                 // Draw progress circle (72%)
                 ctx.beginPath();
                 ctx.arc(60, 60, 50, -Math.PI / 2, (Math.PI * 2 * 0.72) - (Math.PI / 2), false);
-                ctx.strokeStyle = '#0061a8';
+                ctx.strokeStyle = '#004289';
                 ctx.lineWidth = 8;
                 ctx.stroke();
             }
@@ -1577,20 +1735,22 @@
                     this.classList.add('active');
                 });
             });
+
+            // Back button functionality
+            document.getElementById('backButton').addEventListener('click', function() {
+                if (window.history.length > 1) {
+                    window.history.back();
+                } else {
+                    window.location.href = '/';
+                }
+            });
         });
     </script>
 
-    <!-- Footer -->
-    <footer style="background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%); color: white; text-align: center; padding: 2rem 1rem; margin-top: 2rem;">
-        <div style="max-width: 1200px; margin: 0 auto;">
-            <div style="margin-bottom: 1rem;">
-                <h4 style="margin-bottom: 0.5rem; color: white; font-size: 1.1rem;">Designed by Sifiso Cyprian Shezi</h4>
-                <p style="color: #bdc3c7; margin: 0;">Facilities Assistant Level 1 — Derivco Durban | Transforming facility management through innovation</p>
-            </div>
-            <div style="border-top: 1px solid #4a5568; padding-top: 1rem;">
-                <p style="color: #9ca3af; font-size: 0.875rem; margin: 0;">&copy; 2025 Derivco Facilities Management System. All rights reserved.</p>
-            </div>
-        </div>
+    <footer class="premium-footer">
+        <p>Designed by Sifiso Cyprian Shezi</p>
+        <p>Facilities Assistant Level 1 — Derivco Durban | Transforming facility management through innovation</p>
+        <p>&copy; 2025 Derivco Facilities Management System. All rights reserved.</p>
     </footer>
 </body>
 </html>
